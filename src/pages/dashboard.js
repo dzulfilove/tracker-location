@@ -46,8 +46,7 @@ class Dashboard extends React.Component {
           overflowX: "hidden",
           position: "relative",
           marginBottom: "1rem",
-        }}
-      >
+        }}>
         <div className="font-DM flex flex-col px-4 pt-7 pb-11 mx-auto w-full font-bold bg-white shadow-2xl rounded-[32px]">
           <div className="flex gap-5 text-xl tracking-wide leading-7 text-center whitespace-nowrap rounded-[32px] text-indigo-950">
             <Navbar />
@@ -80,8 +79,7 @@ class Dashboard extends React.Component {
                   xmlns="http://www.w3.org/2000/svg"
                   width="28"
                   height="28"
-                  viewBox="0 0 24 24"
-                >
+                  viewBox="0 0 24 24">
                   <g fill="none">
                     <path
                       fill="#3B82F6"
@@ -95,8 +93,8 @@ class Dashboard extends React.Component {
                     />
                     <path
                       stroke="#34D399"
-                      stroke-linecap="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeWidth="2"
                       d="M7 3v3m10-3v3"
                     />
                   </g>
@@ -122,14 +120,13 @@ class Dashboard extends React.Component {
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
-                    viewBox="0 0 24 24"
-                  >
+                    viewBox="0 0 24 24">
                     <path
                       fill="none"
                       stroke="white"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       d="M4 12V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6m-10 6H3m18 0h-7m-8-3l-3 3l3 3m12-6l3 3l-3 3"
                     />
                   </svg>
@@ -147,8 +144,7 @@ class Dashboard extends React.Component {
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
-                    viewBox="0 0 24 24"
-                  >
+                    viewBox="0 0 24 24">
                     <path
                       fill="white"
                       d="M12 20c4.4 0 8-3.6 8-8s-3.6-8-8-8s-8 3.6-8 8s3.6 8 8 8m0-18c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12S6.5 2 12 2m.5 5v6H7v-1.5h4V7z"
@@ -170,14 +166,13 @@ class Dashboard extends React.Component {
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
-                    viewBox="0 0 24 24"
-                  >
+                    viewBox="0 0 24 24">
                     <path
                       fill="none"
                       stroke="white"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       d="m14.5 10l-.035-.139A2.457 2.457 0 0 0 12.082 8h-.522a1.841 1.841 0 0 0-.684 3.55l2.248.9A1.841 1.841 0 0 1 12.44 16h-.521a2.457 2.457 0 0 1-2.384-1.861L9.5 14M12 6v2m0 8v2m9-6a9 9 0 1 1-18 0a9 9 0 0 1 18 0"
                     />
                   </svg>
@@ -193,15 +188,13 @@ class Dashboard extends React.Component {
           <div className="w-full px-3 flex justify-center mt-5">
             <Link
               to="/mytrip"
-              className="self-start text-base font-medium tracking-wide leading-7 text-center text-white bg-blue-500 w-full p-2 rounded-xl shadow-lg flex justify-center gap-5 items-center"
-            >
+              className="self-start text-base font-medium tracking-wide leading-7 text-center text-white bg-blue-500 w-full p-2 rounded-xl shadow-lg flex justify-center gap-5 items-center">
               Perjalanan Saat Ini
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
-                viewBox="0 0 24 24"
-              >
+                viewBox="0 0 24 24">
                 <path
                   fill="white"
                   fill-rule="evenodd"

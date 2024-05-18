@@ -29,7 +29,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/mytrip" element={<MyTrip />} />
               <Route path="/history" element={<History />} />
-              <Route path="/input-trip" element={<InputTrip />} />
+              <Route path="/input-trip/:id" element={<InputTrip />} />
               <Route path="/arrive-trip" element={<BackTrip />} />
               <Route path="/detail-trip" element={<DetailTrip />} />
             </>

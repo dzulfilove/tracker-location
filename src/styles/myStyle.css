@@ -1,0 +1,117 @@
+.custom-tab-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem;
+  width: 100%;
+  height: auto;
+  padding: 8px;
+  background-color: white;
+  border-radius: 8px;
+  border-color: #10b981; /* kode warna biru-nya */
+  font-size: 14px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.custom-tab-bar .nav-link.active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  white-space: nowrap;
+  background-color: #10b981; /* kode warna biru-nya */
+  border-radius: 30px; /* untuk membuat sudut bulat */
+}
+
+.custom-tab-bar .nav-link {
+  display: flex;
+  width: 6rem;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background-color: transparent; /* Warna latar belakang tab aktif */
+  border-radius: 8px;
+  border-radius: 30px; /* untuk membuat sudut bulat */
+  color: #0a885e;
+  height: 2.5rem;
+}
+
+.custom-tab-bar .nav-link:hover {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  white-space: nowrap;
+  background-color: #10b981; /* kode warna biru-nya */
+  border-radius: 30px; /* untuk membuat sudut bulat */
+}
+
+.custom-tab-bar-2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem;
+  width: 100%;
+  height: auto;
+  padding: 8px;
+  background-color: white;
+  border-radius: 8px;
+  border-color: #10b981; /* kode warna biru-nya */
+  font-size: 13px;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.custom-tab-bar-2 .nav-link.active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  white-space: nowrap;
+  background-color: #10b981; /* kode warna biru-nya */
+  border-radius: 30px; /* untuk membuat sudut bulat */
+}
+
+.custom-tab-bar-2 .nav-link {
+  display: flex;
+  width: 6rem;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background-color: transparent; /* Warna latar belakang tab aktif */
+  border-radius: 8px;
+  border-radius: 30px; /* untuk membuat sudut bulat */
+  color: #0a885e;
+  height: 2.5rem;
+}
+
+.custom-tab-bar-2 .nav-link:hover {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  white-space: nowrap;
+  background-color: #10b981; /* kode warna biru-nya */
+  border-radius: 30px; /* untuk membuat sudut bulat */
+}
+
+.select {
+  height: 3rem;
+}
+
+.select-janji {
+  width: 100%;
+  height: 2.5rem;
+  position: relative;
+}
+
+.select-janji-btn {
+  padding: 15px 20px;
+  background-color: #10b981;
+  font-weight: 500;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.select-janji-content {
+  position: absolute;
+}

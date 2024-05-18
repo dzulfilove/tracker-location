@@ -42,8 +42,7 @@ class DetailTrip extends React.Component {
           overflowX: "hidden",
           position: "relative",
           marginBottom: "1rem",
-        }}
-      >
+        }}>
         <div className=" font-DM flex flex-col pb-4 pt-4 justify-center items-start mx-auto w-full bg-white max-w-[480px] rounded-[32px]">
           <div className="flex  items-center justify-start gap-16 rounded-[32px] bg-white  p-2 px-4 w-full shadow-2xl ">
             <button className="flex justify-center items-center p-2 rounded-full bg-blue-500">
@@ -51,14 +50,13 @@ class DetailTrip extends React.Component {
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
-                viewBox="0 0 24 24"
-              >
+                viewBox="0 0 24 24">
                 <path
                   fill="#fff"
                   stroke="#fff"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2.5"
                   d="m14 7l-5 5m0 0l5 5"
                 />
               </svg>
@@ -141,14 +139,13 @@ class DetailTrip extends React.Component {
                         xmlns="http://www.w3.org/2000/svg"
                         width="32"
                         height="32"
-                        viewBox="0 0 24 24"
-                      >
+                        viewBox="0 0 24 24">
                         <path
                           fill="none"
                           stroke="#10B981"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
                           d="M4 12V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6m-10 6H3m18 0h-7m-8-3l-3 3l3 3m12-6l3 3l-3 3"
                         />
                       </svg>
@@ -161,8 +158,7 @@ class DetailTrip extends React.Component {
                         xmlns="http://www.w3.org/2000/svg"
                         width="32"
                         height="32"
-                        viewBox="0 0 24 24"
-                      >
+                        viewBox="0 0 24 24">
                         <path
                           fill="#10B981"
                           d="M12 20c4.4 0 8-3.6 8-8s-3.6-8-8-8s-8 3.6-8 8s3.6 8 8 8m0-18c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12S6.5 2 12 2m.5 5v6H7v-1.5h4V7z"
