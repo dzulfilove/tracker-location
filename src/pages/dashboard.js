@@ -1,8 +1,22 @@
 import * as React from "react";
 import "../styles/style.css";
 import { Link } from "react-router-dom";
-
+import { db } from "../config/firebase";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import Navbar from "../components/navbar";
+import dayjs from "dayjs";
+import "dayjs/locale/id";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import TextField from "@mui/material/TextField";
+import { DatePicker } from "@mui/x-date-pickers";
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -11,7 +25,13 @@ class Dashboard extends React.Component {
       startDate: "25, Des 2024",
       endDate: "25, Des 2025",
       totalTrips: 27,
+      tanggalMulaiTampil: "",
+      tanggalSelesaiTampil: "",
       totalDistance: "200 KM",
+      tanggalAwal: dayjs("2024-05-01").locale("id"),
+      tanggalAkhir: dayjs().locale("id"),
+      tanggalAwalString: "2024-05-01",
+      tanggalAkhirString: dayjs().locale("id").format("YYYY-MM-DD"),
       totalDuration: "120 Jam",
       submittedAmount: "Rp. 100000000",
       currentTrip: {
@@ -20,9 +40,231 @@ class Dashboard extends React.Component {
         from: "Kantor Pusat",
         status: "Belum Sampai",
       },
+
+      user: {},
+      jumlahTrip: 0,
+      totalJarak: 0,
+      totalDurasi: 0,
+      totalPengajuan: 0,
+
+      trip: [],
     };
   }
 
+  componentDidMount = async () => {
+    const userEmail = localStorage.getItem("userEmail");
+    await this.getAllTripsByUid(userEmail);
+  };
+  handleFilter = (name, value) => {
+    const dayjsDate = dayjs(value);
+
+    let tanggalMulai = this.state.tanggalAwalString;
+    let tanggalSelesai = this.state.tanggalAkhirString;
+
+    if (!dayjsDate.isValid()) {
+      return;
+    }
+
+    const formattedDate = dayjsDate.format("YYYY-MM-DD");
+
+    if (name == "tanggalAwal") {
+      tanggalMulai = formattedDate;
+      this.setState({ tanggalAwal: value, tanggalAwalString: formattedDate });
+    } else {
+      tanggalSelesai = formattedDate;
+      this.setState({ tanggalAkhir: value, tanggalAkhirString: formattedDate });
+    }
+
+    const { trips } = this.state;
+
+    const filteredTrips = trips.filter((trip) => {
+      const tripDate = new Date(trip.tanggal);
+      const startDate = new Date(tanggalMulai);
+      const endDate = new Date(tanggalSelesai);
+
+      return tripDate >= startDate && tripDate <= endDate;
+    });
+
+    const totalJarak = filteredTrips.reduce(
+      (total, item) => total + parseFloat(item.jarak),
+      0
+    );
+    const totalNominal = filteredTrips.reduce(
+      (total, item) => total + parseFloat(item.nominal),
+      0
+    );
+    const totalDurasi = filteredTrips.reduce(
+      (total, item) => total + item.durasi,
+      0
+    );
+    const jumlahTrip = filteredTrips.length;
+    const mulaiTgl = this.formatTanggal(tanggalMulai);
+    const selesaiTgl = this.formatTanggal(tanggalSelesai);
+    this.setState({
+      totalJarak: totalJarak.toFixed(2),
+      jumlahTrip: jumlahTrip,
+      totalDurasi: totalDurasi,
+      totalPengajuan: totalNominal,
+      tanggalMulaiTampil: mulaiTgl,
+      tanggalSelesaiTampil: selesaiTgl,
+    });
+
+    this.setState({ filteredTrips, isFilter: true });
+  };
+
+  getAllTripsByUid = async (email) => {
+    await this.getUserLogin(email);
+    const { user } = this.state;
+    try {
+      const userRef = doc(db, "User", user.uid);
+      const tripsCollection = collection(db, "trips");
+      const userTripsQuery = query(
+        tripsCollection,
+        where("refUser", "==", userRef)
+      );
+      const querySnapshot = await getDocs(userTripsQuery);
+
+      const tripList = [];
+      for (const doc of querySnapshot.docs) {
+        const tripData = doc.data();
+        // Ambil data dari subkoleksi 'lokasiAwal'
+        const lokasiAwalRef = collection(doc.ref, "lokasiAwal");
+        const lokasiAwalSnapshot = await getDocs(lokasiAwalRef);
+        const lokasiAwalData = lokasiAwalSnapshot.docs.map((lokasiDoc) =>
+          lokasiDoc.data()
+        );
+
+        // Tambahkan data lokasiAwal ke dalam data perjalanan
+        tripData.lokasiAwal = lokasiAwalData;
+
+        const lokasiAkhirRef = collection(doc.ref, "lokasiAkhir");
+        const lokasiAkhirSnapshot = await getDocs(lokasiAkhirRef);
+        const lokasiAkhirData = lokasiAkhirSnapshot.docs.map((lokasiDoc) =>
+          lokasiDoc.data()
+        );
+
+        // Tambahkan data lokasiAkhir ke dalam data perjalanan
+        tripData.lokasiAkhir = lokasiAkhirData;
+
+        tripList.push({ id: doc.id, ...tripData });
+      }
+      const jumlahTrip = tripList.length;
+
+      const filteredArray = tripList.filter((item) => item.status == "Selesai");
+
+      // const totalDurasi =
+
+      console.log(filteredArray, "Trip");
+      const hasil = filteredArray.map((objek) => {
+        // Menghitung nilai nominal berdasarkan rumus yang diberikan
+        const nominal = (objek.jarak + objek.jarak * 0.2) * 600;
+        const jarak = objek.jarak + objek.jarak * 0.2;
+
+        // Mengembalikan objek baru dengan properti nominal yang ditambahkan
+        return {
+          ...objek, // Menyalin properti objek yang ada
+          nominal: nominal,
+          jarak: jarak, // Menambahkan properti nominal
+        };
+      });
+      const filteredTrips = hasil.filter((trip) => {
+        const tripDate = new Date(trip.tanggal);
+        const startDate = new Date(this.state.tanggalAwalString);
+        const endDate = new Date(this.state.tanggalAkhirString);
+
+        return tripDate >= startDate && tripDate <= endDate;
+      });
+      const totalJarak = filteredTrips.reduce(
+        (total, item) => total + parseFloat(item.jarak),
+        0
+      );
+      const totalNominal = filteredTrips.reduce(
+        (total, item) => total + parseFloat(item.nominal),
+        0
+      );
+      const totalDurasi = filteredTrips.reduce(
+        (total, item) => total + item.durasi,
+        0
+      );
+      const mulaiTgl = this.formatTanggal(this.state.tanggalAwalString);
+      const selesaiTgl = this.formatTanggal(this.state.tanggalAkhirString);
+      console.log(mulaiTgl, "tagajkafkj");
+      await new Promise((resolve) => {
+        this.setState(
+          {
+            tanggalMulaiTampil: mulaiTgl,
+            tanggalSelesaiTampil: selesaiTgl,
+            trips: hasil,
+            totalJarak: totalJarak.toFixed(2),
+            totalDurasi: totalDurasi,
+            jumlahTrip: jumlahTrip,
+            totalPengajuan: totalNominal,
+          },
+          resolve
+        );
+      });
+
+      // console.log(this.state.trips);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+      throw error;
+    }
+  };
+  formatRupiah(biaya) {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(biaya);
+  }
+  getUserLogin = async (email) => {
+    try {
+      const userRef = collection(db, "User");
+      const q = query(userRef, where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        return null;
+      }
+      const userData = querySnapshot.docs[0].data();
+
+      await new Promise((resolve) => {
+        this.setState({ user: userData }, resolve);
+      });
+
+      return userData;
+    } catch (error) {
+      console.error("Error:", error);
+      throw error;
+    }
+  };
+  formatTanggal = (tanggal) => {
+    const hari = dayjs(tanggal).locale("id").format("dddd");
+    const bulan = dayjs(tanggal).locale("id").format("MMMM");
+    const hasil =
+      tanggal.substring(8, 10) + " " + bulan + " " + tanggal.substring(0, 4);
+    console.log("tanggal", dayjs(tanggal).locale("id").format("MMMM"));
+
+    return hasil;
+  };
+  formatBulan = (bulanInggris) => {
+    // Objek untuk memetakan nama bulan dalam bahasa Inggris ke bahasa Indonesia
+    const namaBulan = {
+      January: "Jan",
+      February: "Feb",
+      March: "Maret",
+      April: "April",
+      May: "Mei",
+      June: "Juni",
+      July: "Juli",
+      August: "Agust",
+      September: "Sept",
+      October: "Okt",
+      November: "Nov",
+      December: "Des",
+    };
+
+    // Mengembalikan nama bulan dalam bahasa Indonesia berdasarkan nama bulan dalam bahasa Inggris
+    return namaBulan[bulanInggris];
+  };
   render() {
     const {
       userName,
@@ -55,16 +297,50 @@ class Dashboard extends React.Component {
               Dashboard
             </div>
           </div>
-          <div className="w-full px-2 flex justify-between items-center mt-8">
-            <div className="w-50% border bg-blue-500 rounded-md flex justify-center items-center px-5 py-2 text-sm font-medium text-white">
-              13 Mei 2024
+          <div className="w-full flex justify-between items-center mt-6">
+            <div className="w-[10rem] flex justify-center items-center px-2 py-4 text-sm font-medium text-white">
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale="id"
+              >
+                <DatePicker
+                  name="tanggalAwal"
+                  locale="id"
+                  label="Tanggal Awal"
+                  value={this.state.tanggalAwal}
+                  onChange={(selectedDate) =>
+                    this.handleFilter("tanggalAwal", selectedDate)
+                  }
+                  inputFormat="DD/MM/YYYY"
+                  renderInput={(params) => (
+                    <TextField {...params} placeholder="dd/mm/yyyy" fullWidth />
+                  )}
+                />
+              </LocalizationProvider>
             </div>
-            --
-            <div className="w-50% border bg-blue-500 rounded-md flex justify-center items-center px-5 py-2 text-sm font-medium text-white">
-              31 Mei 2024
+            -
+            <div className="w-[10rem] flex justify-center items-center px-2 py-4 text-sm font-medium text-white">
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale="id"
+              >
+                <DatePicker
+                  name="tanggalAwal"
+                  locale="id"
+                  label="Tanggal Akhir"
+                  value={this.state.tanggalAkhir}
+                  onChange={(selectedDate) =>
+                    this.handleFilter("tanggalAkhir", selectedDate)
+                  }
+                  inputFormat="DD/MM/YYYY"
+                  renderInput={(params) => (
+                    <TextField {...params} placeholder="dd/mm/yyyy" fullWidth />
+                  )}
+                />
+              </LocalizationProvider>
             </div>
           </div>
-          <div className="flex gap-5 justify-between px-5 py-7 mt-3 w-full text-base leading-5 bg-white rounded-2xl border border-solid border-zinc-100 shadow-xl">
+          <div className="flex gap-5 justify-between px-5 py-7 mt-1 w-full text-base leading-5 bg-white rounded-2xl border border-solid border-zinc-100 shadow-xl">
             <div className="flex flex-col text-indigo-950 w-full">
               <div className="text-base tracking-wide leading-7 text-start pb-3 border-b border-b-blue-500 mb-4 font-semibold">
                 {userName}
@@ -73,7 +349,7 @@ class Dashboard extends React.Component {
                 <div className="flex flex-col  capitalize">
                   <div className=" text-blue-500 capitalize">dari</div>
                   <div className="mt-3 capitalize font-medium  rounded-md">
-                    {startDate}
+                    {this.state.tanggalMulaiTampil}
                   </div>
                 </div>
                 <svg
@@ -104,7 +380,7 @@ class Dashboard extends React.Component {
                 <div className="flex flex-col capitalize">
                   <div className="text-blue-500">Sampai</div>
                   <div className="mt-2.5 text-indigo-950 font-medium">
-                    {endDate}
+                    {this.state.tanggalSelesaiTampil}
                   </div>
                 </div>
               </div>
@@ -112,7 +388,7 @@ class Dashboard extends React.Component {
           </div>
           <div className="flex flex-col items-center px-4 pt-5 pb-8 mt-6 w-full tracking-wide text-center text-white bg-blue-500 rounded-2xl border border-blue-500 border-solid shadow-[0px_4px_15px_rgba(0,0,0,0.15)]">
             <div className="self-stretch text-base text-start font-semibold leading-7 pb-3 mb-4 border-b border-b-white">
-              {totalTrips} Perjalanan
+              {this.state.jumlahTrip} Perjalanan
             </div>
 
             <div className="flex  flex-col flex-start items-center gap-2 mt-3 w-full  ">
@@ -138,7 +414,7 @@ class Dashboard extends React.Component {
                   </div>
                 </div>
                 <div className="text-base leading-7 font-semibold">
-                  {totalDistance}
+                  {this.state.totalJarak}
                 </div>
               </div>
               <div className="flex  w-[100%] items-center justify-between ">
@@ -159,7 +435,7 @@ class Dashboard extends React.Component {
                   </div>
                 </div>
                 <div className="text-base leading-7 font-semibold">
-                  {totalDuration}
+                  {this.state.totalDurasi}
                 </div>
               </div>
             </div>
@@ -185,14 +461,16 @@ class Dashboard extends React.Component {
                 </div>
 
                 <div className="text-base leading-7 font-semibold">
-                  {submittedAmount}
+                  {this.formatRupiah(this.state.totalPengajuan)}
                 </div>
               </div>
             </div>
           </div>
           <div className="w-full px-3 flex justify-center mt-5">
-            <Link
-              to="/mytrip"
+            <button
+              onClick={() => {
+                window.location.href = `/mytrip`;
+              }}
               className="self-start text-base font-medium tracking-wide leading-7 text-center text-white bg-blue-500 w-full p-2 rounded-xl shadow-lg flex justify-center gap-5 items-center"
             >
               Perjalanan Saat Ini
@@ -208,7 +486,7 @@ class Dashboard extends React.Component {
                   d="m9.005 4l8 8l-8 8L7 18l6.005-6L7 6z"
                 />
               </svg>
-            </Link>
+            </button>
           </div>
         </div>
       </div>

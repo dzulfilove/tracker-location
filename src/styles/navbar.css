@@ -7,6 +7,7 @@ header {
   background-color: var(--mainColor);
   color: var(--textColor);
   font-weight: 500;
+  z-index: 999999;
 }
 
 nav a {

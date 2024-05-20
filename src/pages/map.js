@@ -16,6 +16,9 @@ const center = [-5.404322389745186, 105.21239500924895];
 const polyline = [
   [-5.391528099147527, 105.22667395019478],
   [-5.403021144477835, 105.22225367022453],
+  [-5.398107787359712, 105.24117933855867],
+
+  [-5.391528099147527, 105.22667395019478],
 ];
 
 const multiPolyline = [
@@ -69,22 +72,23 @@ const limeOptions = { color: "lime" };
 const purpleOptions = { color: "purple" };
 const redOptions = { color: "ed" };
 
-const MyLocation = () => {
+const MyLocation = (props) => {
   const customIcon = new Icon({
     iconUrl: MarkerIcon,
     iconSize: [38, 38],
   });
+
+  console.log(props.objekMap, "Objek");
+  console.log(props.arrayMap, "array");
   return (
     <MapContainer center={center} zoom={13} scrollWheelZoom={false}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {multiPolyline2.map((item) => (
-        <Marker position={item.loc} icon={customIcon}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
+      {props.objekMap.map((item) => (
+        <Marker position={item.location} icon={customIcon}>
+          <Popup>{item.marker}</Popup>
         </Marker>
       ))}
       {/* <Circle center={center} pathOptions={fillBlueOptions} radius={200} />
@@ -96,7 +100,7 @@ const MyLocation = () => {
         <Popup>Popup in CircleMarker</Popup>
       </CircleMarker> */}
       {/* <Polyline pathOptions={limeOptions} positions={polyline} /> */}
-      <Polyline pathOptions={limeOptions} positions={multiPolyline} />
+      <Polyline pathOptions={limeOptions} positions={props.arrayMap} />
       {/* <Polygon pathOptions={purpleOptions} positions={polygon} />
       <Polygon pathOptions={purpleOptions} positions={multiPolygon} />
       <Rectangle bounds={rectangle} pathOptions={blackOptions} /> */}

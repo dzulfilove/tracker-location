@@ -9,12 +9,14 @@ import History from "./pages/history";
 import InputTrip from "./pages/inputTrip";
 import BackTrip from "./pages/backTrip";
 import DetailTrip from "./pages/detailTrip";
+
 import {
   BrowserRouter as Router,
   Route,
   Routes,
   Navigate,
 } from "react-router-dom";
+import Camera from "./components/camera";
 function App() {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
 
@@ -29,9 +31,10 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/mytrip" element={<MyTrip />} />
               <Route path="/history" element={<History />} />
-              <Route path="/input-trip" element={<InputTrip />} />
-              <Route path="/arrive-trip" element={<BackTrip />} />
-              <Route path="/detail-trip" element={<DetailTrip />} />
+              <Route path="/input-trip/:id" element={<InputTrip />} />
+              <Route path="/arrive-trip/:idTrip" element={<BackTrip />} />
+              <Route path="/detail-trip/:idTrip" element={<DetailTrip />} />
+              <Route path="/camera" element={<Camera />} />
             </>
           ) : null}
         </Routes>
