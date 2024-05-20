@@ -13,16 +13,28 @@ class MyTrip extends React.Component {
       tripSelesai: [],
       tripBelumSampai: [],
       user: {},
+      hariIni: "",
     };
     this.sectionRef = React.createRef();
   }
 
   componentDidMount = async () => {
+    this.getHariIni();
     const userEmail = localStorage.getItem("userEmail");
     await this.setState({ displayName: userEmail });
     await this.getAllTripsByUid();
     await this.getPerjalananSelesai();
     await this.getPerjalananBelumSampai();
+  };
+
+  getHariIni = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    const formattedDate = `${year}-${month}-${day}`;
+
+    this.setState({ hariIni: formattedDate });
   };
 
   handleClick = () => {
@@ -59,13 +71,14 @@ class MyTrip extends React.Component {
 
   getAllTripsByUid = async () => {
     await this.getUserLogin(this.state.displayName);
-    const { user } = this.state;
+    const { user, hariIni } = this.state;
     try {
       const userRef = doc(db, "User", user.uid);
       const tripsCollection = collection(db, "trips");
       const userTripsQuery = query(
         tripsCollection,
-        where("refUser", "==", userRef)
+        where("refUser", "==", userRef),
+        where("tanggal", "==", hariIni)
       );
       const querySnapshot = await getDocs(userTripsQuery);
 

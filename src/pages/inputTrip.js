@@ -159,6 +159,8 @@ class InputTrip extends React.Component {
         lokasi,
       } = this.state;
 
+      console.log(hariIni);
+
       const tripRef = collection(db, "trips");
       const userRef = doc(db, "User", user);
       const newTrip = await addDoc(tripRef, {
