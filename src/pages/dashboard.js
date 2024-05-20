@@ -343,7 +343,7 @@ class Dashboard extends React.Component {
           <div className="flex gap-5 justify-between px-5 py-7 mt-1 w-full text-base leading-5 bg-white rounded-2xl border border-solid border-zinc-100 shadow-xl">
             <div className="flex flex-col text-indigo-950 w-full">
               <div className="text-base tracking-wide leading-7 text-start pb-3 border-b border-b-blue-500 mb-4 font-semibold">
-                {userName}
+                {this.state.user.display_name}
               </div>
               <div className="w-[100%]  flex justify-between items-center font-semibold">
                 <div className="flex flex-col  capitalize">
