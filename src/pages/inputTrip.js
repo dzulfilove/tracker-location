@@ -507,11 +507,7 @@ class InputTrip extends React.Component {
               <div className="mt-6 text-sm font-medium leading-5 ">
                 Tetapkan Jam Keberangkatan
               </div>
-              <div
-                data-aos-delay="200"
-                data-aos="fade-up"
-                className="flex gap-3 mt-5 justify-between"
-              >
+              <div className="flex gap-3 mt-5 justify-between">
                 <input
                   type="time"
                   name="departureLocation"
