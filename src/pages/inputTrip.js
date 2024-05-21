@@ -547,7 +547,7 @@ class InputTrip extends React.Component {
               <div
                 data-aos-delay="50"
                 data-aos="fade-up"
-                style={{ zIndex: "9995" }}
+                style={{ zIndex: "995" }}
                 className="flex flex-col justify-center mt-5"
               >
                 <Select
@@ -580,7 +580,7 @@ class InputTrip extends React.Component {
               >
                 Kategori Perjalanan
               </div>
-              <div style={{ zIndex: "999" }}>
+              <div style={{ zIndex: "99" }}>
                 <div data-aos="fade-up" data-aos-delay="100">
                   <Select
                     options={optionsKategori}
