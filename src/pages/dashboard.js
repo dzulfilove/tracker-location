@@ -491,10 +491,7 @@ class Dashboard extends React.Component {
               </>
             )}
           </div>
-          <div
-            data-aos="fade-up"
-            className="w-full px-3 flex justify-center mt-5"
-          >
+          <div className="w-full px-3 flex justify-center mt-5">
             <button
               onClick={() => {
                 window.location.href = `/mytrip`;
