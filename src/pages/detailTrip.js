@@ -454,10 +454,7 @@ class DetailTrip extends React.Component {
                           </div>
                         </div>
                       </div>
-                      <div
-                        data-aos="fade-up"
-                        className="justify-center mt-4 items-start px-4 py-4 text-sm font-medium leading-5 text-blue-500 bg-white rounded-2xl border border-solid border-zinc-100 shadow-[0px_4px_15px_rgba(0,0,0,0.11)]"
-                      >
+                      <div className="justify-center mt-4 items-start px-4 py-4 text-sm font-medium leading-5 text-blue-500 bg-white rounded-2xl border border-solid border-zinc-100 shadow-[0px_4px_15px_rgba(0,0,0,0.11)]">
                         Alasan Perjalanan
                         <p className="text-sm text-black font-normal mt-2">
                           {this.state.trip.alasan}
