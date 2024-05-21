@@ -91,7 +91,7 @@ class Dashboard extends React.Component {
     });
 
     const totalJarak = filteredTrips.reduce(
-      (total, item) => total + parseFloat(item.jarak),
+      (total, item) => total + parseFloat(item.jarakKompensasi),
       0
     );
     const totalNominal = filteredTrips.reduce(
@@ -157,19 +157,16 @@ class Dashboard extends React.Component {
 
       const filteredArray = tripList.filter((item) => item.status == "Selesai");
 
-      // const totalDurasi =
-
       console.log(filteredArray, "Trip");
       const hasil = filteredArray.map((objek) => {
         // Menghitung nilai nominal berdasarkan rumus yang diberikan
-        const nominal = (objek.jarak + objek.jarak * 0.2) * 600;
-        const jarak = objek.jarak + objek.jarak * 0.2;
+        const nominal =
+          (objek.jarakKompensasi + objek.jarakKompensasi * 0.2) * 600;
 
         // Mengembalikan objek baru dengan properti nominal yang ditambahkan
         return {
           ...objek, // Menyalin properti objek yang ada
           nominal: nominal,
-          jarak: jarak, // Menambahkan properti nominal
         };
       });
       const filteredTrips = hasil.filter((trip) => {
@@ -180,7 +177,7 @@ class Dashboard extends React.Component {
         return tripDate >= startDate && tripDate <= endDate;
       });
       const totalJarak = filteredTrips.reduce(
-        (total, item) => total + parseFloat(item.jarak),
+        (total, item) => total + parseFloat(item.jarakKompensasi),
         0
       );
       const totalNominal = filteredTrips.reduce(
@@ -415,7 +412,7 @@ class Dashboard extends React.Component {
           </div>
           <div
             data-aos="fade-up"
-            className="flex flex-col items-center px-4 pt-5 pb-8 mt-6 w-full shadow-xl tracking-wide text-center text-white bg-blue-500 rounded-2xl border border-blue-500 border-solid "
+            className="flex flex-col items-center px-4 pt-5 pb-8 mt-6 w-full shadow-xl tracking-wide text-center text-white bg-gradient-to-r from-blue-500 to-blue-800 rounded-2xl border border-blue-500 border-solid "
           >
             {this.state.loader == true ? (
               <>

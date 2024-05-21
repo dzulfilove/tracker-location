@@ -270,7 +270,7 @@ class MyTrip extends React.Component {
             ) : (
               <Link
                 to={`/input-trip/${this.state.user.uid}`}
-                className="self-start text-base font-medium tracking-wide leading-7 text-center text-white bg-blue-500 w-full p-2 rounded-xl shadow-lg flex justify-center gap-5 items-center"
+                className="self-start text-base font-medium tracking-wide leading-7 mb-5 text-center text-white bg-blue-500 w-full p-2 rounded-xl shadow-lg flex justify-center gap-5 items-center"
               >
                 Tambah
               </Link>
@@ -278,7 +278,7 @@ class MyTrip extends React.Component {
           </div>
           <div
             data-aos="flip-up"
-            className=" bg-gradient-to-r from-blue-500 to-blue-800 text-white w-full  p-3 rounded-lg flex-auto self-start mt-6 text-base  font-medium"
+            className=" bg-gradient-to-r from-blue-500 to-blue-800 text-white w-full  p-3 rounded-lg flex-auto self-start mt-1 text-base  font-medium"
           >
             Telah Selesai
           </div>
@@ -322,7 +322,7 @@ class MyTrip extends React.Component {
                               {trip.lokasiAkhir[0].lokasi}
                             </div>
                             <div className="flex text-sm font-medium justify-center items-start p-2 w-full mt-2.5 text-right text-white bg-blue-500 rounded-lg">
-                              {Math.round(trip.jarak)} KM ({trip.durasi} Menit)
+                              {trip.jarakKompensasi} KM ({trip.durasi} Menit)
                             </div>
                           </div>
                         </div>

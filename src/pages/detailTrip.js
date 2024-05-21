@@ -547,7 +547,7 @@ class DetailTrip extends React.Component {
                             </div>
                             <div className="text-sm flex  justify-center gap-1">
                               {" "}
-                              {this.jarakReal(this.state.trip.jarak)} KM
+                              {this.state.trip.jarakKompensasi} KM
                             </div>
                           </div>
                           <div className="w-[50%] flex flex-col justify-end items-start h-full gap-1 p-2 ">
@@ -562,9 +562,7 @@ class DetailTrip extends React.Component {
                         <div className="flex p-2 gap-5 justify-between items-center text-base  text-center uppercase w-full border-t border-t-blue-500 ">
                           <div className="text-base font-semibold text-center w-full flex justify-center items-center">
                             {this.formatRupiah(
-                              this.nominalTrip(
-                                this.jarakReal(this.state.trip.jarak)
-                              )
+                              this.nominalTrip(this.state.trip.jarakKompensasi)
                             )}
                           </div>
                         </div>
@@ -689,7 +687,7 @@ class DetailTrip extends React.Component {
                                   />
                                 </svg>
                                 <div className="text-sm flex flex-col justify-center gap-1">
-                                  <p> {this.jarakReal(item.jarak)} KM</p>
+                                  <p> {item.jarak} KM</p>
                                 </div>
                               </div>
                               <div className="w-[50%] flex justify-end items-center gap-3 p-2 ">
@@ -718,7 +716,7 @@ class DetailTrip extends React.Component {
                                 </div>
                                 <div className="text-sm flex  justify-center gap-1">
                                   {" "}
-                                  {item.jarak} KM
+                                  {item.jarakKompensasi} KM
                                 </div>
                               </div>
                               <div className="w-[50%] flex flex-col justify-end items-start h-full gap-1 p-2 ">
@@ -733,7 +731,7 @@ class DetailTrip extends React.Component {
                             <div className="flex p-2 gap-5 justify-between items-center text-base  text-center uppercase w-full border-t border-t-blue-500 ">
                               <div className="text-base font-semibold text-center w-full flex justify-center items-center">
                                 {this.formatRupiah(
-                                  this.nominalTrip(this.jarakReal(item.jarak))
+                                  this.nominalTrip(item.jarakKompensasi)
                                 )}
                               </div>
                             </div>

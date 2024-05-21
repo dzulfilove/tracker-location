@@ -21,6 +21,9 @@ import {
   addDoc,
   where,
 } from "firebase/firestore";
+import AOS from "aos";
+
+import "aos/dist/aos.css";
 import withRouter from "../withRouter";
 import Person from "../assets/person.png";
 
@@ -56,6 +59,7 @@ class BackTrip extends React.Component {
     const userEmail = localStorage.getItem("userEmail");
     await this.getDataPerjalanan();
     await this.getAllLokasi();
+    AOS.init({ duration: 700 });
     await this.handleHitungDurasi();
   };
 
@@ -432,10 +436,14 @@ class BackTrip extends React.Component {
 
               <div className="flex flex-col w-full p-2 h-auto justify-start gap-4 items-center mt-4">
                 <img
+                  data-aos="fade-up"
                   src={this.state.fotoBukti}
                   className="w-[10rem] h-[15rem] flex justify-center items-center rounded-xl shadow-lg bg-white object-cover "
                 />
-                <div className="w-[15rem] p-2 bg-blue-500 text-white text-sm flex justify-center items-center rounded-md">
+                <div
+                  data-aos="slide-down"
+                  className="w-[15rem] p-2 bg-blue-500 text-white text-sm flex justify-center items-center rounded-md"
+                >
                   {/* <button
                   onClick={this.handleKamera}
                   className="w-[15rem] p-2 bg-blue-500 text-white text-sm flex justify-center items-center rounded-md"
@@ -451,10 +459,18 @@ class BackTrip extends React.Component {
                   />
                 </div>
               </div>
-              <div className="mt-6 text-sm font-medium leading-5 ">
+              <div
+                data-aos="fade-up"
+                data-aos-delay="50"
+                className="mt-6 text-sm font-medium leading-5 "
+              >
                 Lokasi Keberangkatan
               </div>
-              <div className="flex flex-col justify-center mt-5 ">
+              <div
+                data-aos="fade-up"
+                data-aos-delay="100"
+                className="flex flex-col justify-center mt-5 "
+              >
                 <input
                   type="text"
                   name="travelReason"
@@ -464,10 +480,18 @@ class BackTrip extends React.Component {
                   className="shrink-0 h-11 bg-white rounded-xl shadow-md px-3 border-blue-500 border"
                 />
               </div>
-              <div className="mt-6 text-sm font-medium leading-5 ">
+              <div
+                data-aos="fade-up"
+                data-aos-delay="150"
+                className="mt-6 text-sm font-medium leading-5 "
+              >
                 Jam Keberangkatan
               </div>
-              <div className="flex justify-between mt-5 ">
+              <div
+                data-aos="fade-up"
+                data-aos-delay="200"
+                className="flex justify-between mt-5 "
+              >
                 <input
                   type="text"
                   name="travelReason"
@@ -479,7 +503,11 @@ class BackTrip extends React.Component {
               <div className="mt-6 text-sm font-medium leading-5 ">
                 Pilih Lokasi Sampai
               </div>
-              <div className="flex flex-col justify-center mt-6">
+              <div
+                data-aos="fade-up"
+                style={{ zIndex: "996" }}
+                className="flex flex-col justify-center mt-6"
+              >
                 <Select
                   options={optionsLokasi}
                   name="lokasi"
@@ -506,10 +534,16 @@ class BackTrip extends React.Component {
                 />
               </div>
 
-              <div className="mt-6 text-sm font-medium leading-5 ">
+              <div
+                data-aos="fade-up"
+                className="mt-6 text-sm font-medium leading-5 "
+              >
                 Tetapkan Lokasi Sampai
               </div>
-              <div className="flex gap-3 mt-5 justify-between">
+              <div
+                data-aos="fade-up"
+                className="flex gap-3 mt-5 justify-between"
+              >
                 <input
                   type="text"
                   name="departureLocation"

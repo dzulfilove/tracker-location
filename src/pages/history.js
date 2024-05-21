@@ -269,7 +269,7 @@ class History extends React.Component {
           </div>
           <div
             data-aos="slide-down"
-            className=" bg-blue-500 text-white w-full  p-3 rounded-lg flex-auto self-start mt-4 text-base  font-medium"
+            className=" bg-gradient-to-r from-blue-500 to-blue-800 text-white w-full  p-3 rounded-lg flex-auto self-start mt-4 text-base  font-medium"
           >
             Data Perjalanan
           </div>
@@ -283,7 +283,7 @@ class History extends React.Component {
                 <>
                   {this.state.isFilter ? (
                     <div
-                      data-aos="slide-down"
+                      // data-aos="slide-down"
                       className="flex flex-col px-5 mt-6 capitalize bg-blue-100 rounded-2xl  "
                     >
                       {this.state.filteredTrips.map((trip) => (
