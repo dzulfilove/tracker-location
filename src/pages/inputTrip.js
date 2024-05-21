@@ -389,7 +389,7 @@ class InputTrip extends React.Component {
               >
                 Kategori Perjalanan
               </div>
-              <div data-aos="fade-up">
+              <div data-aos="fade-up" style={{ zIndex: "999" }}>
                 <Select
                   options={optionsKategori}
                   name="Kategori"
@@ -442,6 +442,7 @@ class InputTrip extends React.Component {
               </div>
               <div
                 data-aos="fade-up"
+                style={{ zIndex: "999" }}
                 data-aos-delay="100"
                 className="flex flex-col justify-center mt-6"
               >
@@ -546,6 +547,7 @@ class InputTrip extends React.Component {
               <div
                 data-aos-delay="50"
                 data-aos="fade-up"
+                style={{ zIndex: "999" }}
                 className="flex flex-col justify-center mt-5"
               >
                 <Select
@@ -578,29 +580,31 @@ class InputTrip extends React.Component {
               >
                 Kategori Perjalanan
               </div>
-              <div data-aos="fade-up" data-aos-delay="100">
-                <Select
-                  options={optionsKategori}
-                  name="Kategori"
-                  placeholder="Pilih Kategori"
-                  value={this.state.kategori}
-                  onChange={this.handleChangeKategori}
-                  classNames={{
-                    menuButton: ({ isDisabled }) =>
-                      `ps-3 text-[15px] flex text-sm text-blue-500 w-[100%] bg-blue-100 rounded-lg shadow-md transition-all duration-300 focus:outline-none ${
-                        isDisabled
-                          ? "bg-blue-100"
-                          : "bg-blue-100 focus:ring focus:ring-blue-500/20"
-                      }`,
-                    menu: "absolute w-full bg-slate-50 shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
-                    listItem: ({ isSelected }) =>
-                      `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded-lg ${
-                        isSelected
-                          ? "text-blue-500 bg-slate-50"
-                          : "text-blue-500 hover:bg-blue-100 hover:text-blue-500"
-                      }`,
-                  }}
-                />
+              <div style={{ zIndex: "999" }}>
+                <div data-aos="fade-up" data-aos-delay="100">
+                  <Select
+                    options={optionsKategori}
+                    name="Kategori"
+                    placeholder="Pilih Kategori"
+                    value={this.state.kategori}
+                    onChange={this.handleChangeKategori}
+                    classNames={{
+                      menuButton: ({ isDisabled }) =>
+                        `ps-3 text-[15px]  flex text-sm text-blue-500 w-[100%] bg-blue-100 rounded-lg shadow-md transition-all duration-300 focus:outline-none ${
+                          isDisabled
+                            ? "bg-blue-100"
+                            : "bg-blue-100 focus:ring focus:ring-blue-500/20"
+                        }`,
+                      menu: " z-[99] absolute w-full bg-slate-50 shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
+                      listItem: ({ isSelected }) =>
+                        `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded-lg ${
+                          isSelected
+                            ? "text-blue-500 bg-slate-50"
+                            : "text-blue-500 hover:bg-blue-100 hover:text-blue-500"
+                        }`,
+                    }}
+                  />
+                </div>
               </div>
               <div
                 data-aos="fade-up"
