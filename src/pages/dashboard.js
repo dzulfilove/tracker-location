@@ -242,6 +242,21 @@ class Dashboard extends React.Component {
       throw error;
     }
   };
+  formatDurasi(durasi) {
+    if (durasi < 60) {
+      return durasi + " menit";
+    } else if (durasi === 60) {
+      return "1 jam";
+    } else {
+      const jam = Math.floor(durasi / 60);
+      const menit = durasi % 60;
+      if (menit === 0) {
+        return jam + " jam";
+      } else {
+        return jam + " jam " + menit + " menit";
+      }
+    }
+  }
   formatTanggal = (tanggal) => {
     const hari = dayjs(tanggal).locale("id").format("dddd");
     const bulan = dayjs(tanggal).locale("id").format("MMMM");
@@ -456,7 +471,7 @@ class Dashboard extends React.Component {
                       </div>
                     </div>
                     <div className="text-base leading-7 font-semibold">
-                      {this.state.totalDurasi}
+                      {this.formatDurasi(this.state.totalDurasi)}
                     </div>
                   </div>
                 </div>
