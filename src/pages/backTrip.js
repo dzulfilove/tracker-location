@@ -487,11 +487,7 @@ class BackTrip extends React.Component {
               >
                 Jam Keberangkatan
               </div>
-              <div
-                data-aos="fade-up"
-                data-aos-delay="200"
-                className="flex justify-between mt-5 "
-              >
+              <div className="flex justify-between mt-5 ">
                 <input
                   type="text"
                   name="travelReason"
