@@ -311,7 +311,7 @@ class Dashboard extends React.Component {
           marginBottom: "1rem",
         }}
       >
-        <div className="font-DM flex flex-col px-4 pt-7 pb-11 mx-auto w-full font-bold bg-white shadow-2xl rounded-[32px]">
+        <div className="font-DM flex flex-col px-4 pt-7 pb-11 mx-auto w-full font-bold bg-white  rounded-[32px]">
           <div className="flex gap-5 text-xl tracking-wide leading-7 text-center whitespace-nowrap rounded-[32px] text-indigo-950">
             <Navbar />
             <div className="flex-auto my-auto text-xl font-semibold">
@@ -415,7 +415,7 @@ class Dashboard extends React.Component {
           </div>
           <div
             data-aos="fade-up"
-            className="flex flex-col items-center px-4 pt-5 pb-8 mt-6 w-full tracking-wide text-center text-white bg-blue-500 rounded-2xl border border-blue-500 border-solid shadow-[0px_4px_15px_rgba(0,0,0,0.15)]"
+            className="flex flex-col items-center px-4 pt-5 pb-8 mt-6 w-full shadow-xl tracking-wide text-center text-white bg-blue-500 rounded-2xl border border-blue-500 border-solid "
           >
             {this.state.loader == true ? (
               <>
@@ -511,7 +511,7 @@ class Dashboard extends React.Component {
               onClick={() => {
                 window.location.href = `/mytrip`;
               }}
-              className="self-start text-base font-medium tracking-wide leading-7 text-center text-white bg-blue-500 w-full p-2 rounded-xl shadow-lg flex justify-center gap-5 items-center"
+              className="self-start text-base font-medium tracking-wide leading-7 text-center text-white bg-blue-500 w-full p-2 rounded-xl shadow-xl flex justify-center gap-5 items-center"
             >
               Perjalanan Saat Ini
               <svg
