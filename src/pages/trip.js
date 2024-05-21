@@ -296,7 +296,7 @@ class MyTrip extends React.Component {
                   <>
                     {this.state.tripSelesai.map((trip, index) => (
                       <div
-                        data-aos="fade-up"
+                        data-aos={index == 2 ? "" : "fade-up"}
                         data-aos-delay="300"
                         key={index}
                         onClick={() => {

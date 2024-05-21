@@ -284,7 +284,7 @@ class History extends React.Component {
                   {this.state.isFilter ? (
                     <div
                       // data-aos="slide-down"
-                      className="flex flex-col px-5 mt-6 capitalize bg-blue-100 rounded-2xl  "
+                      className="flex flex-col px-5 mt-6 capitalize bg-blue-100 rounded-2xl pb-7  "
                     >
                       {this.state.filteredTrips.map((trip) => (
                         <div
@@ -322,10 +322,10 @@ class History extends React.Component {
                       ))}
                     </div>
                   ) : (
-                    <div className="flex flex-col px-5 mt-6 capitalize bg-blue-100 rounded-2xl  ">
-                      {this.state.trips.map((trip) => (
+                    <div className="flex flex-col px-5 mt-6 capitalize bg-blue-100 rounded-2xl pb-7  ">
+                      {this.state.trips.map((trip, index) => (
                         <div
-                          data-aos="fade-up"
+                          data-aos={index == 2 ? "" : "fade-up"}
                           key={trip.id}
                           onClick={() => {
                             window.location.href = `/detail-trip/${trip.id}`;
