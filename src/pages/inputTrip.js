@@ -17,7 +17,9 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdAccessTime } from "react-icons/md";
 import Swal from "sweetalert2";
+import AOS from "aos";
 
+import "aos/dist/aos.css";
 const optionsKategori = [
   { value: "Dalam Kota", label: "Dalam Kota" },
   { value: "Luar Kota", label: "Luar Kota" },
@@ -52,6 +54,7 @@ class InputTrip extends React.Component {
     await this.getHariIni();
     await this.getAllLokasi();
     await this.getPerjalananHariIni();
+    AOS.init({ duration: 700 });
     await this.getLokasiPerjalananTerakhir();
   };
 
@@ -175,6 +178,7 @@ class InputTrip extends React.Component {
         durasi: 0,
         fotoBukti: "",
         jarak: 0,
+        jarakKompensasi: 0,
       });
 
       // Menyimpan data lokasiAwal di dalam subkoleksi
@@ -322,6 +326,7 @@ class InputTrip extends React.Component {
         durasi: 0,
         fotoBukti: null,
         jarak: 0,
+        jarakKompensasi: 0,
         refTrips: documentData,
       });
 
@@ -365,7 +370,7 @@ class InputTrip extends React.Component {
               Tambah Perjalanan
             </div>
           </div>
-          <div className="mt-5">
+          <div data-aos="slide-down" className="mt-5">
             <Tabs
               id="controlled-tab-example"
               activeKey={this.state.isLanjutPerjalanan}
@@ -378,10 +383,13 @@ class InputTrip extends React.Component {
           </div>
           {this.state.isLanjutPerjalanan == "tab1" && (
             <>
-              <div className="my-5 text-sm font-medium leading-5 ">
+              <div
+                data-aos="fade-up"
+                className="my-5 text-sm font-medium leading-5 "
+              >
                 Kategori Perjalanan
               </div>
-              <div>
+              <div data-aos="fade-up">
                 <Select
                   options={optionsKategori}
                   name="Kategori"
@@ -405,10 +413,18 @@ class InputTrip extends React.Component {
                   }}
                 />
               </div>
-              <div className="mt-5 text-sm font-medium leading-5 ">
+              <div
+                data-aos="fade-up"
+                data-aos-delay="50"
+                className="mt-5 text-sm font-medium leading-5 "
+              >
                 Alasan Perjalanan
               </div>
-              <div className="flex flex-col justify-center mt-5 ">
+              <div
+                data-aos-delay="50"
+                data-aos="fade-up"
+                className="flex flex-col justify-center mt-5 "
+              >
                 <input
                   type="text"
                   name="travelReason"
@@ -417,10 +433,18 @@ class InputTrip extends React.Component {
                   className="shrink-0 h-11 bg-white rounded-lg shadow-md px-3"
                 />
               </div>
-              <div className="mt-6 text-sm font-medium leading-5 ">
+              <div
+                data-aos="fade-up"
+                data-aos-delay="100"
+                className="mt-6 text-sm font-medium leading-5 "
+              >
                 Pilih Lokasi
               </div>
-              <div className="flex flex-col justify-center mt-6">
+              <div
+                data-aos="fade-up"
+                data-aos-delay="100"
+                className="flex flex-col justify-center mt-6"
+              >
                 <Select
                   options={this.state.optionsLokasi}
                   name="Lokasi"
@@ -444,10 +468,18 @@ class InputTrip extends React.Component {
                   }}
                 />
               </div>
-              <div className="mt-6 text-sm font-medium leading-5 ">
+              <div
+                data-aos="fade-up"
+                data-aos-delay="150"
+                className="mt-6 text-sm font-medium leading-5 "
+              >
                 Tetapkan Lokasi Keberangkatan
               </div>
-              <div className="flex gap-3 mt-5 justify-between">
+              <div
+                data-aos="fade-up"
+                data-aos-delay="150"
+                className="flex gap-3 mt-5 justify-between"
+              >
                 <input
                   type="text"
                   name="departureLocation"
@@ -472,10 +504,18 @@ class InputTrip extends React.Component {
                   )}
                 </button>
               </div>
-              <div className="mt-6 text-sm font-medium leading-5 ">
+              <div
+                data-aos="fade-up"
+                data-aos-delay="200"
+                className="mt-6 text-sm font-medium leading-5 "
+              >
                 Tetapkan Jam Keberangkatan
               </div>
-              <div className="flex gap-3 mt-5 justify-between">
+              <div
+                data-aos-delay="200"
+                data-aos="fade-up"
+                className="flex gap-3 mt-5 justify-between"
+              >
                 <input
                   type="time"
                   name="departureLocation"
@@ -504,10 +544,18 @@ class InputTrip extends React.Component {
           )}
           {this.state.isLanjutPerjalanan == "tab2" && (
             <>
-              <div className="mt-5 text-sm font-medium leading-5 ">
+              <div
+                data-aos-delay="50"
+                data-aos="fade-up"
+                className="mt-5 text-sm font-medium leading-5 "
+              >
                 Pilih Lokasi Awal
               </div>
-              <div className="flex flex-col justify-center mt-5">
+              <div
+                data-aos-delay="50"
+                data-aos="fade-up"
+                className="flex flex-col justify-center mt-5"
+              >
                 <Select
                   options={this.state.optionsLokasiTerakhir}
                   name="Lokasi"
@@ -531,10 +579,14 @@ class InputTrip extends React.Component {
                   }}
                 />
               </div>
-              <div className="my-5 text-sm font-medium leading-5 ">
+              <div
+                data-aos-delay="100"
+                data-aos="fade-up"
+                className="my-5 text-sm font-medium leading-5 "
+              >
                 Kategori Perjalanan
               </div>
-              <div>
+              <div data-aos="fade-up" data-aos-delay="100">
                 <Select
                   options={optionsKategori}
                   name="Kategori"
@@ -558,10 +610,18 @@ class InputTrip extends React.Component {
                   }}
                 />
               </div>
-              <div className="mt-5 text-sm font-medium leading-5 ">
+              <div
+                data-aos="fade-up"
+                data-aos-delay="150"
+                className="mt-5 text-sm font-medium leading-5 "
+              >
                 Alasan Perjalanan
               </div>
-              <div className="flex flex-col justify-center mt-5 ">
+              <div
+                data-aos="fade-up"
+                data-aos-delay="150"
+                className="flex flex-col justify-center mt-5 "
+              >
                 <input
                   type="text"
                   name="travelReason"
@@ -570,10 +630,18 @@ class InputTrip extends React.Component {
                   className="shrink-0 h-11 bg-white rounded-lg shadow-md px-3"
                 />
               </div>
-              <div className="mt-6 text-sm font-medium leading-5 ">
+              <div
+                data-aos="fade-up"
+                data-aos-delay="200"
+                className="mt-6 text-sm font-medium leading-5 "
+              >
                 Tetapkan Jam Keberangkatan
               </div>
-              <div className="flex gap-3 mt-5 justify-between">
+              <div
+                data-aos="fade-up"
+                data-aos-delay="200"
+                className="flex gap-3 mt-5 justify-between"
+              >
                 <input
                   type="time"
                   value={this.state.jamBerangkat}

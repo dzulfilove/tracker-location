@@ -385,7 +385,10 @@ class DetailTrip extends React.Component {
               <div className="flex flex-col px-4 w-full text-xl font-bold tracking-wide leading-7 text-center text-indigo-950"></div>
               {this.state.tripOdd.length > 1 && (
                 <>
-                  <div className="flex w-full justify-end pr-5 mt-6 items-center">
+                  <div
+                    className="flex w-full justify-end pr-5 mt-6 items-center "
+                    data-aos="fade-up"
+                  >
                     <button
                       onClick={this.showOdd}
                       className="px-6 py-1 rounded-lg flex justify-center gap-2 items-center bg-blue-500 text-white text-sm"
@@ -427,26 +430,34 @@ class DetailTrip extends React.Component {
               {this.state.showDataOdd == false ? (
                 <>
                   <div className="flex flex-col h-auto w-full ">
-                    <div className="flex  flex-col px-4  w-full">
-                      <div className="flex z-10 gap-2 items-center py-3 px-4 mt-3 text-lg leading-5 capitalize  bg-white rounded-2xl shadow-[0px_4px_15px_rgba(0,0,0,0.11)]">
+                    <div
+                      className="flex  flex-col px-4  w-full"
+                      data-aos="fade-up"
+                    >
+                      <div className="flex z-10 gap-1 items-center py-3 px-4 mt-3 text-lg leading-5 capitalize  bg-white rounded-2xl shadow-[0px_4px_15px_rgba(0,0,0,0.11)]">
                         <img
                           loading="lazy"
                           src={this.state.trip.fotoBukti}
-                          className="shrink-0  w-14 aspect-[0.92] rounded-xl object-cover"
+                          className="shrink-0  w-20  h-24 bg-slate-900 rounded-xl object-cover"
                         />
-                        <div className="flex flex-col justify-start gap-3 items-start w-full p-2">
-                          <div className="my-auto">
-                            {this.state.user.display_name}
-                          </div>
-                          <div className="my-auto text-sm font-normal flex justify-between items-center w-full">
-                            {this.state.jamMulai} - {this.state.jamSelesai}
-                            <div className="my-auto text-sm p-2 w-[7.5rem] rounded-lg text-center bg-blue-500 text-white font-normal flex justify-center items-center">
+                        <div className="flex flex-col justify-start gap-2 items-start w-full p-2">
+                          <div className="my-auto flex justify-end w-full items-center">
+                            <div className="my-auto text-sm rounded-lg text-center font-normal flex justify-center p-1 items-center w-full bg-blue-100 border border-blue-600 text-blue-600">
                               {this.state.trip.kategori}
                             </div>
                           </div>
+                          <div className="my-auto flex justify-between w-full items-center">
+                            {this.state.user.display_name}
+                          </div>
+                          <div className="my-auto text-sm font-normal flex flex-col justify-between items-start w-full">
+                            {this.state.jamMulai} - {this.state.jamSelesai}
+                          </div>
                         </div>
                       </div>
-                      <div className="justify-center mt-4 items-start px-4 py-4 text-sm font-medium leading-5 text-blue-500 bg-white rounded-2xl border border-solid border-zinc-100 shadow-[0px_4px_15px_rgba(0,0,0,0.11)]">
+                      <div
+                        data-aos="fade-up"
+                        className="justify-center mt-4 items-start px-4 py-4 text-sm font-medium leading-5 text-blue-500 bg-white rounded-2xl border border-solid border-zinc-100 shadow-[0px_4px_15px_rgba(0,0,0,0.11)]"
+                      >
                         Alasan Perjalanan
                         <p className="text-sm text-black font-normal mt-2">
                           {this.state.trip.alasan}
@@ -580,18 +591,21 @@ class DetailTrip extends React.Component {
                             <img
                               loading="lazy"
                               src={item.fotoBukti}
-                              className="shrink-0  w-14 aspect-[0.92] rounded-xl object-cover"
+                              className="shrink-0  w-20  h-24 bg-slate-900 rounded-xl object-cover"
                             />
-                            <div className="flex flex-col justify-start gap-3 items-start w-full p-2 ">
-                              <div className="my-auto">
+
+                            <div className="flex flex-col justify-start gap-3 items-start w-full p-1 ">
+                              <div className="my-auto flex justify-end w-full items-center">
+                                <div className="my-auto text-sm rounded-lg text-center font-normal flex justify-center p-1 items-center w-full bg-blue-100 border border-blue-600 text-blue-600">
+                                  {this.state.trip.kategori}
+                                </div>
+                              </div>
+                              <div className="my-auto flex justify-between w-full items-center">
                                 {this.state.user.display_name}
                               </div>
                               <div className="my-auto text-sm font-normal flex justify-between items-center w-full">
                                 {item.lokasiAwal[0].jamMulai} -{" "}
                                 {item.lokasiAkhir[0].jamSampai}
-                                <div className="my-auto text-sm p-2 w-[7.5rem] rounded-lg text-center bg-blue-500 text-white font-normal flex justify-center items-center">
-                                  {item.kategori}
-                                </div>
                               </div>
                             </div>
                           </div>

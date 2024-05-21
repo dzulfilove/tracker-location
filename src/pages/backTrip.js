@@ -283,6 +283,8 @@ class BackTrip extends React.Component {
 
     const status = "Selesai";
     const cekKosong = this.isAnyStateEmpty();
+    let jarakReal = jarak + (jarak * 20) / 100;
+    const jarakKompensasi = parseFloat(jarakReal.toFixed(2));
     if (cekKosong == true) {
       Swal.fire({
         icon: "error",
@@ -297,6 +299,7 @@ class BackTrip extends React.Component {
           fotoBukti,
           durasi,
           jarak,
+          jarakKompensasi,
           status,
         });
 

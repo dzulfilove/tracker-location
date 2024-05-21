@@ -11,6 +11,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import AOS from "aos";
 
 import "aos/dist/aos.css";
+import Loading from "../components/loader";
 dayjs.locale("id");
 
 class History extends React.Component {
@@ -26,6 +27,7 @@ class History extends React.Component {
       trips: [],
       filteredTrips: [],
       isFilter: false,
+      loader: true,
     };
     this.sectionRef = React.createRef();
   }
@@ -99,7 +101,7 @@ class History extends React.Component {
       const sortir = this.sortirBerdasarkanTanggalDanJamKeluarDesc(tripList);
 
       await new Promise((resolve) => {
-        this.setState({ trips: sortir }, resolve);
+        this.setState({ trips: sortir, loader: false }, resolve);
       });
     } catch (error) {
       console.error("Error fetching data: ", error);
@@ -219,6 +221,7 @@ class History extends React.Component {
             </div>
           </div>
           <div
+            data-aos="flip-up"
             ref={this.sectionRef}
             className="w-full flex justify-between items-center mt-6"
           >
@@ -264,81 +267,121 @@ class History extends React.Component {
               </LocalizationProvider>
             </div>
           </div>
-          <div className=" bg-blue-500 text-white w-full  p-3 rounded-lg flex-auto self-start mt-4 text-base  font-medium">
+          <div
+            data-aos="slide-down"
+            className=" bg-blue-500 text-white w-full  p-3 rounded-lg flex-auto self-start mt-4 text-base  font-medium"
+          >
             Data Perjalanan
           </div>
-          {this.state.isFilter ? (
-            <div className="flex flex-col px-5 mt-6 capitalize bg-blue-100 rounded-2xl  ">
-              {this.state.filteredTrips.map((trip) => (
-                <div
-                  data-aos="fade-up"
-                  key={trip.id}
-                  onClick={() => {
-                    window.location.href = `/detail-trip/${trip.id}`;
-                  }}
-                  className="flex flex-col justify-center mt-8 w-full text-xs font-bold leading-5 capitalize bg-white rounded-2xl "
-                >
-                  <div className="flex gap-3.5 px-2 py-2.5 bg-white rounded-2xl border  border-solid shadow-md">
-                    <img
-                      loading="lazy"
-                      srcSet={trip.fotoBukti}
-                      className="shrink-0 aspect-[0.81] w-[30%] rounded-md object-cover"
-                    />
-                    <div className="flex flex-col self-start mt-1.5 w-[65%]">
-                      <div className="text-base leading-5 flex flex-wrap w-full font-medium  ">
-                        {trip.alasan}
-                      </div>
-                      <div className="mt-2 text-sm font-medium leading-5 text-start text-stone-500">
-                        {trip.tanggal}
-                      </div>
-                      <div className="mt-2.5 text-start text-blue-500">
-                        {trip.lokasiAwal[0].lokasi} -{" "}
-                        {trip.lokasiAkhir[0].lokasi}
-                      </div>
-                      <div className="flex text-sm font-medium justify-center items-start p-2 w-full mt-2.5 text-right text-white bg-blue-500 rounded-lg">
-                        {Math.round(trip.jarak)} KM ({trip.durasi} Menit)
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+          {this.state.loader == true ? (
+            <>
+              <Loading data-aos="fade-up" data-aos-delay="300" />
+            </>
           ) : (
-            <div className="flex flex-col px-5 mt-6 capitalize bg-blue-100 rounded-2xl  ">
-              {this.state.trips.map((trip) => (
-                <div
-                  data-aos="fade-up"
-                  key={trip.id}
-                  onClick={() => {
-                    window.location.href = `/detail-trip/${trip.id}`;
-                  }}
-                  className="flex flex-col justify-center mt-8 w-full text-xs font-bold leading-5 capitalize bg-white rounded-2xl "
-                >
-                  <div className="flex gap-3.5 px-2 py-2.5 bg-white rounded-2xl border  border-solid shadow-md">
+            <>
+              {this.state.trips.length > 0 ? (
+                <>
+                  {this.state.isFilter ? (
+                    <div
+                      data-aos="slide-down"
+                      className="flex flex-col px-5 mt-6 capitalize bg-blue-100 rounded-2xl  "
+                    >
+                      {this.state.filteredTrips.map((trip) => (
+                        <div
+                          data-aos="fade-up"
+                          key={trip.id}
+                          onClick={() => {
+                            window.location.href = `/detail-trip/${trip.id}`;
+                          }}
+                          className="flex flex-col justify-center mt-8 w-full text-xs font-bold leading-5 capitalize bg-white rounded-2xl "
+                        >
+                          <div className="flex gap-3.5 px-2 py-2.5 bg-white rounded-2xl border  border-solid shadow-md">
+                            <img
+                              loading="lazy"
+                              srcSet={trip.fotoBukti}
+                              className="shrink-0 aspect-[0.81] w-[30%] rounded-md object-cover"
+                            />
+                            <div className="flex flex-col self-start mt-1.5 w-[65%]">
+                              <div className="text-base leading-5 flex flex-wrap w-full font-medium  ">
+                                {trip.alasan}
+                              </div>
+                              <div className="mt-2 text-sm font-medium leading-5 text-start text-stone-500">
+                                {trip.tanggal}
+                              </div>
+                              <div className="mt-2.5 text-start text-blue-500">
+                                {trip.lokasiAwal[0].lokasi} -{" "}
+                                {trip.lokasiAkhir[0].lokasi}
+                              </div>
+                              <div className="flex text-sm font-medium justify-center items-start p-2 w-full mt-2.5 text-right text-white bg-blue-500 rounded-lg">
+                                {Math.round(trip.jarak)} KM ({trip.durasi}{" "}
+                                Menit)
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col px-5 mt-6 capitalize bg-blue-100 rounded-2xl  ">
+                      {this.state.trips.map((trip) => (
+                        <div
+                          data-aos="fade-up"
+                          key={trip.id}
+                          onClick={() => {
+                            window.location.href = `/detail-trip/${trip.id}`;
+                          }}
+                          className="flex flex-col justify-center mt-8 w-full text-xs font-bold leading-5 capitalize bg-white rounded-2xl "
+                        >
+                          <div className="flex gap-3.5 px-2 py-2.5 bg-white rounded-2xl border  border-solid shadow-md">
+                            <img
+                              loading="lazy"
+                              srcSet={trip.fotoBukti}
+                              className="shrink-0 aspect-[0.81] w-[30%] rounded-md object-cover"
+                            />
+                            <div className="flex flex-col self-start mt-1.5 w-[65%]">
+                              <div className="text-base leading-5 flex flex-wrap w-full font-medium  ">
+                                {trip.alasan}
+                              </div>
+                              <div className="mt-2 text-sm font-medium leading-5 text-start text-stone-500">
+                                {trip.tanggal}
+                              </div>
+                              <div className="mt-2.5 text-start text-blue-500">
+                                {trip.lokasiAwal[0].lokasi} -{" "}
+                                {trip.lokasiAkhir[0].lokasi}
+                              </div>
+                              <div className="flex text-sm font-medium justify-center items-start p-2 w-full mt-2.5 text-right text-white bg-blue-500 rounded-lg">
+                                {Math.round(trip.jarak)} KM ({trip.durasi}{" "}
+                                Menit)
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <div
+                    data-aos="fade-up"
+                    data-aos-delay="300"
+                    className="flex flex-col text-center max-w-[360px]"
+                  >
                     <img
                       loading="lazy"
-                      srcSet={trip.fotoBukti}
-                      className="shrink-0 aspect-[0.81] w-[30%] rounded-md object-cover"
+                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/0c65606ebee1b6385716d2b992b9da1ce85e7d156aec662e98ee133e4645beff?"
+                      className="self-center w-full aspect-[1.37] max-w-[250px] "
                     />
-                    <div className="flex flex-col self-start mt-1.5 w-[65%]">
-                      <div className="text-base leading-5 flex flex-wrap w-full font-medium  ">
-                        {trip.alasan}
-                      </div>
-                      <div className="mt-2 text-sm font-medium leading-5 text-start text-stone-500">
-                        {trip.tanggal}
-                      </div>
-                      <div className="mt-2.5 text-start text-blue-500">
-                        {trip.lokasiAwal[0].lokasi} -{" "}
-                        {trip.lokasiAkhir[0].lokasi}
-                      </div>
-                      <div className="flex text-sm font-medium justify-center items-start p-2 w-full mt-2.5 text-right text-white bg-blue-500 rounded-lg">
-                        {Math.round(trip.jarak)} KM ({trip.durasi} Menit)
-                      </div>
+                    <div className="mt-4 w-full text-lg font-medium text-slate-700">
+                      Aktifitas masih kosong
+                    </div>
+                    <div className="w-full text-sm text-gray-400">
+                      Yuk Terapi Sekarang !!!
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                </>
+              )}
+            </>
           )}
         </div>
       </div>

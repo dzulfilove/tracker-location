@@ -4,6 +4,10 @@ import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { Link } from "react-router-dom";
 import Person from "../assets/person.png";
+import AOS from "aos";
+
+import "aos/dist/aos.css";
+import Loading from "../components/loader";
 class MyTrip extends React.Component {
   constructor(props) {
     super(props);
@@ -13,6 +17,7 @@ class MyTrip extends React.Component {
       tripSelesai: [],
       tripBelumSampai: [],
       user: {},
+      loader: true,
       hariIni: "",
     };
     this.sectionRef = React.createRef();
@@ -22,6 +27,7 @@ class MyTrip extends React.Component {
     this.getHariIni();
     const userEmail = localStorage.getItem("userEmail");
     await this.setState({ displayName: userEmail });
+    AOS.init({ duration: 700 });
     await this.getAllTripsByUid();
     // await this.getPerjalananSelesai();
     // await this.getPerjalananBelumSampai();
@@ -139,6 +145,7 @@ class MyTrip extends React.Component {
 
       this.setState({
         trips: sortir,
+        loader: false,
         tripBelumSampai: tripBelumSampai,
         tripSelesai: tripSelesai,
       });
@@ -211,6 +218,7 @@ class MyTrip extends React.Component {
           {this.state.tripBelumSampai.length > 0 && (
             <>
               <div
+                data-aos="fade-up"
                 ref={this.sectionRef}
                 className="flex flex-col p-3 mt-8 capitalize bg-white rounded-2xl  bg-gradient-to-r from-blue-500 to-blue-800 "
               >
@@ -253,7 +261,10 @@ class MyTrip extends React.Component {
               </div>
             </>
           )}
-          <div className="w-full px-3 flex justify-center mt-5">
+          <div
+            data-aos="slide-down"
+            className="w-full px-3 flex justify-center mt-5"
+          >
             {this.state.tripBelumSampai.length > 0 ? (
               <></>
             ) : (
@@ -265,41 +276,82 @@ class MyTrip extends React.Component {
               </Link>
             )}
           </div>
-          <div className=" bg-gradient-to-r from-blue-500 to-blue-800 text-white w-full  p-3 rounded-lg flex-auto self-start mt-6 text-base  font-medium">
+          <div
+            data-aos="flip-up"
+            className=" bg-gradient-to-r from-blue-500 to-blue-800 text-white w-full  p-3 rounded-lg flex-auto self-start mt-6 text-base  font-medium"
+          >
             Telah Selesai
           </div>
-          <div className="flex flex-col px-5 pb-4 mt-6 capitalize bg-blue-100 rounded-2xl  ">
-            {this.state.tripSelesai.map((trip, index) => (
-              <div
-                key={index}
-                onClick={() => {
-                  window.location.href = `/detail-trip/${trip.id}`;
-                }}
-                className="flex flex-col justify-center mt-5 w-full text-xs font-bold leading-5 capitalize bg-white rounded-2xl "
-              >
-                <div className="flex gap-3.5 px-2 py-2.5 bg-white rounded-2xl border  border-solid shadow-md">
-                  <img
-                    loading="lazy"
-                    srcSet={trip.fotoBukti}
-                    className="shrink-0 aspect-[0.81] w-[30%] rounded-md object-cover"
-                  />
-                  <div className="flex flex-col self-start mt-1.5 w-[65%]">
-                    <div className="text-base leading-5 flex flex-wrap w-full font-medium  ">
-                      {trip.alasan}
+          <div
+            data-aos="slide-down"
+            className="flex flex-col px-5 pb-4 mt-6 capitalize bg-blue-100 rounded-2xl  "
+          >
+            {this.state.loader == true ? (
+              <>
+                <Loading data-aos="fade-up" data-aos-delay="300" />
+              </>
+            ) : (
+              <>
+                {this.state.tripSelesai.length > 0 ? (
+                  <>
+                    {this.state.tripSelesai.map((trip, index) => (
+                      <div
+                        data-aos="fade-up"
+                        data-aos-delay="300"
+                        key={index}
+                        onClick={() => {
+                          window.location.href = `/detail-trip/${trip.id}`;
+                        }}
+                        className="flex flex-col justify-center mt-5 w-full text-xs font-bold leading-5 capitalize bg-white rounded-2xl "
+                      >
+                        <div className="flex gap-3.5 px-2 py-2.5 bg-white rounded-2xl border  border-solid shadow-md">
+                          <img
+                            loading="lazy"
+                            srcSet={trip.fotoBukti}
+                            className="shrink-0 aspect-[0.81] w-[30%] rounded-md object-cover"
+                          />
+                          <div className="flex flex-col self-start mt-1.5 w-[65%]">
+                            <div className="text-base leading-5 flex flex-wrap w-full font-medium  ">
+                              {trip.alasan}
+                            </div>
+                            <div className="mt-2 text-sm font-medium leading-5 text-start text-stone-500">
+                              {trip.tanggal}
+                            </div>
+                            <div className="mt-2.5 text-start text-blue-500">
+                              {trip.lokasiAwal[0].lokasi} -{" "}
+                              {trip.lokasiAkhir[0].lokasi}
+                            </div>
+                            <div className="flex text-sm font-medium justify-center items-start p-2 w-full mt-2.5 text-right text-white bg-blue-500 rounded-lg">
+                              {Math.round(trip.jarak)} KM ({trip.durasi} Menit)
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    <div
+                      data-aos="fade-up"
+                      data-aos-delay="300"
+                      className="flex flex-col text-center max-w-[360px]"
+                    >
+                      <img
+                        loading="lazy"
+                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/0c65606ebee1b6385716d2b992b9da1ce85e7d156aec662e98ee133e4645beff?"
+                        className="self-center w-full aspect-[1.37] max-w-[250px] "
+                      />
+                      <div className="mt-4 w-full text-lg font-medium text-slate-700">
+                        Aktifitas masih kosong
+                      </div>
+                      <div className="w-full text-sm text-gray-400">
+                        Yuk Terapi Sekarang !!!
+                      </div>
                     </div>
-                    <div className="mt-2 text-sm font-medium leading-5 text-start text-stone-500">
-                      {trip.tanggal}
-                    </div>
-                    <div className="mt-2.5 text-start text-blue-500">
-                      {trip.lokasiAwal[0].lokasi} - {trip.lokasiAkhir[0].lokasi}
-                    </div>
-                    <div className="flex text-sm font-medium justify-center items-start p-2 w-full mt-2.5 text-right text-white bg-blue-500 rounded-lg">
-                      {Math.round(trip.jarak)} KM ({trip.durasi} Menit)
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+                  </>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>

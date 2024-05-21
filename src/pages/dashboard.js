@@ -17,6 +17,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import TextField from "@mui/material/TextField";
 import { DatePicker } from "@mui/x-date-pickers";
+import AOS from "aos";
+
+import "aos/dist/aos.css";
+import LoadingComp from "../components/loader2";
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -46,7 +50,7 @@ class Dashboard extends React.Component {
       totalJarak: 0,
       totalDurasi: 0,
       totalPengajuan: 0,
-
+      loader: true,
       trip: [],
     };
   }
@@ -54,6 +58,7 @@ class Dashboard extends React.Component {
   componentDidMount = async () => {
     const userEmail = localStorage.getItem("userEmail");
     await this.getAllTripsByUid(userEmail);
+    AOS.init({ duration: 700 });
   };
   handleFilter = (name, value) => {
     const dayjsDate = dayjs(value);
@@ -195,6 +200,7 @@ class Dashboard extends React.Component {
             tanggalMulaiTampil: mulaiTgl,
             tanggalSelesaiTampil: selesaiTgl,
             trips: hasil,
+            loader: false,
             totalJarak: totalJarak.toFixed(2),
             totalDurasi: totalDurasi,
             jumlahTrip: jumlahTrip,
@@ -297,7 +303,10 @@ class Dashboard extends React.Component {
               Dashboard
             </div>
           </div>
-          <div className="w-full flex justify-between items-center mt-6">
+          <div
+            data-aos="slide-down"
+            className="w-full flex justify-between items-center mt-6"
+          >
             <div className="w-[10rem] flex justify-center items-center px-2 py-4 text-sm font-medium text-white">
               <LocalizationProvider
                 dateAdapter={AdapterDayjs}
@@ -340,7 +349,10 @@ class Dashboard extends React.Component {
               </LocalizationProvider>
             </div>
           </div>
-          <div className="flex gap-5 justify-between px-5 py-7 mt-1 w-full text-base leading-5 bg-white rounded-2xl border border-solid border-zinc-100 shadow-xl">
+          <div
+            data-aos="slide-down"
+            className="flex gap-5 justify-between px-5 py-7 mt-1 w-full text-base leading-5 bg-white rounded-2xl border border-solid border-zinc-100 shadow-xl"
+          >
             <div className="flex flex-col text-indigo-950 w-full">
               <div className="text-base tracking-wide leading-7 text-start pb-3 border-b border-b-blue-500 mb-4 font-semibold">
                 {this.state.user.display_name}
@@ -386,87 +398,103 @@ class Dashboard extends React.Component {
               </div>
             </div>
           </div>
-          <div className="flex flex-col items-center px-4 pt-5 pb-8 mt-6 w-full tracking-wide text-center text-white bg-blue-500 rounded-2xl border border-blue-500 border-solid shadow-[0px_4px_15px_rgba(0,0,0,0.15)]">
-            <div className="self-stretch text-base text-start font-semibold leading-7 pb-3 mb-4 border-b border-b-white">
-              {this.state.jumlahTrip} Perjalanan
-            </div>
-
-            <div className="flex  flex-col flex-start items-center gap-2 mt-3 w-full  ">
-              <div className="flex w-[100%] items-center justify-between">
-                <div className="flex gap-6">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      fill="none"
-                      stroke="white"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M4 12V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6m-10 6H3m18 0h-7m-8-3l-3 3l3 3m12-6l3 3l-3 3"
-                    />
-                  </svg>
-                  <div className="text-sm leading-7 font-medium">
-                    Total Jarak
-                  </div>
-                </div>
-                <div className="text-base leading-7 font-semibold">
-                  {this.state.totalJarak}
-                </div>
-              </div>
-              <div className="flex  w-[100%] items-center justify-between ">
-                <div className="flex gap-6">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      fill="white"
-                      d="M12 20c4.4 0 8-3.6 8-8s-3.6-8-8-8s-8 3.6-8 8s3.6 8 8 8m0-18c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12S6.5 2 12 2m.5 5v6H7v-1.5h4V7z"
-                    />
-                  </svg>
-                  <div className="text-sm leading-7 font-medium">
-                    Total Durasi
-                  </div>
-                </div>
-                <div className="text-base leading-7 font-semibold">
-                  {this.state.totalDurasi}
-                </div>
-              </div>
-            </div>
-            <div className="flex  flex-col flex-start items-center gap-2 mt-3 w-full  ">
-              <div className="flex w-[100%] items-center justify-between">
-                <div className="flex gap-6">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      fill="none"
-                      stroke="white"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m14.5 10l-.035-.139A2.457 2.457 0 0 0 12.082 8h-.522a1.841 1.841 0 0 0-.684 3.55l2.248.9A1.841 1.841 0 0 1 12.44 16h-.521a2.457 2.457 0 0 1-2.384-1.861L9.5 14M12 6v2m0 8v2m9-6a9 9 0 1 1-18 0a9 9 0 0 1 18 0"
-                    />
-                  </svg>
-                  <div className="text-sm leading-7 font-medium">Pengajuan</div>
+          <div
+            data-aos="fade-up"
+            className="flex flex-col items-center px-4 pt-5 pb-8 mt-6 w-full tracking-wide text-center text-white bg-blue-500 rounded-2xl border border-blue-500 border-solid shadow-[0px_4px_15px_rgba(0,0,0,0.15)]"
+          >
+            {this.state.loader == true ? (
+              <>
+                <LoadingComp />
+              </>
+            ) : (
+              <>
+                <div className="self-stretch text-base text-start font-semibold leading-7 pb-3 mb-4 border-b border-b-white">
+                  {this.state.jumlahTrip} Perjalanan
                 </div>
 
-                <div className="text-base leading-7 font-semibold">
-                  {this.formatRupiah(this.state.totalPengajuan)}
+                <div className="flex  flex-col flex-start items-center gap-2 mt-3 w-full  ">
+                  <div className="flex w-[100%] items-center justify-between">
+                    <div className="flex gap-6">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="none"
+                          stroke="white"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4 12V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6m-10 6H3m18 0h-7m-8-3l-3 3l3 3m12-6l3 3l-3 3"
+                        />
+                      </svg>
+                      <div className="text-sm leading-7 font-medium">
+                        Total Jarak
+                      </div>
+                    </div>
+                    <div className="text-base leading-7 font-semibold">
+                      {this.state.totalJarak}
+                    </div>
+                  </div>
+                  <div className="flex  w-[100%] items-center justify-between ">
+                    <div className="flex gap-6">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="white"
+                          d="M12 20c4.4 0 8-3.6 8-8s-3.6-8-8-8s-8 3.6-8 8s3.6 8 8 8m0-18c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12S6.5 2 12 2m.5 5v6H7v-1.5h4V7z"
+                        />
+                      </svg>
+                      <div className="text-sm leading-7 font-medium">
+                        Total Durasi
+                      </div>
+                    </div>
+                    <div className="text-base leading-7 font-semibold">
+                      {this.state.totalDurasi}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+                <div className="flex  flex-col flex-start items-center gap-2 mt-3 w-full  ">
+                  <div className="flex w-[100%] items-center justify-between">
+                    <div className="flex gap-6">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="none"
+                          stroke="white"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="m14.5 10l-.035-.139A2.457 2.457 0 0 0 12.082 8h-.522a1.841 1.841 0 0 0-.684 3.55l2.248.9A1.841 1.841 0 0 1 12.44 16h-.521a2.457 2.457 0 0 1-2.384-1.861L9.5 14M12 6v2m0 8v2m9-6a9 9 0 1 1-18 0a9 9 0 0 1 18 0"
+                        />
+                      </svg>
+                      <div className="text-sm leading-7 font-medium">
+                        Pengajuan
+                      </div>
+                    </div>
+
+                    <div className="text-base leading-7 font-semibold">
+                      {this.formatRupiah(this.state.totalPengajuan)}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
-          <div className="w-full px-3 flex justify-center mt-5">
+          <div
+            data-aos="fade-up"
+            className="w-full px-3 flex justify-center mt-5"
+          >
             <button
               onClick={() => {
                 window.location.href = `/mytrip`;
