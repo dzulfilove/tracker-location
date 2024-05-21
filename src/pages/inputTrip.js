@@ -547,7 +547,7 @@ class InputTrip extends React.Component {
               <div
                 data-aos-delay="50"
                 data-aos="fade-up"
-                style={{ zIndex: "999" }}
+                style={{ zIndex: "9995" }}
                 className="flex flex-col justify-center mt-5"
               >
                 <Select
