@@ -36,6 +36,7 @@ class DetailTrip extends React.Component {
       fromLocation: "",
       toLocation: "",
       distance: "15 KM",
+      kategori: "",
       duration: "2 Jam",
       person: "Jose",
       trip: {},
@@ -162,7 +163,12 @@ class DetailTrip extends React.Component {
           tripData.index = index; // Tambahkan properti index
           newData.push(tripData);
 
-          const nominal = (tripData.jarak + tripData.jarak * 0.2) * 600;
+          let nominal = 0;
+          if (tripData.kategori == "Dalam Kota") {
+            nominal = (tripData.jarak + tripData.jarak * 0.2) * 600;
+          } else {
+            nominal = (tripData.jarak + tripData.jarak * 0.2) * 700;
+          }
 
           // Mendapatkan data dari subkoleksi 'lokasiAwal'
           const lokasiAwalRef = collection(tripDoc, "lokasiAwal");
@@ -293,11 +299,13 @@ class DetailTrip extends React.Component {
     }
   };
 
-  formatRupiah(biaya) {
-    return new Intl.NumberFormat("id-ID", {
+  formatRupiah(angka) {
+    return angka.toLocaleString("id-ID", {
       style: "currency",
       currency: "IDR",
-    }).format(biaya);
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
   }
 
   jarakReal = (jarak) => {
@@ -305,10 +313,15 @@ class DetailTrip extends React.Component {
     return parseFloat(jarakReal.toFixed(2));
   };
 
-  nominalTrip = (jarak) => {
+  nominalTrip = (jarak, kategori) => {
     let nominalTrip = 0;
+    if (kategori == "Dalam Kota") {
+      nominalTrip = 600 * jarak;
+    } else {
+      nominalTrip = 700 * jarak;
+    }
 
-    return nominalTrip + 600 * jarak;
+    return nominalTrip;
   };
   showOdd = () => {
     const { showDataOdd } = this.state;
@@ -561,9 +574,7 @@ class DetailTrip extends React.Component {
                         </div>
                         <div className="flex p-2 gap-5 justify-between items-center text-base  text-center uppercase w-full border-t border-t-blue-500 ">
                           <div className="text-base font-semibold text-center w-full flex justify-center items-center">
-                            {this.formatRupiah(
-                              this.nominalTrip(this.state.trip.jarakKompensasi)
-                            )}
+                            {this.formatRupiah(this.state.nominal)}
                           </div>
                         </div>
                       </div>
@@ -731,7 +742,10 @@ class DetailTrip extends React.Component {
                             <div className="flex p-2 gap-5 justify-between items-center text-base  text-center uppercase w-full border-t border-t-blue-500 ">
                               <div className="text-base font-semibold text-center w-full flex justify-center items-center">
                                 {this.formatRupiah(
-                                  this.nominalTrip(item.jarakKompensasi)
+                                  this.nominalTrip(
+                                    item.jarakKompensasi,
+                                    item.kategori
+                                  )
                                 )}
                               </div>
                             </div>

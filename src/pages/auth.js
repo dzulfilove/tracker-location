@@ -59,7 +59,7 @@ class Auth extends React.Component {
   };
   render() {
     return (
-      <div className="flex font-DM flex-col pb-20 mx-auto  font-semibold text-blue-500 bg-white shadow-2xl leading-[140%] w-full rounded-[32px]">
+      <div className="flex font-DM flex-col pb-20 mx-auto  font-semibold text-blue-500 bg-white  leading-[140%] w-full rounded-[32px]">
         <div className="flex flex-col items-center p-10 w-full text-2xl bg-white rounded-b-[7rem] shadow-md h-[10rem">
           <img
             loading="lazy"
@@ -71,7 +71,7 @@ class Auth extends React.Component {
         <div className="flex flex-col px-9 mt-9 w-full font-medium text-sm">
           <div>Masukkan E-mail Anda</div>
           <input
-            type="email"
+            type="text"
             value={this.state.email}
             onChange={this.handleEmailChange}
             className=" px-3 shrink-0 mt-3.5 h-11 text-slate-900 bg-white rounded-2xl border border-solid border-blue-500 shadow-[0px_4px_15px_rgba(0,0,0,0.11)]"

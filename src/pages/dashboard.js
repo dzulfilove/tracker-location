@@ -159,9 +159,11 @@ class Dashboard extends React.Component {
 
       console.log(filteredArray, "Trip");
       const hasil = filteredArray.map((objek) => {
+        // Menentukan faktor pengali berdasarkan kategori
+        const faktorPengali = objek.kategori === "Dalam Kota" ? 600 : 700;
+
         // Menghitung nilai nominal berdasarkan rumus yang diberikan
-        const nominal =
-          (objek.jarakKompensasi + objek.jarakKompensasi * 0.2) * 600;
+        const nominal = objek.jarakKompensasi * faktorPengali;
 
         // Mengembalikan objek baru dengan properti nominal yang ditambahkan
         return {
@@ -213,12 +215,15 @@ class Dashboard extends React.Component {
       throw error;
     }
   };
-  formatRupiah(biaya) {
-    return new Intl.NumberFormat("id-ID", {
+  formatRupiah(angka) {
+    return angka.toLocaleString("id-ID", {
       style: "currency",
       currency: "IDR",
-    }).format(biaya);
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
   }
+
   getUserLogin = async (email) => {
     try {
       const userRef = collection(db, "User");

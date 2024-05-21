@@ -38,6 +38,7 @@ class InputTrip extends React.Component {
       lokasi: null,
       lokasiAwal: {},
       namaLokasi: "",
+      addLokasi: "",
       jamBerangkat: null,
       user: id,
       status: "Belum selesai",
@@ -45,6 +46,7 @@ class InputTrip extends React.Component {
       hariIni: "",
       trips: [],
       trip: {},
+      lokasiLain: false,
       optionsLokasiTerakhir: [],
       lokasiAwalSelect: {},
     };
@@ -103,6 +105,9 @@ class InputTrip extends React.Component {
   };
 
   handleChangeLokasi = async (value) => {
+    if (value.label == "Lainnya") {
+      this.setState({ lokasiLain: true });
+    }
     await new Promise((resolve) => {
       this.setState({ lokasi: value }, resolve);
     });
@@ -163,10 +168,23 @@ class InputTrip extends React.Component {
         namaLokasi,
         hariIni,
         lokasi,
+        addLokasi,
       } = this.state;
 
       console.log(hariIni);
-
+      let lokasiMulai = "";
+      if (lokasi.value == "Lainnya") {
+        lokasiMulai = addLokasi;
+      } else {
+        lokasiMulai = lokasi.value;
+      }
+      if (lokasi.value == "Lainnya") {
+        const lokasiRef = collection(db, "lokasi");
+        await addDoc(lokasiRef, {
+          label: addLokasi,
+          value: addLokasi,
+        });
+      }
       const tripRef = collection(db, "trips");
       const userRef = doc(db, "User", user);
       const newTrip = await addDoc(tripRef, {
@@ -188,7 +206,7 @@ class InputTrip extends React.Component {
         latitude: lokasiAwal.latitude,
         longitude: lokasiAwal.longitude,
         alamat: namaLokasi,
-        lokasi: lokasi.value,
+        lokasi: lokasiMulai,
       });
       Swal.fire({
         title: "Berhasil",
@@ -469,6 +487,33 @@ class InputTrip extends React.Component {
                   }}
                 />
               </div>
+              {this.state.lokasiLain == true && (
+                <>
+                  <div
+                    data-aos="fade-up"
+                    data-aos-delay="50"
+                    className="mt-5 text-sm font-medium leading-5 "
+                  >
+                    Tambah Lokasi
+                  </div>
+                  <div
+                    data-aos-delay="50"
+                    data-aos="fade-up"
+                    className="flex flex-col justify-center mt-5 "
+                  >
+                    <input
+                      type="text"
+                      name="travelReason"
+                      value={this.state.addLokasi}
+                      onChange={(e) =>
+                        this.setState({ addLokasi: e.target.value })
+                      }
+                      className="shrink-0 h-11 bg-white rounded-lg shadow-md px-3"
+                    />
+                  </div>
+                </>
+              )}
+
               <div
                 data-aos="fade-up"
                 data-aos-delay="150"
