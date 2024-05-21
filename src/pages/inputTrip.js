@@ -504,11 +504,7 @@ class InputTrip extends React.Component {
                   )}
                 </button>
               </div>
-              <div
-                data-aos="fade-up"
-                data-aos-delay="200"
-                className="mt-6 text-sm font-medium leading-5 "
-              >
+              <div className="mt-6 text-sm font-medium leading-5 ">
                 Tetapkan Jam Keberangkatan
               </div>
               <div
