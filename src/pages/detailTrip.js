@@ -387,7 +387,7 @@ class DetailTrip extends React.Component {
                 <>
                   <div
                     className="flex w-full justify-end pr-5 mt-6 items-center "
-                    data-aos="fade-up"
+                    data-aos="slide-down"
                   >
                     <button
                       onClick={this.showOdd}
