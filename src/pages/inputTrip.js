@@ -601,7 +601,7 @@ class InputTrip extends React.Component {
                 data-aos-delay="100"
                 className="mt-6 text-sm font-medium leading-5 "
               >
-                Pilih Lokasi
+                Pilih Lokasi Keberangkatan
               </div>
               <div
                 data-aos="fade-up"
