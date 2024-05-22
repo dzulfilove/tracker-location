@@ -1,53 +1,78 @@
 import * as React from "react";
 import Navbar from "../components/navbar";
-import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../config/firebase";
-import { Link } from "react-router-dom";
-
+import { useSelector } from "react-redux";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import withRouter from "../withRouter";
 class MyTrip extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      displayName: "",
-      trips: [],
-      tripSelesai: [],
-      tripBelumSampai: [],
+      id: "",
+      userName: "Dzulfi Allaudin",
+      startDate: "25, Des 2024",
+      endDate: "25, Des 2025",
+      totalTrips: 27,
+      totalDistance: "200 KM",
+      totalDuration: "120 Jam",
+      submittedAmount: "Rp. 100000000",
       user: {},
-      hariIni: "",
+      currentTrip: {
+        title: "Monitoring GTS",
+        date: "15 Sep, 2022",
+        from: "Kantor Pusat",
+        status: "Belum Sampai",
+      },
+      trips: [
+        {
+          title: "Monitoring GTS",
+          date: "15 Sep, 2022",
+          route: "Kantor Pusat - GTS Palapa",
+          distance: "15 KM",
+          duration: "2 Jam",
+        },
+        {
+          title: "Monitoring GTS",
+          date: "15 Sep, 2022",
+          route: "Kantor Pusat - GTS Palapa",
+          distance: "15 KM",
+          duration: "2 Jam",
+        },
+        {
+          title: "Monitoring GTS",
+          date: "15 Sep, 2022",
+          route: "Kantor Pusat - GTS Palapa",
+          distance: "15 KM",
+          duration: "2 Jam",
+        },
+        {
+          title: "Monitoring GTS",
+          date: "15 Sep, 2022",
+          route: "Kantor Pusat - GTS Palapa",
+          distance: "15 KM",
+          duration: "2 Jam",
+        },
+      ],
     };
     this.sectionRef = React.createRef();
   }
 
-  componentDidMount = async () => {
-    this.getHariIni();
+  componentDidMount = () => {
+    const { id } = this.state;
     const userEmail = localStorage.getItem("userEmail");
-    await this.setState({ displayName: userEmail });
-    await this.getAllTripsByUid();
-    await this.getPerjalananSelesai();
-    await this.getPerjalananBelumSampai();
+
+    console.log(id, "srerr");
+
+    this.getAllTripsByUid(userEmail);
   };
-
-  getHariIni = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-    const formattedDate = `${year}-${month}-${day}`;
-
-    this.setState({ hariIni: formattedDate });
-  };
-
-  handleClick = () => {
-    // Pastikan sectionRef sudah terinisialisasi sebelum mencoba mengaksesnya
-    if (this.sectionRef.current) {
-      this.sectionRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
-  handleSampai = () => {
-    window.location.href = "/arrive-trip";
-  };
-
   getUserLogin = async (email) => {
     try {
       const userRef = collection(db, "User");
@@ -61,7 +86,7 @@ class MyTrip extends React.Component {
       await new Promise((resolve) => {
         this.setState({ user: userData }, resolve);
       });
-
+      console.log(userData, "userrrr");
       return userData;
     } catch (error) {
       console.error("Error:", error);
@@ -69,16 +94,15 @@ class MyTrip extends React.Component {
     }
   };
 
-  getAllTripsByUid = async () => {
-    await this.getUserLogin(this.state.displayName);
-    const { user, hariIni } = this.state;
+  getAllTripsByUid = async (email) => {
+    await this.getUserLogin(email);
+    const { user } = this.state;
     try {
       const userRef = doc(db, "User", user.uid);
       const tripsCollection = collection(db, "trips");
       const userTripsQuery = query(
         tripsCollection,
-        where("refUser", "==", userRef),
-        where("tanggal", "==", hariIni)
+        where("refUser", "==", userRef)
       );
       const querySnapshot = await getDocs(userTripsQuery);
 
@@ -106,34 +130,78 @@ class MyTrip extends React.Component {
 
         tripList.push({ id: doc.id, ...tripData });
       }
+      const jumlahTrip = tripList.length;
+      // const totalDurasi =
+      const totalDurasi = tripList.reduce(
+        (total, item) => total + item.durasi,
+        0
+      );
 
-      await new Promise((resolve) => {
-        this.setState({ trips: tripList }, resolve);
+      const totalJarak = tripList.reduce(
+        (total, item) => total + parseFloat(item.jarak),
+        0
+      );
+      console.log(tripList, "Trip");
+      const hasil = tripList.map((objek) => {
+        // Menghitung nilai nominal berdasarkan rumus yang diberikan
+        const nominal = (objek.jarak + objek.jarak * 0.2) * 600;
+
+        // Mengembalikan objek baru dengan properti nominal yang ditambahkan
+        return {
+          ...objek, // Menyalin properti objek yang ada
+          nominal: nominal, // Menambahkan properti nominal
+        };
       });
+      const updatedTrips = hasil.map((trip) => {
+        const awalLokasi = trip.lokasiAwal
+          .map((item) => item.lokasi)
+          .join(", ");
+        const akhirLokasi = trip.lokasiAkhir
+          .map((item) => item.lokasi)
+          .join(", ");
+        return {
+          ...trip,
+          lokasiTrip: `${awalLokasi} - ${akhirLokasi}`,
+        };
+      });
+      const totalNominal = hasil.reduce(
+        (total, item) => total + parseFloat(item.nominal),
+        0
+      );
+
+      console.log(updatedTrips, "updateee");
+      await new Promise((resolve) => {
+        this.setState(
+          {
+            trips: updatedTrips,
+            totalJarak: totalJarak,
+            totalDurasi: totalDurasi,
+            jumlahTrip: jumlahTrip,
+            totalPengajuan: totalNominal,
+          },
+          resolve
+        );
+      });
+
+      // console.log(this.state.trips);
     } catch (error) {
       console.error("Error fetching data: ", error);
       throw error;
     }
   };
-
-  getPerjalananSelesai = async () => {
-    const tripSelesai = this.state.trips.filter(
-      (trip) => trip.status === "Selesai"
-    );
-    await new Promise((resolve) => {
-      this.setState({ tripSelesai }, resolve);
-    });
+  handleClick = () => {
+    // Pastikan sectionRef sudah terinisialisasi sebelum mencoba mengaksesnya
+    if (this.sectionRef.current) {
+      this.sectionRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
-  getPerjalananBelumSampai = async () => {
-    const tripBelumSampai = this.state.trips.filter(
-      (trip) => trip.status === "Belum selesai"
-    );
-    await new Promise((resolve) => {
-      this.setState({ tripBelumSampai: tripBelumSampai }, resolve);
-    });
+  handleTambah = () => {
+    window.location.href = "/input-trip";
   };
-
+  handleSampai = () => {
+    window.location.href = `/arrive-trip/${this.state.user.uid}/${this.state.trips[0].id}`;
+  };
   render() {
     return (
       <div
@@ -165,9 +233,9 @@ class MyTrip extends React.Component {
               <path
                 fill="none"
                 stroke="white"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
                 d="m17 14l-5-5m0 0l-5 5"
               />
             </svg>
@@ -176,72 +244,55 @@ class MyTrip extends React.Component {
             ref={this.sectionRef}
             className="flex flex-col p-3 mt-8 capitalize bg-white rounded-2xl  bg-gradient-to-r from-blue-500 to-blue-800 "
           >
-            {this.state.tripBelumSampai.length > 0 ? (
-              <>
-                {this.state.tripBelumSampai.map((trip) => (
-                  <div
-                    key={trip.id}
-                    className="flex flex-col bg-white rounded-2xl"
-                  >
-                    <div className="flex flex-col px-3 pt-3 w-full bg-white rounded-2xl border shadow-lg  justify-center p-3 ">
-                      <div className="flex gap-2.5 text-xs leading-5">
-                        <img
-                          loading="lazy"
-                          srcSet="https://thumb.viva.co.id/media/frontend/thumbs3/2023/08/13/64d80ec78bcc1-cristiano-ronaldo-juara-arab-club-champions-cup-di-al-nassr_1265_711.jpg"
-                          className="shrink-0 aspect-[0.81] w-[90px] h-[100%] rounded-md object-cover"
-                        />
-                        <div className="flex flex-col my-auto w-full">
-                          <div className="text-base leading-5 font-medium flex flex-wrap w-full ">
-                            {trip.alasan}
-                          </div>
-                          <div className="mt-2 text-sm font-medium leading-5 text-start text-zinc-500">
-                            {trip.tanggal}
-                          </div>
-                          <div className="mt-1 text-start text-blue-500 text-sm">
-                            Dari : {trip.lokasiAwal[0]?.lokasi}
-                          </div>
-                          <div className="flex items-center justify-center py-1 w-full mt-3 font-medium text-rose-400 rounded-lg border border-orange-600 border-solid bg-orange-400 bg-opacity-10">
-                            Belum Sampai
-                          </div>
-                        </div>
-                      </div>
-                      <button
-                        onClick={this.handleSampai}
-                        className="flex justify-center text-sm items-center px-16 py-2 mt-3.5 font-medium leading-5 text-right text-white whitespace-nowrap bg-blue-500 rounded-lg"
-                      >
-                        Sampai
-                      </button>
+            <div className="flex flex-col  bg-white rounded-2xl ">
+              <div className="flex flex-col px-3 pt-3 w-full bg-white rounded-2xl border shadow-lg  justify-center p-3 ">
+                <div className="flex gap-2.5 text-xs leading-5">
+                  <img
+                    loading="lazy"
+                    srcSet="https://i.pinimg.com/564x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
+                    className="shrink-0 aspect-[0.81] w-[90px] h-[100%] rounded-md object-cover"
+                  />
+                  <div className="flex flex-col my-auto w-full">
+                    <div className="text-base leading-5 font-medium flex flex-wrap w-full ">
+                      {this.state.currentTrip.title}``
+                    </div>
+                    <div className="mt-2 text-sm font-medium leading-5 text-start text-zinc-500">
+                      {this.state.currentTrip.date}
+                    </div>
+                    <div className="mt-1 text-start text-blue-500 text-sm">
+                      Dari : {this.state.currentTrip.from}
+                    </div>
+                    <div className="flex items-center justify-center py-1 w-full mt-3 font-medium text-rose-400 rounded-lg border border-orange-600 border-solid bg-orange-400 bg-opacity-10">
+                      {this.state.currentTrip.status}
                     </div>
                   </div>
-                ))}
-              </>
-            ) : (
-              <h1 className="text-white">belum kemana mana</h1>
-            )}
+                </div>
+                <button
+                  onClick={this.handleSampai}
+                  className="flex justify-center text-sm items-center px-16 py-2 mt-3.5 font-medium leading-5 text-right text-white whitespace-nowrap bg-blue-500 rounded-lg"
+                >
+                  Sampai
+                </button>
+              </div>
+            </div>
           </div>
           <div className="w-full px-3 flex justify-center mt-5">
-            {this.state.tripBelumSampai.length > 0 ? (
-              <div className="self-start text-base font-medium tracking-wide leading-7 text-center text-white bg-blue-500 w-full p-2 rounded-xl shadow-lg flex justify-center gap-5 items-center">
-                Selesaikan perjalanan
-              </div>
-            ) : (
-              <Link
-                to={`/input-trip/${this.state.user.uid}`}
-                className="self-start text-base font-medium tracking-wide leading-7 text-center text-white bg-blue-500 w-full p-2 rounded-xl shadow-lg flex justify-center gap-5 items-center"
-              >
-                Tambah
-              </Link>
-            )}
+            <button
+              onClick={this.handleTambah}
+              className="self-start text-base font-medium tracking-wide leading-7 text-center text-white bg-blue-500 w-full p-2 rounded-xl shadow-lg flex justify-center gap-5 items-center"
+            >
+              Tambah
+            </button>
           </div>
           <div className=" bg-blue-500 text-white w-full  p-3 rounded-lg flex-auto self-start mt-6 text-base  font-medium">
             Telah Selesai
           </div>
           <div className="flex flex-col px-5 mt-6 capitalize bg-slate-50 rounded-2xl  ">
-            {this.state.tripSelesai.map((trip, index) => (
+            {this.state.trips.map((trip, index) => (
               <div
                 key={index}
                 onClick={() => {
-                  window.location.href = "/detail-trip";
+                  window.location.href = `/detail-trip/${trip.id}`;
                 }}
                 className="flex flex-col justify-center mt-8 w-full text-xs font-bold leading-5 capitalize bg-white rounded-2xl "
               >
@@ -258,11 +309,17 @@ class MyTrip extends React.Component {
                     <div className="mt-2 text-sm font-medium leading-5 text-start text-stone-500">
                       {trip.tanggal}
                     </div>
-                    <div className="mt-2.5 text-start text-blue-500">
-                      {trip.lokasiAwal[0].lokasi} - {trip.lokasiAkhir[0].lokasi}
+                    <div className="mt-2.5 text-start text-blue-500 font-medium">
+                      {/* {trip.lokasiAwal.map((index,item) => (
+                        <p> {item.lokasi}</p>
+                      ))}
+                      {trip.lokasiAkhir.map((item) => (
+                        <p> {item.lokasi}</p>
+                      ))} */}
+                      {trip.lokasiTrip}
                     </div>
                     <div className="flex text-sm font-medium justify-center items-start p-2 w-full mt-2.5 text-right text-white bg-blue-500 rounded-lg">
-                      {Math.round(trip.jarak)} KM ({trip.durasi} Menit)
+                      {trip.jarak} KM ({trip.durasi})
                     </div>
                   </div>
                 </div>
@@ -275,4 +332,4 @@ class MyTrip extends React.Component {
   }
 }
 
-export default MyTrip;
+export default withRouter(MyTrip);

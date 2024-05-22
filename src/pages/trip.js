@@ -334,18 +334,15 @@ class MyTrip extends React.Component {
                     <div
                       data-aos="fade-up"
                       data-aos-delay="300"
-                      className="flex flex-col text-center max-w-[360px]"
+                      className="flex flex-col text-center max-w-[360px] mt-5"
                     >
                       <img
                         loading="lazy"
                         src="https://cdn.builder.io/api/v1/image/assets/TEMP/0c65606ebee1b6385716d2b992b9da1ce85e7d156aec662e98ee133e4645beff?"
                         className="self-center w-full aspect-[1.37] max-w-[250px] "
                       />
-                      <div className="mt-4 w-full text-lg font-medium text-slate-700">
+                      <div className="mt-4 w-full text-lg font-medium text-blue-600">
                         Aktifitas masih kosong
-                      </div>
-                      <div className="w-full text-sm text-gray-400">
-                        Yuk Terapi Sekarang !!!
                       </div>
                     </div>
                   </>
