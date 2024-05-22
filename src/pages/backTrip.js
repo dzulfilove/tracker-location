@@ -675,7 +675,7 @@ class BackTrip extends React.Component {
                 </>
               )}
               <button
-                onClick={this.handleTele}
+                onClick={this.handleSubmit}
                 className="justify-center items-center p-2 mt-8 mb-10 text-base font-semibold tracking-wide leading-7 text-center text-white whitespace-nowrap bg-blue-500 rounded-lg"
               >
                 Simpan
