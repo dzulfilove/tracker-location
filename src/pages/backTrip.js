@@ -325,8 +325,7 @@ class BackTrip extends React.Component {
       // alert("Terjadi kesalahan. Silakan coba lagi.");
     }
   };
-  handleTele = async (e) => {
-    e.preventDefault();
+  handleTele = (jarakKompensasi) => {
     console.log("Berjalan");
 
     const {
@@ -350,7 +349,7 @@ class BackTrip extends React.Component {
       trip.alasan
     }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${
       lokasi.value
-    } \n<b>Jarak : </b> ${jarak} KM \n<b>Durasi : </b> ${this.formatDurasi(
+    } \n<b>Jarak : </b> ${jarakKompensasi} KM \n<b>Durasi : </b> ${this.formatDurasi(
       durasi
     )}  \n`;
     const textGambar = `${fotoBukti}`;
@@ -427,9 +426,7 @@ class BackTrip extends React.Component {
           user.display_name
         }\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamMulai} - ${jamSampai} \n <b>Keperluan : </b>${
           trip.alasan
-        }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${
-          lokasi.value
-        } \n<b>Jarak : </b> ${jarakKompensasi} KM \n<b>Durasi : </b> ${this.formatDurasi(
+        }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${lokasiSelesai} \n<b>Jarak : </b> ${jarakKompensasi} KM \n<b>Durasi : </b> ${this.formatDurasi(
           durasi
         )}  \n`;
         const textGambar = `${fotoBukti}`;
