@@ -36,6 +36,7 @@ class InputTrip extends React.Component {
       optionsLokasi: [],
       lokasi: null,
       jnsParkir: null,
+      adaParkirShow: false,
       showParkir: false,
       biayaParkir: 0,
       lokasiAwal: {},
@@ -52,6 +53,7 @@ class InputTrip extends React.Component {
       optionsLokasiTerakhir: [],
       lokasiAwalSelect: {},
       fotoBukti: "",
+      adaParkir: "",
     };
   }
 
@@ -195,77 +197,81 @@ class InputTrip extends React.Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     this.setState({ isProses: true });
-    const currentDate = new Date();
-    const formattedDate = format(
-      currentDate,
-      "MMMM dd, yyyy 'at' hh:mm:ss a 'UTC'XXX",
-      { locale: enUS }
-    );
-    try {
-      const {
-        kategori,
-        alasan,
-        jamBerangkat,
-        lokasiAwal,
-        status,
-        user,
-        namaLokasi,
-        hariIni,
-        lokasi,
-        addLokasi,
-      } = this.state;
+    const cek = this.isAnyStateEmpty();
 
-      console.log(hariIni);
-      let lokasiMulai = "";
-      if (lokasi.value == "Lainnya") {
-        lokasiMulai = addLokasi;
-      } else {
-        lokasiMulai = lokasi.value;
-      }
-      if (lokasi.value == "Lainnya") {
-        const lokasiRef = collection(db, "lokasi");
-        await addDoc(lokasiRef, {
-          label: addLokasi,
-          value: addLokasi,
-        });
-      }
-      const tripRef = collection(db, "trips");
-      const userRef = doc(db, "User", user);
-      const newTrip = await addDoc(tripRef, {
-        kategori: kategori.value,
-        alasan,
-        status,
-        refUser: userRef,
-        tanggal: hariIni,
-        tanggalFilter: formattedDate,
-        durasi: 0,
-        fotoBukti: "",
-        jarak: 0,
-        jarakKompensasi: 0,
-      });
+    if (cek == false) {
+      const currentDate = new Date();
+      const formattedDate = format(
+        currentDate,
+        "MMMM dd, yyyy 'at' hh:mm:ss a 'UTC'XXX",
+        { locale: enUS }
+      );
+      try {
+        const {
+          kategori,
+          alasan,
+          jamBerangkat,
+          lokasiAwal,
+          status,
+          user,
+          namaLokasi,
+          hariIni,
+          lokasi,
+          addLokasi,
+        } = this.state;
 
-      // Menyimpan data lokasiAwal di dalam subkoleksi
-      const lokasiAwalRef = collection(newTrip, "lokasiAwal");
-      await addDoc(lokasiAwalRef, {
-        jamMulai: jamBerangkat,
-        latitude: lokasiAwal.latitude,
-        longitude: lokasiAwal.longitude,
-        alamat: namaLokasi,
-        lokasi: lokasiMulai,
-      });
-      Swal.fire({
-        title: "Berhasil",
-        text: "Berhasil ditambah",
-        icon: "success",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = `/mytrip`;
+        console.log(hariIni);
+        let lokasiMulai = "";
+        if (lokasi.value == "Lainnya") {
+          lokasiMulai = addLokasi;
+        } else {
+          lokasiMulai = lokasi.value;
         }
-      });
-      this.setState({ isProses: false });
-    } catch (error) {
-      console.error("Error:", error);
-      this.setState({ isProses: false });
+        if (lokasi.value == "Lainnya") {
+          const lokasiRef = collection(db, "lokasi");
+          await addDoc(lokasiRef, {
+            label: addLokasi,
+            value: addLokasi,
+          });
+        }
+        const tripRef = collection(db, "trips");
+        const userRef = doc(db, "User", user);
+        const newTrip = await addDoc(tripRef, {
+          kategori: kategori.value,
+          alasan,
+          status,
+          refUser: userRef,
+          tanggal: hariIni,
+          tanggalFilter: formattedDate,
+          durasi: 0,
+          fotoBukti: "",
+          jarak: 0,
+          jarakKompensasi: 0,
+        });
+
+        // Menyimpan data lokasiAwal di dalam subkoleksi
+        const lokasiAwalRef = collection(newTrip, "lokasiAwal");
+        await addDoc(lokasiAwalRef, {
+          jamMulai: jamBerangkat,
+          latitude: lokasiAwal.latitude,
+          longitude: lokasiAwal.longitude,
+          alamat: namaLokasi,
+          lokasi: lokasiMulai,
+        });
+        Swal.fire({
+          title: "Berhasil",
+          text: "Berhasil ditambah",
+          icon: "success",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = `/mytrip`;
+          }
+        });
+        this.setState({ isProses: false });
+      } catch (error) {
+        console.error("Error:", error);
+        this.setState({ isProses: false });
+      }
     }
   };
 
@@ -338,96 +344,162 @@ class InputTrip extends React.Component {
 
     console.log(this.state.lokasiAwalSelect);
   };
+  isAnyStateEmpty() {
+    const {
+      alasan,
+      jamBerangkat,
+      status,
+      user,
+      hariIni,
+      lokasiAwalSelect,
+      kategori,
+
+      adaParkir,
+    } = this.state;
+
+    let emptyStates = [];
+
+    if (!alasan) emptyStates.push("alasan");
+    if (!jamBerangkat) emptyStates.push("jamBerangkat");
+    if (!status) emptyStates.push("status");
+    if (!user) emptyStates.push("user");
+    if (!hariIni) emptyStates.push("hariIni");
+    if (!lokasiAwalSelect) emptyStates.push("lokasiAwalSelect");
+    if (!kategori) emptyStates.push("kategori");
+
+    if (!adaParkir) emptyStates.push("adaParkir");
+
+    if (emptyStates.length > 0) {
+      Swal.fire({
+        title: "Gagal",
+        text: `Harap Isi Kolom ${emptyStates}`,
+        icon: "error",
+      });
+      return true;
+    }
+
+    return false;
+  }
 
   handlePerjalananLanjut = async (e) => {
     e.preventDefault();
-    try {
-      const {
-        alasan,
-        jamBerangkat,
-        status,
-        user,
-        hariIni,
-        lokasiAwalSelect,
-        kategori,
-        fotoBukti,
-        biayaParkir,
-        jnsParkir,
-      } = this.state;
+    const cek = this.isAnyStateEmpty();
 
-      let hargaParkir = 0;
-      if (jnsParkir.value == "Khusus") {
-        hargaParkir = biayaParkir;
-      } else {
-        hargaParkir = 2000;
-      }
-      const currentDate = new Date();
-      const formattedDate = format(
-        currentDate,
-        "MMMM dd, yyyy 'at' hh:mm:ss a 'UTC'XXX",
-        { locale: enUS }
-      );
-      const lokasiAwalNilai = lokasiAwalSelect.nilai;
-      const refTrip = lokasiAwalSelect.id;
-      const lokasiAwal = {
-        ...lokasiAwalNilai,
-        jamMulai: jamBerangkat,
-      };
-      delete lokasiAwal.jamSampai;
+    if (cek == false) {
+      try {
+        const {
+          alasan,
+          jamBerangkat,
+          status,
+          user,
+          hariIni,
+          lokasiAwalSelect,
+          kategori,
+          fotoBukti,
+          biayaParkir,
+          jnsParkir,
+          adaParkir,
+        } = this.state;
 
-      console.log({
-        alasan,
-        jamBerangkat,
-        status,
-        user,
-        hariIni,
-        lokasiAwalSelect,
-      });
-
-      const userRef = doc(db, "User", user);
-
-      const tripRef = collection(db, "trips");
-      const documentRef = doc(db, "trips", refTrip);
-      const documentData = {
-        path: documentRef.path,
-        id: documentRef.id,
-      };
-
-      console.log(documentData);
-
-      const newTrip = await addDoc(tripRef, {
-        alasan,
-        kategori: kategori.value,
-        status,
-        refUser: userRef,
-        tanggal: hariIni,
-        tanggalFilter: formattedDate,
-        durasi: 0,
-        fotoBukti: null,
-        buktiParkir: fotoBukti,
-        biayaParkir: hargaParkir,
-        jenisParkir: jnsParkir.value,
-        jarak: 0,
-        jarakKompensasi: 0,
-        refTrips: documentData,
-      });
-
-      // Menyimpan data lokasiAwal di dalam subkoleksi
-      const lokasiAwalRef = collection(newTrip, "lokasiAwal");
-      await addDoc(lokasiAwalRef, lokasiAwal);
-      Swal.fire({
-        title: "Berhasil",
-        text: "Berhasil menambah lanjut perjalanan",
-        icon: "success",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = `/mytrip`;
+        let hargaParkir = 0;
+        if (adaParkir == "ya") {
+          if (jnsParkir.value == "Khusus") {
+            hargaParkir = biayaParkir;
+          } else {
+            hargaParkir = 2000;
+          }
         }
-      });
+        const currentDate = new Date();
+        const formattedDate = format(
+          currentDate,
+          "MMMM dd, yyyy 'at' hh:mm:ss a 'UTC'XXX",
+          { locale: enUS }
+        );
+        const lokasiAwalNilai = lokasiAwalSelect.nilai;
+        const refTrip = lokasiAwalSelect.id;
+        const lokasiAwal = {
+          ...lokasiAwalNilai,
+          jamMulai: jamBerangkat,
+        };
+        delete lokasiAwal.jamSampai;
 
-      console.log("berhasil");
-    } catch (error) {
-      console.error("Error:", error);
+        console.log({
+          alasan,
+          jamBerangkat,
+          status,
+          user,
+          hariIni,
+          lokasiAwalSelect,
+        });
+
+        const userRef = doc(db, "User", user);
+
+        const tripRef = collection(db, "trips");
+        const documentRef = doc(db, "trips", refTrip);
+        const documentData = {
+          path: documentRef.path,
+          id: documentRef.id,
+        };
+
+        console.log(documentData);
+
+        let newTrip;
+
+        if (adaParkir === "ya") {
+          newTrip = await addDoc(tripRef, {
+            alasan,
+            kategori: kategori.value,
+            status,
+            refUser: userRef,
+            tanggal: hariIni,
+            tanggalFilter: formattedDate,
+            durasi: 0,
+            fotoBukti: null,
+            parkir: true,
+            buktiParkir: fotoBukti,
+            biayaParkir: hargaParkir,
+            jenisParkir: jnsParkir.value,
+            jarak: 0,
+            jarakKompensasi: 0,
+            refTrips: documentData,
+          });
+        } else {
+          newTrip = await addDoc(tripRef, {
+            alasan,
+            kategori: kategori.value,
+            status,
+            refUser: userRef,
+            tanggal: hariIni,
+            tanggalFilter: formattedDate,
+            durasi: 0,
+            parkir: false,
+            fotoBukti: null,
+            jarak: 0,
+            jarakKompensasi: 0,
+            refTrips: documentData,
+          });
+        }
+
+        // newTrip sekarang bisa diakses di sini
+        console.log(newTrip);
+
+        // Menyimpan data lokasiAwal di dalam subkoleksi
+        const lokasiAwalRef = collection(newTrip, "lokasiAwal");
+        await addDoc(lokasiAwalRef, lokasiAwal);
+        Swal.fire({
+          title: "Berhasil",
+          text: "Berhasil menambah lanjut perjalanan",
+          icon: "success",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = `/mytrip`;
+          }
+        });
+
+        console.log("berhasil");
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
   };
 
@@ -726,38 +798,88 @@ class InputTrip extends React.Component {
                 </div>
               </div>
               <div
-                data-aos-delay="100"
                 data-aos="fade-up"
-                className="my-5 text-sm font-medium leading-5 "
+                data-aos-delay="150"
+                className="mt-5 text-sm font-medium leading-5 "
               >
-                Jenis Parkir
+                Ada Biaya Parkir ? (Pilih Salah Satu)
               </div>
-              <div style={{ zIndex: "99" }}>
-                <div data-aos="fade-up" data-aos-delay="100">
-                  <Select
-                    options={optionsParkir}
-                    name="Kategori"
-                    placeholder="Pilih Jenis Parkir"
-                    value={this.state.jnsParkir}
-                    onChange={this.handleChangeParkir}
-                    classNames={{
-                      menuButton: ({ isDisabled }) =>
-                        `ps-3 text-[15px]  flex text-sm text-blue-500 w-[100%] bg-blue-100 rounded-lg shadow-md transition-all duration-300 focus:outline-none ${
-                          isDisabled
-                            ? "bg-blue-100"
-                            : "bg-blue-100 focus:ring focus:ring-blue-500/20"
-                        }`,
-                      menu: " z-[99] absolute w-full bg-slate-50 shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
-                      listItem: ({ isSelected }) =>
-                        `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded-lg ${
-                          isSelected
-                            ? "text-blue-500 bg-slate-50"
-                            : "text-blue-500 hover:bg-blue-100 hover:text-blue-500"
-                        }`,
-                    }}
+              <div
+                data-aos="fade-up"
+                data-aos-delay="150"
+                className="flex justify-start gap-5 items-center w-full mt-5 text-sm"
+              >
+                <label className="flex items-center p-2 w-[5rem] justify-center border border-blue-500 rounded-xl">
+                  <input
+                    type="radio"
+                    name="biayaParkir"
+                    value="ya"
+                    checked={this.state.adaParkir === "ya"}
+                    onChange={(e) =>
+                      this.setState({
+                        adaParkir: e.target.value,
+                        adaParkirShow: true,
+                      })
+                    }
+                    className="mr-2"
                   />
-                </div>
+                  Ya
+                </label>
+                <label className="flex items-center p-2 w-[5rem] justify-center border border-blue-500 rounded-xl">
+                  <input
+                    type="radio"
+                    name="biayaParkir"
+                    value="tidak"
+                    checked={this.state.adaParkir === "tidak"}
+                    onChange={(e) =>
+                      this.setState({
+                        adaParkir: e.target.value,
+                        adaParkirShow: false,
+                      })
+                    }
+                    className="mr-2"
+                  />
+                  Tidak
+                </label>
               </div>
+
+              {this.state.adaParkirShow == true && (
+                <>
+                  <div
+                    data-aos-delay="100"
+                    data-aos="fade-up"
+                    className="my-5 text-sm font-medium leading-5 "
+                  >
+                    Jenis Parkir
+                  </div>
+                  <div style={{ zIndex: "99" }}>
+                    <div data-aos="fade-up" data-aos-delay="100">
+                      <Select
+                        options={optionsParkir}
+                        name="Kategori"
+                        placeholder="Pilih Jenis Parkir"
+                        value={this.state.jnsParkir}
+                        onChange={this.handleChangeParkir}
+                        classNames={{
+                          menuButton: ({ isDisabled }) =>
+                            `ps-3 text-[15px]  flex text-sm text-blue-500 w-[100%] bg-blue-100 rounded-lg shadow-md transition-all duration-300 focus:outline-none ${
+                              isDisabled
+                                ? "bg-blue-100"
+                                : "bg-blue-100 focus:ring focus:ring-blue-500/20"
+                            }`,
+                          menu: " z-[99] absolute w-full bg-slate-50 shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
+                          listItem: ({ isSelected }) =>
+                            `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded-lg ${
+                              isSelected
+                                ? "text-blue-500 bg-slate-50"
+                                : "text-blue-500 hover:bg-blue-100 hover:text-blue-500"
+                            }`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
               {this.state.showParkir == true && (
                 <>
                   <div

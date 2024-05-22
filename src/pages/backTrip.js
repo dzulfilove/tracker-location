@@ -43,6 +43,7 @@ class BackTrip extends React.Component {
       lokasiMulai: "",
       lokasi: {},
       isOpenCamera: false,
+      lokasiLain: false,
       isProses: false,
       lokasiAkhir: {},
       namaLokasi: {},
@@ -50,6 +51,7 @@ class BackTrip extends React.Component {
       namaLokasi: "",
       fotoBukti: Person,
       durasi: null,
+      addLokasi: "",
       jarak: null,
       user: {},
       lokasiAwal: {},
@@ -291,10 +293,10 @@ class BackTrip extends React.Component {
 
     return false;
   }
-  sendMessage = async (text) => {
+  sendMessage = async (text, foto) => {
     try {
       const response = await fetch(
-        "https://api.telegram.org/bot6823587684:AAE4Ya6Lpwbfw8QxFYec6xAqWkBYeP53MLQ/sendMessage",
+        "https://api.telegram.org/bot6823587684:AAE4Ya6Lpwbfw8QxFYec6xAqWkBYeP53MLQ/sendPhoto",
 
         {
           method: "POST",
@@ -304,7 +306,8 @@ class BackTrip extends React.Component {
           body: JSON.stringify({
             chat_id: "-1001812360373",
             message_thread_id: "4294967304",
-            text: text,
+            photo: foto,
+            caption: text,
             parse_mode: "html",
           }),
         }
@@ -342,7 +345,7 @@ class BackTrip extends React.Component {
     const text = `${fotoBukti}`;
     // const text = `${fotoBukti}\n\n\n<b>Nama :  </b>${user.display_name}\n<b>Tanggal: </b> :${tanggalPulang}\n<b>Pukul : </b> ${jamSampai}\n<b>Lokasi : </b> ${lokasi.value}\n<b>Keperluan : </b> ${trip.alasan}\n`;
     console.log(text);
-    this.sendMessage(text);
+    // this.sendMessage(text,textGambar);
   };
 
   handleSubmit = async (e) => {
@@ -360,6 +363,9 @@ class BackTrip extends React.Component {
       user,
       idTrip,
       trip,
+      jamMulai,
+      addLokasi,
+      lokasiMulai,
     } = this.state;
 
     const status = "Selesai";
@@ -384,6 +390,19 @@ class BackTrip extends React.Component {
           status,
         });
 
+        if (lokasi.value == "Lainnya") {
+          const lokasiRef = collection(db, "lokasi");
+          await addDoc(lokasiRef, {
+            label: addLokasi,
+            value: addLokasi,
+          });
+        }
+        let lokasiSelesai = "";
+        if (lokasi.value == "Lainnya") {
+          lokasiSelesai = addLokasi;
+        } else {
+          lokasiSelesai = lokasi.value;
+        }
         // Add a new document to the lokasiAkhir subcollection
         const lokasiAkhirRef = collection(db, "trips", idTrip, "lokasiAkhir");
         await addDoc(lokasiAkhirRef, {
@@ -391,13 +410,20 @@ class BackTrip extends React.Component {
           latitude: lokasiAkhir.latitude,
           longitude: lokasiAkhir.longitude,
           alamat: add,
-          lokasi: lokasi.value,
+          lokasi: lokasiSelesai,
         });
         const tanggalPulang = this.formatTanggal(trip.tanggal);
-        const text = `\n<b>Nama :  </b>${user.display_name}\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamSampai}\n<b>Lokasi : </b> ${lokasi.value}\n<b>Keperluan : </b> ${trip.alasan}\n`;
+        const text = `\n<b>Nama :  </b>${
+          user.display_name
+        }\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamMulai} - ${jamSampai} \n <b>Keperluan : </b> ${
+          trip.alasan
+        }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${
+          lokasi.value
+        } \n <b>Jarak : </b> ${jarakKompensasi} KM \n <b>Durasi : </b> ${this.formatDurasi(
+          durasi
+        )}  \n`;
         const textGambar = `${fotoBukti}`;
-        await this.sendMessage(textGambar);
-        this.sendMessage(text);
+        this.sendMessage(text, textGambar);
         console.log("selesai");
         Swal.fire({
           title: "Berhasil",
@@ -413,6 +439,21 @@ class BackTrip extends React.Component {
       }
     }
   };
+  formatDurasi(durasi) {
+    if (durasi < 60) {
+      return durasi + " menit";
+    } else if (durasi === 60) {
+      return "1 jam";
+    } else {
+      const jam = Math.floor(durasi / 60);
+      const menit = durasi % 60;
+      if (menit === 0) {
+        return jam + " jam";
+      } else {
+        return jam + " jam " + menit + " menit";
+      }
+    }
+  }
   formatTanggal = (tanggal) => {
     const hari = dayjs(tanggal).locale("id").format("dddd");
     const bulan = dayjs(tanggal).locale("id").format("MMMM");
@@ -465,6 +506,11 @@ class BackTrip extends React.Component {
     this.setState({ [name]: value });
   };
   handleDropdown = (name, selectedOption) => {
+    if (selectedOption.label == "Lainnya") {
+      this.setState({ lokasiLain: true });
+    } else {
+      this.setState({ lokasiLain: false });
+    }
     this.setState({ lokasi: selectedOption });
   };
   render() {
@@ -625,7 +671,32 @@ class BackTrip extends React.Component {
                   }}
                 />
               </div>
-
+              {this.state.lokasiLain == true && (
+                <>
+                  <div
+                    data-aos="fade-up"
+                    data-aos-delay="50"
+                    className="mt-5 text-sm font-medium leading-5 "
+                  >
+                    Tambah Lokasi
+                  </div>
+                  <div
+                    data-aos-delay="50"
+                    data-aos="fade-up"
+                    className="flex flex-col justify-center mt-5 "
+                  >
+                    <input
+                      type="text"
+                      name="travelReason"
+                      value={this.state.addLokasi}
+                      onChange={(e) =>
+                        this.setState({ addLokasi: e.target.value })
+                      }
+                      className="shrink-0 h-11 bg-white rounded-lg shadow-md px-3"
+                    />
+                  </div>
+                </>
+              )}
               <div
                 data-aos="fade-up"
                 className="mt-6 text-sm font-medium leading-5 "
