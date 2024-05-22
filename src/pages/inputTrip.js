@@ -13,6 +13,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../config/firebase";
 import withRouter from "../withRouter";
+import { format } from "date-fns";
+import { enUS } from "date-fns/locale";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdAccessTime } from "react-icons/md";
@@ -20,10 +22,6 @@ import Swal from "sweetalert2";
 import AOS from "aos";
 
 import "aos/dist/aos.css";
-const optionsKategori = [
-  { value: "Dalam Kota", label: "Dalam Kota" },
-  { value: "Luar Kota", label: "Luar Kota" },
-];
 
 class InputTrip extends React.Component {
   constructor(props) {
@@ -107,6 +105,8 @@ class InputTrip extends React.Component {
   handleChangeLokasi = async (value) => {
     if (value.label == "Lainnya") {
       this.setState({ lokasiLain: true });
+    } else {
+      this.setState({ lokasiLain: false });
     }
     await new Promise((resolve) => {
       this.setState({ lokasi: value }, resolve);
@@ -157,6 +157,12 @@ class InputTrip extends React.Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     this.setState({ isProses: true });
+    const currentDate = new Date();
+    const formattedDate = format(
+      currentDate,
+      "MMMM dd, yyyy 'at' hh:mm:ss a 'UTC'XXX",
+      { locale: enUS }
+    );
     try {
       const {
         kategori,
@@ -193,6 +199,7 @@ class InputTrip extends React.Component {
         status,
         refUser: userRef,
         tanggal: hariIni,
+        tanggalFilter: formattedDate,
         durasi: 0,
         fotoBukti: "",
         jarak: 0,
@@ -307,6 +314,12 @@ class InputTrip extends React.Component {
         kategori,
       } = this.state;
 
+      const currentDate = new Date();
+      const formattedDate = format(
+        currentDate,
+        "MMMM dd, yyyy 'at' hh:mm:ss a 'UTC'XXX",
+        { locale: enUS }
+      );
       const lokasiAwalNilai = lokasiAwalSelect.nilai;
       const refTrip = lokasiAwalSelect.id;
       const lokasiAwal = {
@@ -341,6 +354,7 @@ class InputTrip extends React.Component {
         status,
         refUser: userRef,
         tanggal: hariIni,
+        tanggalFilter: formattedDate,
         durasi: 0,
         fotoBukti: null,
         jarak: 0,
@@ -368,6 +382,15 @@ class InputTrip extends React.Component {
   };
 
   render() {
+    const optionsKategori = [
+      { value: "Dalam Kota", label: "Dalam Kota" },
+      { value: "Luar Kota", label: "Luar Kota" },
+    ];
+
+    const optionsParkir = [
+      { value: "Umum", label: "Umum" },
+      { value: "Khusus", label: "Khusus" },
+    ];
     return (
       <div
         style={{
@@ -651,6 +674,39 @@ class InputTrip extends React.Component {
                   />
                 </div>
               </div>
+              {/* <div
+                data-aos-delay="100"
+                data-aos="fade-up"
+                className="my-5 text-sm font-medium leading-5 "
+              >
+                Biaya Parkir
+              </div>
+              <div style={{ zIndex: "99" }}>
+                <div data-aos="fade-up" data-aos-delay="100">
+                  <Select
+                    options={optionsParkir}
+                    name="Kategori"
+                    placeholder="Pilih Jenis Parkir"
+                    value={this.state.jnsParkir}
+                    onChange={this.handleChangeKategori}
+                    classNames={{
+                      menuButton: ({ isDisabled }) =>
+                        `ps-3 text-[15px]  flex text-sm text-blue-500 w-[100%] bg-blue-100 rounded-lg shadow-md transition-all duration-300 focus:outline-none ${
+                          isDisabled
+                            ? "bg-blue-100"
+                            : "bg-blue-100 focus:ring focus:ring-blue-500/20"
+                        }`,
+                      menu: " z-[99] absolute w-full bg-slate-50 shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
+                      listItem: ({ isSelected }) =>
+                        `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded-lg ${
+                          isSelected
+                            ? "text-blue-500 bg-slate-50"
+                            : "text-blue-500 hover:bg-blue-100 hover:text-blue-500"
+                        }`,
+                    }}
+                  />
+                </div>
+              </div> */}
               <div
                 data-aos="fade-up"
                 data-aos-delay="150"
