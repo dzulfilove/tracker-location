@@ -628,8 +628,9 @@ class InputTrip extends React.Component {
               </div>
               <div className="flex gap-3 mt-5 justify-between">
                 <input
-                  type="time"
+                  type="text"
                   name="departureLocation"
+                  placeholder="Klik Icon Jam Disamping"
                   value={this.state.jamBerangkat}
                   onChange={this.handleInputChange}
                   className="shrink-0 max-w-full h-11 bg-white rounded-lg border border-solid border-zinc-100 shadow-md w-[260px] px-3"
