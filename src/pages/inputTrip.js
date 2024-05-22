@@ -20,7 +20,8 @@ import { FaLocationDot } from "react-icons/fa6";
 import { MdAccessTime } from "react-icons/md";
 import Swal from "sweetalert2";
 import AOS from "aos";
-
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { dbImage } from "../config/firebase";
 import "aos/dist/aos.css";
 
 class InputTrip extends React.Component {
@@ -34,6 +35,9 @@ class InputTrip extends React.Component {
       kategori: null,
       optionsLokasi: [],
       lokasi: null,
+      jnsParkir: null,
+      showParkir: false,
+      biayaParkir: 0,
       lokasiAwal: {},
       namaLokasi: "",
       addLokasi: "",
@@ -47,6 +51,7 @@ class InputTrip extends React.Component {
       lokasiLain: false,
       optionsLokasiTerakhir: [],
       lokasiAwalSelect: {},
+      fotoBukti: "",
     };
   }
 
@@ -73,6 +78,29 @@ class InputTrip extends React.Component {
     this.setState({ [name]: value });
   };
 
+  handleKamera = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    this.handleFoto(file);
+  };
+
+  handleFoto = async (file) => {
+    const storageRef = ref(dbImage, `buktiParkir/${Date.now()}.jpg`);
+
+    try {
+      const snapshot = await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(
+        ref(dbImage, snapshot.ref.fullPath)
+      );
+
+      this.setState({ fotoBukti: downloadURL, isOpenCamera: false }, () => {
+        console.log("Foto berhasil diunggah:", this.state.fotoBukti);
+      });
+    } catch (error) {
+      console.error("Gagal mengunggah foto:", error);
+    }
+  };
   handleTab = (newValue) => {
     this.setState({ isLanjutPerjalanan: newValue });
   };
@@ -83,7 +111,17 @@ class InputTrip extends React.Component {
     });
     console.log("kategori: ", this.state.kategori);
   };
-
+  handleChangeParkir = async (value) => {
+    if (value.label == "Khusus") {
+      this.setState({ showParkir: true });
+    } else {
+      this.setState({ showParkir: false });
+    }
+    await new Promise((resolve) => {
+      this.setState({ jnsParkir: value }, resolve);
+    });
+    console.log("kategori: ", this.state.kategori);
+  };
   getAllLokasi = async () => {
     const lokasiCollection = collection(db, "lokasi");
     try {
@@ -312,8 +350,17 @@ class InputTrip extends React.Component {
         hariIni,
         lokasiAwalSelect,
         kategori,
+        fotoBukti,
+        biayaParkir,
+        jnsParkir,
       } = this.state;
 
+      let hargaParkir = 0;
+      if (jnsParkir.value == "Khusus") {
+        hargaParkir = biayaParkir;
+      } else {
+        hargaParkir = 2000;
+      }
       const currentDate = new Date();
       const formattedDate = format(
         currentDate,
@@ -357,6 +404,9 @@ class InputTrip extends React.Component {
         tanggalFilter: formattedDate,
         durasi: 0,
         fotoBukti: null,
+        buktiParkir: fotoBukti,
+        biayaParkir: hargaParkir,
+        jenisParkir: jnsParkir.value,
         jarak: 0,
         jarakKompensasi: 0,
         refTrips: documentData,
@@ -615,7 +665,7 @@ class InputTrip extends React.Component {
               <div
                 data-aos-delay="50"
                 data-aos="fade-up"
-                style={{ zIndex: "995" }}
+                style={{ zIndex: "998" }}
                 className="flex flex-col justify-center mt-5"
               >
                 <Select
@@ -648,7 +698,7 @@ class InputTrip extends React.Component {
               >
                 Kategori Perjalanan
               </div>
-              <div style={{ zIndex: "99" }}>
+              <div style={{ zIndex: "996" }}>
                 <div data-aos="fade-up" data-aos-delay="100">
                   <Select
                     options={optionsKategori}
@@ -674,12 +724,12 @@ class InputTrip extends React.Component {
                   />
                 </div>
               </div>
-              {/* <div
+              <div
                 data-aos-delay="100"
                 data-aos="fade-up"
                 className="my-5 text-sm font-medium leading-5 "
               >
-                Biaya Parkir
+                Jenis Parkir
               </div>
               <div style={{ zIndex: "99" }}>
                 <div data-aos="fade-up" data-aos-delay="100">
@@ -688,7 +738,7 @@ class InputTrip extends React.Component {
                     name="Kategori"
                     placeholder="Pilih Jenis Parkir"
                     value={this.state.jnsParkir}
-                    onChange={this.handleChangeKategori}
+                    onChange={this.handleChangeParkir}
                     classNames={{
                       menuButton: ({ isDisabled }) =>
                         `ps-3 text-[15px]  flex text-sm text-blue-500 w-[100%] bg-blue-100 rounded-lg shadow-md transition-all duration-300 focus:outline-none ${
@@ -706,7 +756,62 @@ class InputTrip extends React.Component {
                     }}
                   />
                 </div>
-              </div> */}
+              </div>
+              {this.state.showParkir == true && (
+                <>
+                  <div
+                    data-aos="fade-up"
+                    data-aos-delay="150"
+                    className="mt-5 text-sm font-medium leading-5 "
+                  >
+                    Bukti Parkir
+                  </div>
+                  <div className="flex flex-col w-full p-2 h-auto justify-start gap-4 items-center mt-4">
+                    <img
+                      data-aos="fade-up"
+                      src={this.state.fotoBukti}
+                      className="w-[6rem] h-[8rem] flex justify-center items-center rounded-xl shadow-lg bg-white object-cover "
+                    />
+                    <div className="w-[15rem] p-2 bg-blue-500 text-white text-sm flex justify-center items-center rounded-md">
+                      {/* <button
+                  onClick={this.handleKamera}
+                  className="w-[15rem] p-2 bg-blue-500 text-white text-sm flex justify-center items-center rounded-md"
+                > */}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="w-[15rem] p-2 bg-blue-500 text-white text-sm flex justify-center items-center rounded-md"
+                        capture="camera"
+                        ref={this.fileInputRef}
+                        onChange={this.handleKamera}
+                        placeholder="Ambil Foto"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    data-aos="fade-up"
+                    data-aos-delay="150"
+                    className="mt-5 text-sm font-medium leading-5 "
+                  >
+                    Nominal Parkir
+                  </div>
+                  <div
+                    data-aos="fade-up"
+                    data-aos-delay="150"
+                    className="flex flex-col justify-center mt-5 "
+                  >
+                    <input
+                      type="number"
+                      name="travelReason"
+                      value={this.state.biayaParkir}
+                      onChange={(e) =>
+                        this.setState({ biayaParkir: e.target.value })
+                      }
+                      className="shrink-0 h-11 bg-white rounded-lg shadow-md px-3"
+                    />
+                  </div>
+                </>
+              )}
               <div
                 data-aos="fade-up"
                 data-aos-delay="150"

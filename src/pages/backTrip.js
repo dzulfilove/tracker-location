@@ -51,18 +51,40 @@ class BackTrip extends React.Component {
       fotoBukti: Person,
       durasi: null,
       jarak: null,
+      user: {},
       lokasiAwal: {},
     };
   }
 
   componentDidMount = async () => {
     const userEmail = localStorage.getItem("userEmail");
+    await this.getUserLogin(userEmail);
     await this.getDataPerjalanan();
     await this.getAllLokasi();
     AOS.init({ duration: 700 });
     await this.handleHitungDurasi();
   };
 
+  getUserLogin = async (email) => {
+    try {
+      const userRef = collection(db, "User");
+      const q = query(userRef, where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        return null;
+      }
+      const userData = querySnapshot.docs[0].data();
+
+      await new Promise((resolve) => {
+        this.setState({ user: userData }, resolve);
+      });
+
+      return userData;
+    } catch (error) {
+      console.error("Error:", error);
+      throw error;
+    }
+  };
   getDataPerjalanan = async () => {
     const { idTrip } = this.state;
     console.log(idTrip, "id");
@@ -269,6 +291,35 @@ class BackTrip extends React.Component {
 
     return false;
   }
+  sendMessage = async (text) => {
+    try {
+      const response = await fetch(
+        "https://api.telegram.org/bot6982164526:AAFZcqBGMZuHLsgYiuiI4hyhAAzW8ZIOZdc/sendMessage",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            chat_id: "6546310886",
+            text: text,
+            parse_mode: "html",
+          }),
+        }
+      );
+
+      // Cek apakah respons dari fetch adalah OK (status code 200)
+      if (response.ok) {
+        console.log("berhasilllllll");
+      } else {
+        console.log("gagalllllll");
+      }
+    } catch (error) {
+      // Tangani kesalahan yang terjadi selama fetch
+      console.error("Error:", error);
+      alert("Terjadi kesalahan. Silakan coba lagi.");
+    }
+  };
 
   handleSubmit = async (e) => {
     e.preventDefault();
@@ -282,7 +333,9 @@ class BackTrip extends React.Component {
       lokasi,
       add,
       jamSampai,
+      user,
       idTrip,
+      trip,
     } = this.state;
 
     const status = "Selesai";
@@ -316,6 +369,10 @@ class BackTrip extends React.Component {
           alamat: add,
           lokasi: lokasi.value,
         });
+        const tanggalPulang = this.formatTanggal(trip.tanggal);
+        const text = `${fotoBukti}\n\n\n<b>Nama :  </b>${user.display_name}\n<b>Tanggal: </b> :${tanggalPulang}\n<b>Pukul : </b> ${jamSampai}\n<b>Lokasi : </b> ${lokasi.value}\n<b>Keperluan : </b> ${trip.alasan}\n`;
+
+        this.sendMessage(text);
         console.log("selesai");
         Swal.fire({
           title: "Berhasil",
@@ -331,7 +388,21 @@ class BackTrip extends React.Component {
       }
     }
   };
+  formatTanggal = (tanggal) => {
+    const hari = dayjs(tanggal).locale("id").format("dddd");
+    const bulan = dayjs(tanggal).locale("id").format("MMMM");
+    const hasil =
+      hari +
+      " , " +
+      tanggal.substring(8, 10) +
+      " " +
+      bulan +
+      " " +
+      tanggal.substring(0, 4);
+    console.log("tanggal", dayjs(tanggal).locale("id").format("MMMM"));
 
+    return hasil;
+  };
   getAllLokasi = async () => {
     const lokasiCollection = collection(db, "lokasi");
     try {

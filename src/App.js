@@ -24,10 +24,10 @@ function App() {
     <div>
       <Router>
         <Routes>
-          <Route path="/" element={<Auth />} />
-
           {isLoggedIn ? (
             <>
+              <Route path="/" element={<Dashboard />} />
+
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/mytrip" element={<MyTrip />} />
               <Route path="/history" element={<History />} />
@@ -36,7 +36,11 @@ function App() {
               <Route path="/detail-trip/:idTrip" element={<DetailTrip />} />
               <Route path="/camera" element={<Camera />} />
             </>
-          ) : null}
+          ) : (
+            <>
+              <Route path="/" element={<Auth />} />
+            </>
+          )}
         </Routes>
       </Router>
       {/* <Auth /> */}
