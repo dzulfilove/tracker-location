@@ -296,7 +296,7 @@ class BackTrip extends React.Component {
   sendMessage = async (text, foto) => {
     try {
       const response = await fetch(
-        "https://api.telegram.org/bot6823587684:AAE4Ya6Lpwbfw8QxFYec6xAqWkBYeP53MLQ/sendPhoto",
+        "https://api.telegram.org/bot6982164526:AAFZcqBGMZuHLsgYiuiI4hyhAAzW8ZIOZdc/sendPhoto",
 
         {
           method: "POST",
@@ -304,8 +304,8 @@ class BackTrip extends React.Component {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            chat_id: "-1001812360373",
-            message_thread_id: "4294967304",
+            chat_id: "6546310886",
+
             photo: foto,
             caption: text,
             parse_mode: "html",
@@ -339,13 +339,23 @@ class BackTrip extends React.Component {
       jamSampai,
       user,
       idTrip,
+      lokasiMulai,
+      jamMulai,
       trip,
     } = this.state;
     const tanggalPulang = this.formatTanggal(trip.tanggal);
-    const text = `${fotoBukti}`;
-    // const text = `${fotoBukti}\n\n\n<b>Nama :  </b>${user.display_name}\n<b>Tanggal: </b> :${tanggalPulang}\n<b>Pukul : </b> ${jamSampai}\n<b>Lokasi : </b> ${lokasi.value}\n<b>Keperluan : </b> ${trip.alasan}\n`;
+    const text = `\n<b>Nama :  </b>${
+      user.display_name
+    }\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamMulai} - ${jamSampai} \n<b>Keperluan : </b>${
+      trip.alasan
+    }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${
+      lokasi.value
+    } \n<b>Jarak : </b> ${jarak} KM \n<b>Durasi : </b> ${this.formatDurasi(
+      durasi
+    )}  \n`;
+    const textGambar = `${fotoBukti}`;
     console.log(text);
-    // this.sendMessage(text,textGambar);
+    this.sendMessage(text, textGambar);
   };
 
   handleSubmit = async (e) => {
@@ -415,15 +425,15 @@ class BackTrip extends React.Component {
         const tanggalPulang = this.formatTanggal(trip.tanggal);
         const text = `\n<b>Nama :  </b>${
           user.display_name
-        }\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamMulai} - ${jamSampai} \n <b>Keperluan : </b> ${
+        }\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamMulai} - ${jamSampai} \n <b>Keperluan : </b>${
           trip.alasan
         }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${
           lokasi.value
-        } \n <b>Jarak : </b> ${jarakKompensasi} KM \n <b>Durasi : </b> ${this.formatDurasi(
+        } \n<b>Jarak : </b> ${jarakKompensasi} KM \n<b>Durasi : </b> ${this.formatDurasi(
           durasi
         )}  \n`;
         const textGambar = `${fotoBukti}`;
-        this.sendMessage(text, textGambar);
+        await this.sendMessage(text, textGambar);
         console.log("selesai");
         Swal.fire({
           title: "Berhasil",

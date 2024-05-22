@@ -53,7 +53,7 @@ class InputTrip extends React.Component {
       optionsLokasiTerakhir: [],
       lokasiAwalSelect: {},
       fotoBukti: "",
-      adaParkir: "",
+      adaParkir: "tidak",
     };
   }
 
