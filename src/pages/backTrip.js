@@ -10,6 +10,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { FaLocationDot } from "react-icons/fa6";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { dbImage } from "../config/firebase";
+import imageCompression from "browser-image-compression";
 import {
   collection,
   deleteDoc,
@@ -26,6 +27,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import withRouter from "../withRouter";
 import Person from "../assets/person.png";
+import Loading from "../components/loader";
 
 class BackTrip extends React.Component {
   constructor(props) {
@@ -45,6 +47,7 @@ class BackTrip extends React.Component {
       isOpenCamera: false,
       lokasiLain: false,
       isProses: false,
+      loader: false,
       lokasiAkhir: {},
       namaLokasi: {},
       isMencariLokasi: false,
@@ -140,10 +143,19 @@ class BackTrip extends React.Component {
   };
 
   handleFoto = async (file) => {
-    const storageRef = ref(dbImage, `trip/${Date.now()}.jpg`);
-
     try {
-      const snapshot = await uploadBytes(storageRef, file);
+      // Konfigurasi opsi kompresi
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      };
+
+      // Kompresi gambar
+      const compressedFile = await imageCompression(file, options);
+
+      const storageRef = ref(dbImage, `trip/${Date.now()}.jpg`);
+      const snapshot = await uploadBytes(storageRef, compressedFile);
       const downloadURL = await getDownloadURL(
         ref(dbImage, snapshot.ref.fullPath)
       );
@@ -296,7 +308,7 @@ class BackTrip extends React.Component {
   sendMessage = async (text, foto) => {
     try {
       const response = await fetch(
-        "https://api.telegram.org/bot6823587684:AAE4Ya6Lpwbfw8QxFYec6xAqWkBYeP53MLQ/sendPhoto",
+        "https://api.telegram.org/bot6982164526:AAFZcqBGMZuHLsgYiuiI4hyhAAzW8ZIOZdc/sendPhoto",
 
         {
           method: "POST",
@@ -304,8 +316,7 @@ class BackTrip extends React.Component {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            chat_id: "-1001812360373",
-            message_thread_id: "4294967304",
+            chat_id: "6546310886",
             photo: foto,
             caption: text,
             parse_mode: "html",
@@ -361,6 +372,14 @@ class BackTrip extends React.Component {
     e.preventDefault();
     console.log("Berjalan");
 
+    await new Promise((resolve) => {
+      this.setState(
+        {
+          loader: true,
+        },
+        resolve
+      );
+    });
     const {
       lokasiAkhir,
       fotoBukti,
@@ -376,11 +395,26 @@ class BackTrip extends React.Component {
       addLokasi,
       lokasiMulai,
     } = this.state;
-
+    let lokasiSelesai = "";
+    if (lokasi.value == "Lainnya") {
+      lokasiSelesai = addLokasi;
+    } else {
+      lokasiSelesai = lokasi.value;
+    }
     const status = "Selesai";
     const cekKosong = this.isAnyStateEmpty();
     let jarakReal = jarak + (jarak * 20) / 100;
     const jarakKompensasi = parseFloat(jarakReal.toFixed(2));
+    const tanggalPulang = this.formatTanggal(trip.tanggal);
+    const text = `\n<b>Nama :  </b>${
+      user.display_name
+    }\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamMulai} - ${jamSampai} \n<b>Keperluan : </b>${
+      trip.alasan
+    }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${lokasiSelesai} \n<b>Jarak : </b> ${jarakKompensasi} KM \n<b>Durasi : </b> ${this.formatDurasi(
+      durasi
+    )}  \n`;
+    const textGambar = `${fotoBukti}`;
+    await this.sendMessage(text, textGambar);
     if (cekKosong == true) {
       Swal.fire({
         icon: "error",
@@ -406,12 +440,7 @@ class BackTrip extends React.Component {
             value: addLokasi,
           });
         }
-        let lokasiSelesai = "";
-        if (lokasi.value == "Lainnya") {
-          lokasiSelesai = addLokasi;
-        } else {
-          lokasiSelesai = lokasi.value;
-        }
+
         // Add a new document to the lokasiAkhir subcollection
         const lokasiAkhirRef = collection(db, "trips", idTrip, "lokasiAkhir");
         await addDoc(lokasiAkhirRef, {
@@ -421,16 +450,16 @@ class BackTrip extends React.Component {
           alamat: add,
           lokasi: lokasiSelesai,
         });
-        const tanggalPulang = this.formatTanggal(trip.tanggal);
-        const text = `\n<b>Nama :  </b>${
-          user.display_name
-        }\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamMulai} - ${jamSampai} \n <b>Keperluan : </b>${
-          trip.alasan
-        }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${lokasiSelesai} \n<b>Jarak : </b> ${jarakKompensasi} KM \n<b>Durasi : </b> ${this.formatDurasi(
-          durasi
-        )}  \n`;
-        const textGambar = `${fotoBukti}`;
-        await this.sendMessage(text, textGambar);
+
+        await new Promise((resolve) => {
+          this.setState(
+            {
+              loader: false,
+            },
+            resolve
+          );
+        });
+
         console.log("selesai");
         Swal.fire({
           title: "Berhasil",
@@ -538,6 +567,14 @@ class BackTrip extends React.Component {
           marginBottom: "1rem",
         }}
       >
+        {this.state.loader == true && (
+          <>
+            <div className="absolute w-full h-full flex pb-28 justify-center items-center z-[9999] bg-white">
+              <Loading />
+            </div>
+          </>
+        )}
+
         {this.state.isOpenCamera == true ? (
           <>
             <div className=" font-DM flex flex-col  px-3 pt-4 justify-center items-center mx-auto w-full bg-white max-w-[480px] rounded-[32px]">
