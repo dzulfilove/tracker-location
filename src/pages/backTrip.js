@@ -319,7 +319,7 @@ class BackTrip extends React.Component {
     } catch (error) {
       // Tangani kesalahan yang terjadi selama fetch
       console.error("Error:", error);
-      alert("Terjadi kesalahan. Silakan coba lagi.");
+      // alert("Terjadi kesalahan. Silakan coba lagi.");
     }
   };
   handleTele = async (e) => {
@@ -339,8 +339,8 @@ class BackTrip extends React.Component {
       trip,
     } = this.state;
     const tanggalPulang = this.formatTanggal(trip.tanggal);
-
-    const text = `${fotoBukti}\n\n\n<b>Nama :  </b>${user.display_name}\n<b>Tanggal: </b> :${tanggalPulang}\n<b>Pukul : </b> ${jamSampai}\n<b>Lokasi : </b> ${lokasi.value}\n<b>Keperluan : </b> ${trip.alasan}\n`;
+    const text = `${fotoBukti}`;
+    // const text = `${fotoBukti}\n\n\n<b>Nama :  </b>${user.display_name}\n<b>Tanggal: </b> :${tanggalPulang}\n<b>Pukul : </b> ${jamSampai}\n<b>Lokasi : </b> ${lokasi.value}\n<b>Keperluan : </b> ${trip.alasan}\n`;
     console.log(text);
     this.sendMessage(text);
   };
@@ -394,8 +394,9 @@ class BackTrip extends React.Component {
           lokasi: lokasi.value,
         });
         const tanggalPulang = this.formatTanggal(trip.tanggal);
-        const text = `${fotoBukti}\n\n\n<b>Nama :  </b>${user.display_name}\n<b>Tanggal : </b> :${tanggalPulang}\n<b>Pukul : </b> ${jamSampai}\n<b>Lokasi : </b> ${lokasi.value}\n<b>Keperluan : </b> ${trip.alasan}\n`;
-
+        const text = `\n<b>Nama :  </b>${user.display_name}\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamSampai}\n<b>Lokasi : </b> ${lokasi.value}\n<b>Keperluan : </b> ${trip.alasan}\n`;
+        const textGambar = `${fotoBukti}`;
+        await this.sendMessage(textGambar);
         this.sendMessage(text);
         console.log("selesai");
         Swal.fire({
@@ -674,7 +675,7 @@ class BackTrip extends React.Component {
                 </>
               )}
               <button
-                onClick={this.handleSubmit}
+                onClick={this.handleTele}
                 className="justify-center items-center p-2 mt-8 mb-10 text-base font-semibold tracking-wide leading-7 text-center text-white whitespace-nowrap bg-blue-500 rounded-lg"
               >
                 Simpan
