@@ -294,14 +294,16 @@ class BackTrip extends React.Component {
   sendMessage = async (text) => {
     try {
       const response = await fetch(
-        "https://api.telegram.org/bot6982164526:AAFZcqBGMZuHLsgYiuiI4hyhAAzW8ZIOZdc/sendMessage",
+        "https://api.telegram.org/bot6823587684:AAE4Ya6Lpwbfw8QxFYec6xAqWkBYeP53MLQ/sendMessage",
+
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            chat_id: "6546310886",
+            chat_id: "-1001812360373",
+            message_thread_id: "4294967304",
             text: text,
             parse_mode: "html",
           }),
@@ -319,6 +321,28 @@ class BackTrip extends React.Component {
       console.error("Error:", error);
       alert("Terjadi kesalahan. Silakan coba lagi.");
     }
+  };
+  handleTele = async (e) => {
+    e.preventDefault();
+    console.log("Berjalan");
+
+    const {
+      lokasiAkhir,
+      fotoBukti,
+      durasi,
+      jarak,
+      lokasi,
+      add,
+      jamSampai,
+      user,
+      idTrip,
+      trip,
+    } = this.state;
+    const tanggalPulang = this.formatTanggal(trip.tanggal);
+
+    const text = `${fotoBukti}\n\n\n<b>Nama :  </b>${user.display_name}\n<b>Tanggal: </b> :${tanggalPulang}\n<b>Pukul : </b> ${jamSampai}\n<b>Lokasi : </b> ${lokasi.value}\n<b>Keperluan : </b> ${trip.alasan}\n`;
+    console.log(text);
+    this.sendMessage(text);
   };
 
   handleSubmit = async (e) => {
@@ -370,7 +394,7 @@ class BackTrip extends React.Component {
           lokasi: lokasi.value,
         });
         const tanggalPulang = this.formatTanggal(trip.tanggal);
-        const text = `${fotoBukti}\n\n\n<b>Nama :  </b>${user.display_name}\n<b>Tanggal: </b> :${tanggalPulang}\n<b>Pukul : </b> ${jamSampai}\n<b>Lokasi : </b> ${lokasi.value}\n<b>Keperluan : </b> ${trip.alasan}\n`;
+        const text = `${fotoBukti}\n\n\n<b>Nama :  </b>${user.display_name}\n<b>Tanggal : </b> :${tanggalPulang}\n<b>Pukul : </b> ${jamSampai}\n<b>Lokasi : </b> ${lokasi.value}\n<b>Keperluan : </b> ${trip.alasan}\n`;
 
         this.sendMessage(text);
         console.log("selesai");
