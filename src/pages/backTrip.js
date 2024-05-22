@@ -296,7 +296,7 @@ class BackTrip extends React.Component {
   sendMessage = async (text, foto) => {
     try {
       const response = await fetch(
-        "https://api.telegram.org/bot6982164526:AAFZcqBGMZuHLsgYiuiI4hyhAAzW8ZIOZdc/sendPhoto",
+        "https://api.telegram.org/bot6823587684:AAE4Ya6Lpwbfw8QxFYec6xAqWkBYeP53MLQ/sendPhoto",
 
         {
           method: "POST",
@@ -304,8 +304,8 @@ class BackTrip extends React.Component {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            chat_id: "6546310886",
-
+            chat_id: "-1001812360373",
+            message_thread_id: "4294967304",
             photo: foto,
             caption: text,
             parse_mode: "html",
