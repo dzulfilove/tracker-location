@@ -300,7 +300,8 @@ class DetailTrip extends React.Component {
   };
 
   formatRupiah(angka) {
-    return angka.toLocaleString("id-ID", {
+    const nilai = parseFloat(angka);
+    return nilai.toLocaleString("id-ID", {
       style: "currency",
       currency: "IDR",
       minimumFractionDigits: 0,
@@ -333,6 +334,7 @@ class DetailTrip extends React.Component {
       iconSize: [38, 38],
     });
 
+    console.log(this.state.trip.biayaParkir, "hahahahah");
     return (
       <div
         style={{
@@ -563,7 +565,7 @@ class DetailTrip extends React.Component {
                               {this.state.trip.jarakKompensasi} KM
                             </div>
                           </div>
-                          <div className="w-[50%] flex flex-col justify-end items-start h-full gap-1 p-2 ">
+                          <div className="w-[50%] flex flex-col justify-end items-end h-full gap-1 p-2 ">
                             <div className="text-sm text-blue-600">
                               Total Durasi
                             </div>
@@ -573,7 +575,16 @@ class DetailTrip extends React.Component {
                           </div>
                         </div>
                         <div className="flex p-2 gap-5 justify-between items-center text-base  text-center uppercase w-full border-t border-t-blue-500 ">
-                          <div className="text-base font-semibold text-center w-full flex justify-center items-center">
+                          <div className="text-sm font-semibold text-center w-full flex flex-col justify-center items-center">
+                            <div className="text-sm text-blue-500 font-semibold mb-1">
+                              Biaya Parkir
+                            </div>
+                            {this.formatRupiah(this.state.trip.biayaParkir)}
+                          </div>
+                          <div className="text-sm font-semibold text-center w-full flex flex-col justify-center items-center">
+                            <div className="text-sm text-blue-500 font-semibold mb-1">
+                              Pengajuan
+                            </div>
                             {this.formatRupiah(this.state.nominal)}
                           </div>
                         </div>
@@ -730,7 +741,7 @@ class DetailTrip extends React.Component {
                                   {item.jarakKompensasi} KM
                                 </div>
                               </div>
-                              <div className="w-[50%] flex flex-col justify-end items-start h-full gap-1 p-2 ">
+                              <div className="w-[50%] flex flex-col justify-end items-end h-full gap-1 p-2 ">
                                 <div className="text-sm text-blue-600">
                                   Total Durasi
                                 </div>
@@ -740,7 +751,18 @@ class DetailTrip extends React.Component {
                               </div>
                             </div>
                             <div className="flex p-2 gap-5 justify-between items-center text-base  text-center uppercase w-full border-t border-t-blue-500 ">
-                              <div className="text-base font-semibold text-center w-full flex justify-center items-center">
+                              <div className="text-base font-semibold text-center w-full flex flex-col justify-center items-center">
+                                <div className="text-sm text-blue-500 font-semibold mb-1">
+                                  Biaya Parkir
+                                </div>
+                                {this.formatRupiah(
+                                  item.biayaParkir ? item.biayaParkir : 0
+                                )}
+                              </div>
+                              <div className="text-base font-semibold text-center w-full flex flex-col justify-center items-center">
+                                <div className="text-sm text-blue-500 font-semibold mb-1">
+                                  Pengajuan
+                                </div>
                                 {this.formatRupiah(
                                   this.nominalTrip(
                                     item.jarakKompensasi,

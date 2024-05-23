@@ -46,6 +46,7 @@ class Dashboard extends React.Component {
       },
 
       user: {},
+      totalParkir: 0,
       jumlahTrip: 0,
       totalJarak: 0,
       totalDurasi: 0,
@@ -186,6 +187,12 @@ class Dashboard extends React.Component {
         (total, item) => total + parseFloat(item.nominal),
         0
       );
+      const totalParkir = filteredTrips.reduce(
+        (total, item) =>
+          total + parseFloat(item.biayaParkir ? item.biayaParkir : 0), // Jika biaya parkir tidak ada, maka biaya parkir dianggap 0
+
+        0
+      );
       const totalDurasi = filteredTrips.reduce(
         (total, item) => total + item.durasi,
         0
@@ -200,6 +207,7 @@ class Dashboard extends React.Component {
             tanggalSelesaiTampil: selesaiTgl,
             trips: hasil,
             loader: false,
+            totalParkir: totalParkir,
             totalJarak: totalJarak.toFixed(2),
             totalDurasi: totalDurasi,
             jumlahTrip: jumlahTrip,
@@ -474,6 +482,34 @@ class Dashboard extends React.Component {
                     </div>
                     <div className="text-base leading-7 font-semibold">
                       {this.formatDurasi(this.state.totalDurasi)}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex  flex-col flex-start items-center gap-2 mt-3 w-full  ">
+                  <div className="flex w-[100%] items-center justify-between">
+                    <div className="flex gap-6">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="none"
+                          stroke="white"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="m14.5 10l-.035-.139A2.457 2.457 0 0 0 12.082 8h-.522a1.841 1.841 0 0 0-.684 3.55l2.248.9A1.841 1.841 0 0 1 12.44 16h-.521a2.457 2.457 0 0 1-2.384-1.861L9.5 14M12 6v2m0 8v2m9-6a9 9 0 1 1-18 0a9 9 0 0 1 18 0"
+                        />
+                      </svg>
+                      <div className="text-sm leading-7 font-medium">
+                        Biaya Parkir
+                      </div>
+                    </div>
+
+                    <div className="text-base leading-7 font-semibold">
+                      {this.formatRupiah(this.state.totalParkir)}
                     </div>
                   </div>
                 </div>
