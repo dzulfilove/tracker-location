@@ -228,7 +228,7 @@ class InputTrip extends React.Component {
           if (addLokasi == "") {
             Swal.fire({
               title: "Gagal",
-              text: "Masukkan Lokasi Terlebuh Dahulu",
+              text: "Tambahkan Lokasi Terlebuh Dahulu",
               icon: "error",
             });
             kosong = true;
@@ -237,14 +237,15 @@ class InputTrip extends React.Component {
         } else {
           lokasiMulai = lokasi.value;
         }
-        if (lokasi.value == "Lainnya") {
-          const lokasiRef = collection(db, "lokasi");
-          await addDoc(lokasiRef, {
-            label: addLokasi,
-            value: addLokasi,
-          });
-        }
+
         if (kosong == false) {
+          if (lokasi.value == "Lainnya") {
+            const lokasiRef = collection(db, "lokasi");
+            await addDoc(lokasiRef, {
+              label: addLokasi,
+              value: addLokasi,
+            });
+          }
           const tripRef = collection(db, "trips");
           const userRef = doc(db, "User", user);
           const newTrip = await addDoc(tripRef, {
