@@ -403,89 +403,96 @@ class BackTrip extends React.Component {
       lokasiMulai,
     } = this.state;
     let lokasiSelesai = "";
+    let kosong = false;
+
     if (lokasi.value == "Lainnya") {
       lokasiSelesai = addLokasi;
       if (addLokasi == "") {
         Swal.fire({
           title: "Gagal",
-          text: "Masukkan Lokasi Terlebuh Dahulu",
+          text: "Tambahkan Lokasi Terlebuh Dahulu",
           icon: "error",
         });
+        kosong = true;
+        this.setState({ loader: false });
       }
     } else {
       lokasiSelesai = lokasi.value;
     }
-    const status = "Selesai";
-    const cekKosong = this.isAnyStateEmpty();
-    let jarakReal = jarak + (jarak * 20) / 100;
-    const jarakKompensasi = parseFloat(jarakReal.toFixed(2));
-    const tanggalPulang = this.formatTanggal(trip.tanggal);
-    const text = `\n<b>Nama :  </b>${
-      user.display_name
-    }\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamMulai} - ${jamSampai} \n<b>Keperluan : </b>${
-      trip.alasan
-    }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${lokasiSelesai} \n<b>Jarak : </b> ${jarakKompensasi} KM \n<b>Durasi : </b> ${this.formatDurasi(
-      durasi
-    )}  \n`;
-    const textGambar = `${fotoBukti}`;
-    await this.sendMessage(text, textGambar);
-    if (cekKosong == true) {
-      Swal.fire({
-        icon: "error",
-        title: "Gagal",
-        text: "Lengkapi Data Terlebih Dahulu ",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-    } else {
-      try {
-        await updateDoc(doc(db, "trips", idTrip), {
-          fotoBukti,
-          durasi,
-          jarak,
-          jarakKompensasi,
-          status,
-        });
 
-        if (lokasi.value == "Lainnya") {
-          const lokasiRef = collection(db, "lokasi");
-          await addDoc(lokasiRef, {
-            label: addLokasi,
-            value: addLokasi,
-          });
-        }
-
-        // Add a new document to the lokasiAkhir subcollection
-        const lokasiAkhirRef = collection(db, "trips", idTrip, "lokasiAkhir");
-        await addDoc(lokasiAkhirRef, {
-          jamSampai: jamSampai,
-          latitude: lokasiAkhir.latitude,
-          longitude: lokasiAkhir.longitude,
-          alamat: add,
-          lokasi: lokasiSelesai,
-        });
-
-        await new Promise((resolve) => {
-          this.setState(
-            {
-              loader: false,
-            },
-            resolve
-          );
-        });
-
-        console.log("selesai");
+    if (kosong == false) {
+      const status = "Selesai";
+      const cekKosong = this.isAnyStateEmpty();
+      let jarakReal = jarak + (jarak * 20) / 100;
+      const jarakKompensasi = parseFloat(jarakReal.toFixed(2));
+      const tanggalPulang = this.formatTanggal(trip.tanggal);
+      const text = `\n<b>Nama :  </b>${
+        user.display_name
+      }\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamMulai} - ${jamSampai} \n<b>Keperluan : </b>${
+        trip.alasan
+      }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${lokasiSelesai} \n<b>Jarak : </b> ${jarakKompensasi} KM \n<b>Durasi : </b> ${this.formatDurasi(
+        durasi
+      )}  \n`;
+      const textGambar = `${fotoBukti}`;
+      await this.sendMessage(text, textGambar);
+      if (cekKosong == true) {
         Swal.fire({
-          title: "Berhasil",
-          text: "Anda Berhasi Sampai Tujuan",
-          icon: "success",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = `/mytrip`;
-          }
+          icon: "error",
+          title: "Gagal",
+          text: "Lengkapi Data Terlebih Dahulu ",
+          showConfirmButton: false,
+          timer: 1500,
         });
-      } catch (error) {
-        console.error(error);
+      } else {
+        try {
+          await updateDoc(doc(db, "trips", idTrip), {
+            fotoBukti,
+            durasi,
+            jarak,
+            jarakKompensasi,
+            status,
+          });
+
+          if (lokasi.value == "Lainnya") {
+            const lokasiRef = collection(db, "lokasi");
+            await addDoc(lokasiRef, {
+              label: addLokasi,
+              value: addLokasi,
+            });
+          }
+
+          // Add a new document to the lokasiAkhir subcollection
+          const lokasiAkhirRef = collection(db, "trips", idTrip, "lokasiAkhir");
+          await addDoc(lokasiAkhirRef, {
+            jamSampai: jamSampai,
+            latitude: lokasiAkhir.latitude,
+            longitude: lokasiAkhir.longitude,
+            alamat: add,
+            lokasi: lokasiSelesai,
+          });
+
+          await new Promise((resolve) => {
+            this.setState(
+              {
+                loader: false,
+              },
+              resolve
+            );
+          });
+
+          console.log("selesai");
+          Swal.fire({
+            title: "Berhasil",
+            text: "Anda Berhasi Sampai Tujuan",
+            icon: "success",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = `/mytrip`;
+            }
+          });
+        } catch (error) {
+          console.error(error);
+        }
       }
     }
   };

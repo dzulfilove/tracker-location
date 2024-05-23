@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { MdOutlineDashboard } from "react-icons/md";
 import { RiSettings4Line } from "react-icons/ri";
@@ -17,6 +17,17 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import TextField from "@mui/material/TextField";
 import Select from "react-tailwindcss-select";
 import { DatePicker } from "@mui/x-date-pickers";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { dbImage } from "../config/firebase";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import { db } from "../config/firebase";
 const Home = () => {
   const menus = [
     { name: "Dashboard", link: "/dashboard", icon: MdOutlineDashboard },
@@ -31,16 +42,87 @@ const Home = () => {
     dayjs("2024-05-01").locale("id")
   );
   const [tanggalAkhir, setTanggalAkhir] = useState(dayjs().locale("id"));
-  const optionsUser = [
-    { value: "Dalam Kota", label: "Dalam Kota" },
-    { value: "Luar Kota", label: "Luar Kota" },
-  ];
+  const [userData, setUserData] = useState([]);
+  const [dataTrips, setDataTrips] = useState([]);
+  const [userFilter, setUserFilter] = useState(null);
+
+  useEffect(() => {
+    // Efek samping yang ingin dijalankan
+    getAllUser();
+    getAllTrips();
+  }, []);
+
+  const getAllUser = async () => {
+    const lokasiCollection = collection(db, "User");
+    try {
+      const querySnapshot = await getDocs(lokasiCollection);
+      const userList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      await new Promise((r) => {
+        setUserData(userList);
+      });
+    } catch (error) {
+      console.error("Error mengambil data lokasi: ", error);
+    }
+  };
+
+  const getAllTrips = async () => {
+    try {
+      const tripsCollection = collection(db, "trips");
+      const querySnapshot = await getDocs(tripsCollection);
+
+      const tripList = [];
+      for (const doc of querySnapshot.docs) {
+        const tripData = doc.data();
+        // Ambil data dari subkoleksi 'lokasiAwal'
+        const lokasiAwalRef = collection(doc.ref, "lokasiAwal");
+        const lokasiAwalSnapshot = await getDocs(lokasiAwalRef);
+        const lokasiAwalData = lokasiAwalSnapshot.docs.map((lokasiDoc) =>
+          lokasiDoc.data()
+        );
+
+        // Tambahkan data lokasiAwal ke dalam data perjalanan
+        tripData.lokasiAwal = lokasiAwalData;
+
+        const lokasiAkhirRef = collection(doc.ref, "lokasiAkhir");
+        const lokasiAkhirSnapshot = await getDocs(lokasiAkhirRef);
+        const lokasiAkhirData = lokasiAkhirSnapshot.docs.map((lokasiDoc) =>
+          lokasiDoc.data()
+        );
+
+        // Tambahkan data lokasiAkhir ke dalam data perjalanan
+        tripData.lokasiAkhir = lokasiAkhirData;
+
+        tripList.push({ id: doc.id, ...tripData });
+      }
+
+      await new Promise((resolve) => {
+        setDataTrips(tripList);
+      });
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+      throw error;
+    }
+  };
+
+  const handleFilterUser = (value) => {
+    setUserFilter(value);
+  };
+
+  const optionsUser = userData.map(({ display_name, email }) => ({
+    label: display_name ? display_name : "Tidak Ada Nama",
+    value: email,
+  }));
+
+  console.log(dataTrips, "triplist");
   return (
     <section className="flex gap-6 bg-[#F1F5F9]">
       <div
         className={`bg-[#1C2434] min-h-screen pl-8 ${
           open ? "w-72" : "w-[6rem]"
-        } duration-500 text-gray-100 px-4`}
+        } duration-500 text-gray-100 px-4 text-xl`}
       >
         <div className="py-3 flex justify-end">
           <HiMenuAlt3
@@ -92,7 +174,7 @@ const Home = () => {
               key={i}
               className={` ${
                 menu?.margin && "mt-5"
-              } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-blue-600 rounded-md`}
+              } group flex items-center text-base  gap-3.5 font-medium p-2 hover:bg-blue-600 rounded-md`}
             >
               <div>{React.createElement(menu?.icon, { size: "20" })}</div>
               <h2
@@ -131,14 +213,14 @@ const Home = () => {
                   options={optionsUser}
                   name="Lokasi"
                   placeholder="Pilih User"
-                  // value={this.state.lokasi}
-                  // onChange={this.handleChangeLokasi}
+                  value={userFilter}
+                  onChange={handleFilterUser}
                   classNames={{
                     menuButton: ({ isDisabled }) =>
                       `ps-3 text-[15px] flex text-base z-[999] text-blue-500 w-[100%] rounded-lg  transition-all duration-300 focus:outline-none ${
                         isDisabled ? "" : " focus:ring focus:ring-blue-500/20"
                       }`,
-                    menu: "bg-white absolute w-full bg-slate-50 shadow-lg z-[999] border rounded py-1 mt-1.5 text-base text-gray-700",
+                    menu: "bg-white absolute w-full bg-slate-50 shadow-lg z-[999] w-[100%] border rounded py-1 mt-1.5 text-base text-gray-700",
                     listItem: ({ isSelected }) =>
                       `block transition duration-200 px-2 py-2 cursor-pointer z-[999] select-none truncate rounded-lg ${
                         isSelected

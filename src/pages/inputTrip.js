@@ -198,7 +198,7 @@ class InputTrip extends React.Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     this.setState({ isProses: true });
-    const cek = this.isAnyStateEmpty();
+    let cek = this.isAnyStateEmpty();
 
     if (cek == false) {
       const currentDate = new Date();
@@ -223,6 +223,7 @@ class InputTrip extends React.Component {
 
         console.log(hariIni);
         let lokasiMulai = "";
+        let kosong = false;
         if (lokasi.value == "Lainnya") {
           if (addLokasi == "") {
             Swal.fire({
@@ -230,6 +231,7 @@ class InputTrip extends React.Component {
               text: "Masukkan Lokasi Terlebuh Dahulu",
               icon: "error",
             });
+            kosong = true;
           }
           lokasiMulai = addLokasi;
         } else {
@@ -242,40 +244,42 @@ class InputTrip extends React.Component {
             value: addLokasi,
           });
         }
-        const tripRef = collection(db, "trips");
-        const userRef = doc(db, "User", user);
-        const newTrip = await addDoc(tripRef, {
-          kategori: kategori.value,
-          alasan,
-          status,
-          refUser: userRef,
-          tanggal: hariIni,
-          tanggalFilter: formattedDate,
-          durasi: 0,
-          fotoBukti: "",
-          jarak: 0,
-          jarakKompensasi: 0,
-        });
+        if (kosong == false) {
+          const tripRef = collection(db, "trips");
+          const userRef = doc(db, "User", user);
+          const newTrip = await addDoc(tripRef, {
+            kategori: kategori.value,
+            alasan,
+            status,
+            refUser: userRef,
+            tanggal: hariIni,
+            tanggalFilter: formattedDate,
+            durasi: 0,
+            fotoBukti: "",
+            jarak: 0,
+            jarakKompensasi: 0,
+          });
 
-        // Menyimpan data lokasiAwal di dalam subkoleksi
-        const lokasiAwalRef = collection(newTrip, "lokasiAwal");
-        await addDoc(lokasiAwalRef, {
-          jamMulai: jamBerangkat,
-          latitude: lokasiAwal.latitude,
-          longitude: lokasiAwal.longitude,
-          alamat: namaLokasi,
-          lokasi: lokasiMulai,
-        });
-        Swal.fire({
-          title: "Berhasil",
-          text: "Berhasil ditambah",
-          icon: "success",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = `/mytrip`;
-          }
-        });
-        this.setState({ isProses: false });
+          // Menyimpan data lokasiAwal di dalam subkoleksi
+          const lokasiAwalRef = collection(newTrip, "lokasiAwal");
+          await addDoc(lokasiAwalRef, {
+            jamMulai: jamBerangkat,
+            latitude: lokasiAwal.latitude,
+            longitude: lokasiAwal.longitude,
+            alamat: namaLokasi,
+            lokasi: lokasiMulai,
+          });
+          Swal.fire({
+            title: "Berhasil",
+            text: "Berhasil ditambah",
+            icon: "success",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = `/mytrip`;
+            }
+          });
+          this.setState({ isProses: false });
+        }
       } catch (error) {
         console.error("Error:", error);
         this.setState({ isProses: false });
