@@ -40,10 +40,10 @@ class Auth extends React.Component {
           timer: 1500,
         },
         () => {
-          window.location.href = `/dashboard`;
+          window.location.href = `/`;
         }
       );
-      window.location.href = `/dashboard`;
+      window.location.href = `/`;
 
       console.log("Login successful");
     } catch (error) {

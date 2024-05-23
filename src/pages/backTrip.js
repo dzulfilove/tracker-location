@@ -58,6 +58,7 @@ class BackTrip extends React.Component {
       jarak: null,
       user: {},
       lokasiAwal: {},
+      isSubmit: false,
     };
   }
 
@@ -369,18 +370,23 @@ class BackTrip extends React.Component {
     this.sendMessage(text, textGambar);
   };
 
-  handleSubmit = async (e) => {
+  handleBalik = async (e) => {
     e.preventDefault();
     console.log("Berjalan");
 
     await new Promise((resolve) => {
       this.setState(
         {
+          isSubmit: true,
           loader: true,
         },
         resolve
       );
     });
+
+    this.handleSubmit();
+  };
+  handleSubmit = async () => {
     const {
       lokasiAkhir,
       fotoBukti,
@@ -399,6 +405,13 @@ class BackTrip extends React.Component {
     let lokasiSelesai = "";
     if (lokasi.value == "Lainnya") {
       lokasiSelesai = addLokasi;
+      if (addLokasi == "") {
+        Swal.fire({
+          title: "Gagal",
+          text: "Masukkan Lokasi Terlebuh Dahulu",
+          icon: "error",
+        });
+      }
     } else {
       lokasiSelesai = lokasi.value;
     }
@@ -737,7 +750,11 @@ class BackTrip extends React.Component {
                       onChange={(e) =>
                         this.setState({ addLokasi: e.target.value })
                       }
-                      className="shrink-0 h-11 bg-white rounded-lg shadow-md px-3"
+                      className={`shrink-0 h-11 bg-white rounded-lg shadow-md px-3 ${
+                        this.state.addLokasi == ""
+                          ? "border border-red-500"
+                          : ""
+                      } `}
                     />
                   </div>
                 </>
@@ -790,12 +807,22 @@ class BackTrip extends React.Component {
                   </div>
                 </>
               )}
-              <button
-                onClick={this.handleSubmit}
-                className="justify-center items-center p-2 mt-8 mb-10 text-base font-semibold tracking-wide leading-7 text-center text-white whitespace-nowrap bg-blue-500 rounded-lg"
-              >
-                Simpan
-              </button>
+              {this.state.isSubmit == false ? (
+                <>
+                  <button
+                    onClick={this.handleBalik}
+                    className="justify-center items-center p-2 mt-8 mb-10 text-base font-semibold tracking-wide leading-7 text-center text-white whitespace-nowrap bg-blue-500 rounded-lg"
+                  >
+                    Simpan
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button className="justify-center items-center p-2 mt-8 mb-10 text-base font-semibold tracking-wide leading-7 text-center text-white whitespace-nowrap bg-blue-300 rounded-lg">
+                    Simpan
+                  </button>
+                </>
+              )}
             </div>
           </>
         )}

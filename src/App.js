@@ -9,7 +9,6 @@ import History from "./pages/history";
 import InputTrip from "./pages/inputTrip";
 import BackTrip from "./pages/backTrip";
 import DetailTrip from "./pages/detailTrip";
-
 import {
   BrowserRouter as Router,
   Route,
@@ -17,6 +16,9 @@ import {
   Navigate,
 } from "react-router-dom";
 import Camera from "./components/camera";
+import DashboardAdmin from "./pages/dashboardAdmin";
+import Home from "./components/sidebar";
+
 function App() {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
 
@@ -27,6 +29,7 @@ function App() {
           {isLoggedIn ? (
             <>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Home />} />
 
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/mytrip" element={<MyTrip />} />

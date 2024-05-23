@@ -59,7 +59,7 @@ function Navbar() {
           <>
             <Link
               loading="lazy"
-              to="/dashboard"
+              to="/"
               onClick={showNavbar}
               className="flex justify-start items-center gap-4 w-[10rem]"
             >

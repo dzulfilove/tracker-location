@@ -55,6 +55,7 @@ class InputTrip extends React.Component {
       fotoBukti: "",
       adaParkir: "tidak",
     };
+    this.sectionRef = React.createRef();
   }
 
   componentDidMount = async () => {
@@ -223,6 +224,13 @@ class InputTrip extends React.Component {
         console.log(hariIni);
         let lokasiMulai = "";
         if (lokasi.value == "Lainnya") {
+          if (addLokasi == "") {
+            Swal.fire({
+              title: "Gagal",
+              text: "Masukkan Lokasi Terlebuh Dahulu",
+              icon: "error",
+            });
+          }
           lokasiMulai = addLokasi;
         } else {
           lokasiMulai = lokasi.value;
@@ -566,7 +574,7 @@ class InputTrip extends React.Component {
                           ? "bg-blue-100"
                           : "bg-blue-100 focus:ring focus:ring-blue-500/20"
                       }`,
-                    menu: "absolute w-full bg-slate-50 shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
+                    menu: "absolute w-full bg-slate-50 bg-white shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
                     listItem: ({ isSelected }) =>
                       `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded-lg ${
                         isSelected
@@ -622,7 +630,7 @@ class InputTrip extends React.Component {
                           ? "bg-blue-100"
                           : "bg-blue-100 focus:ring focus:ring-blue-500/20"
                       }`,
-                    menu: "absolute w-full bg-slate-50 shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
+                    menu: "absolute w-full bg-slate-50 shadow-lg border bg-white rounded py-1 mt-1.5 text-sm text-gray-700",
                     listItem: ({ isSelected }) =>
                       `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded-lg ${
                         isSelected
@@ -653,7 +661,11 @@ class InputTrip extends React.Component {
                       onChange={(e) =>
                         this.setState({ addLokasi: e.target.value })
                       }
-                      className="shrink-0 h-11 bg-white rounded-lg shadow-md px-3"
+                      className={`shrink-0 h-11 bg-white rounded-lg shadow-md px-3 ${
+                        this.state.addLokasi == ""
+                          ? "border border-red-500"
+                          : ""
+                      } `}
                     />
                   </div>
                 </>
@@ -754,7 +766,7 @@ class InputTrip extends React.Component {
                           ? "bg-blue-100"
                           : "bg-blue-100 focus:ring focus:ring-blue-500/20"
                       }`,
-                    menu: "absolute w-full bg-slate-50 shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700 z-[999]",
+                    menu: "absolute w-full bg-slate-50 shadow-lg bg-white border rounded py-1 mt-1.5 text-sm text-gray-700 z-[999]",
                     listItem: ({ isSelected }) =>
                       `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded-lg  ${
                         isSelected
@@ -781,12 +793,12 @@ class InputTrip extends React.Component {
                     onChange={this.handleChangeKategori}
                     classNames={{
                       menuButton: ({ isDisabled }) =>
-                        `ps-3 text-[15px]  flex text-sm text-blue-500 w-[100%] bg-blue-100 rounded-lg shadow-md transition-all duration-300 focus:outline-none ${
+                        `ps-3 text-[15px]  flex text-sm text-blue-500 w-[100%] bg-blue rounded-lg shadow-md transition-all duration-300 focus:outline-none ${
                           isDisabled
                             ? "bg-blue-100"
                             : "bg-blue-100 focus:ring focus:ring-blue-500/20"
                         }`,
-                      menu: " z-[99] absolute w-full bg-slate-50 shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
+                      menu: " z-[99] absolute w-full bg-slate-50 bg-white shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
                       listItem: ({ isSelected }) =>
                         `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded-lg ${
                           isSelected
