@@ -88,6 +88,7 @@ const DataTable = (props) => {
       (data) => data.nama == item.nama
     );
     console.log(props.dataTrips, "itemmmmmm");
+    filteredArray.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
     props.handleDetail(filteredArray, item);
   };
   console.log(props.data, "itemmmmmm");
