@@ -1,18 +1,54 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import "../styles/navbar.css";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-
+import { db } from "../config/firebase";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 function Navbar() {
   const navRef = useRef();
   const isLoggedIn = localStorage.getItem("isLoggedIn");
+  const [user, setUser] = useState(null);
+
   let login = false;
   if (isLoggedIn) {
     login = true;
   }
   const showNavbar = () => {
     navRef.current.classList.toggle("responsive_nav");
+  };
+
+  useEffect(() => {
+    const userEmail = localStorage.getItem("userEmail");
+    getUser(userEmail);
+    // you can use the userData here, or set it to state using setUser
+  }, []);
+  const getUser = async (email) => {
+    try {
+      const userRef = collection(db, "User");
+      const q = query(userRef, where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        return null;
+      }
+      const userData = querySnapshot.docs[0].data();
+
+      await new Promise((resolve) => {
+        setUser(userData.peran);
+      });
+
+      return userData;
+    } catch (error) {
+      console.error("Error:", error);
+      throw error;
+    }
   };
 
   const logout = () => {
@@ -30,7 +66,7 @@ function Navbar() {
     window.location.href = "/";
   };
   return (
-    <header className="w-6 ml-2 h-6 p-3 flex justify-center items-center rounded-md font-DM text-medium">
+    <header className=" navbar-desktop w-6 ml-2 h-6 p-3 flex justify-center items-center rounded-md font-DM text-medium">
       <nav ref={navRef} className="bg-blue-600 text-white ">
         {login == false && (
           <>
@@ -57,6 +93,30 @@ function Navbar() {
         )}
         {login == true && (
           <>
+            {user == "Scrum Master" && (
+              <>
+                <Link
+                  loading="lazy"
+                  to="/dashboard"
+                  onClick={showNavbar}
+                  className="flex justify-start items-center gap-4 w-[15rem]"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <g fill="white">
+                      <path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06z" />
+                      <path d="m12 5.432l8.159 8.159q.045.044.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198l.091-.086z" />
+                    </g>
+                  </svg>
+                  <div>Dashboard Admin</div>
+                </Link>
+              </>
+            )}
+
             <Link
               loading="lazy"
               to="/"

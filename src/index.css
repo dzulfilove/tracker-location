@@ -31,7 +31,14 @@ code {
     margin: 0 auto;
     padding: 0;
     height: 100%;
-    overflow-y: hidden;
+    overflow-y: scroll;
+  }
+
+  .auth-main {
+    padding: 6rem 30rem;
+  }
+  .navbar-desktop {
+    display: none;
   }
 }
 
@@ -42,7 +49,12 @@ code {
     margin: 0 auto;
     padding: 0;
   }
-
+  .auth-main {
+    padding: 6rem 30rem;
+  }
+  .navbar-desktop {
+    display: none;
+  }
   * {
     padding: 0;
   }

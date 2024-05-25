@@ -54,6 +54,7 @@ class InputTrip extends React.Component {
       lokasiAwalSelect: {},
       fotoBukti: "",
       adaParkir: "tidak",
+      isInput: false,
     };
     this.sectionRef = React.createRef();
   }
@@ -197,7 +198,16 @@ class InputTrip extends React.Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    this.setState({ isProses: true });
+
+    await new Promise((resolve) => {
+      this.setState(
+        {
+          isProses: true,
+          isInput: true,
+        },
+        resolve
+      );
+    });
     let cek = this.isAnyStateEmpty();
 
     if (cek == false) {
@@ -279,11 +289,11 @@ class InputTrip extends React.Component {
               window.location.href = `/mytrip`;
             }
           });
-          this.setState({ isProses: false });
+          this.setState({ isProses: false, isInput: false });
         }
       } catch (error) {
         console.error("Error:", error);
-        this.setState({ isProses: false });
+        this.setState({ isProses: false, isInput: false });
       }
     }
   };
@@ -396,6 +406,16 @@ class InputTrip extends React.Component {
 
   handlePerjalananLanjut = async (e) => {
     e.preventDefault();
+
+    await new Promise((resolve) => {
+      this.setState(
+        {
+          isProses: true,
+          isInput: false,
+        },
+        resolve
+      );
+    });
     const cek = this.isAnyStateEmpty();
 
     if (cek == false) {
@@ -495,6 +515,7 @@ class InputTrip extends React.Component {
 
         // newTrip sekarang bisa diakses di sini
         console.log(newTrip);
+        this.setState({ isProses: false, isInput: false });
 
         // Menyimpan data lokasiAwal di dalam subkoleksi
         const lokasiAwalRef = collection(newTrip, "lokasiAwal");
@@ -511,6 +532,8 @@ class InputTrip extends React.Component {
 
         console.log("berhasil");
       } catch (error) {
+        this.setState({ isProses: false, isInput: false });
+
         console.error("Error:", error);
       }
     }
@@ -734,13 +757,17 @@ class InputTrip extends React.Component {
                   </div>
                 </button>
               </div>
-              <button
-                disabled={this.state.isProses}
-                onClick={this.handleSubmit}
-                className="justify-center items-center p-2 mt-8 mb-10 text-base font-medium tracking-wide leading-7 text-center text-white whitespace-nowrap bg-blue-500 rounded-lg"
-              >
-                Tambah
-              </button>
+              {this.state.isInput == false && (
+                <>
+                  <button
+                    disabled={this.state.isProses}
+                    onClick={this.handleSubmit}
+                    className="justify-center items-center p-2 mt-8 mb-10 text-base font-medium tracking-wide leading-7 text-center text-white whitespace-nowrap bg-blue-500 rounded-lg"
+                  >
+                    Tambah
+                  </button>
+                </>
+              )}
             </>
           )}
           {this.state.isLanjutPerjalanan == "tab2" && (
@@ -1000,12 +1027,16 @@ class InputTrip extends React.Component {
                   </div>
                 </button>
               </div>
-              <button
-                onClick={this.handlePerjalananLanjut}
-                className="justify-center items-center p-2 mt-8 mb-10 text-base font-medium tracking-wide leading-7 text-center text-white whitespace-nowrap bg-blue-500 rounded-lg"
-              >
-                Tambah
-              </button>
+              {this.state.isInput == false && (
+                <>
+                  <button
+                    onClick={this.handlePerjalananLanjut}
+                    className="justify-center items-center p-2 mt-8 mb-10 text-base font-medium tracking-wide leading-7 text-center text-white whitespace-nowrap bg-blue-500 rounded-lg"
+                  >
+                    Tambah
+                  </button>
+                </>
+              )}
             </>
           )}
         </div>

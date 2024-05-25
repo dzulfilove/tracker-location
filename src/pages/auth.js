@@ -4,12 +4,22 @@ import { auth } from "../config/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import Swal from "sweetalert2";
 
+import { db } from "../config/firebase";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 class Auth extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       email: "",
       password: "",
+      userData: {},
     };
   }
 
@@ -20,17 +30,39 @@ class Auth extends React.Component {
   handlePasswordChange = (event) => {
     this.setState({ password: event.target.value });
   };
+  getUserLogin = async (email) => {
+    try {
+      const userRef = collection(db, "User");
+      const q = query(userRef, where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        return null;
+      }
+      const userData = querySnapshot.docs[0].data();
 
+      await new Promise((resolve) => {
+        this.setState({ user: userData }, resolve);
+      });
+
+      return userData;
+    } catch (error) {
+      console.error("Error:", error);
+      throw error;
+    }
+  };
   handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = this.state;
     if (!email || !password) return;
 
+    await this.getUserLogin(email);
+    const peran = this.state.userData.peran;
     try {
       await signInWithEmailAndPassword(auth, email, password);
 
       localStorage.setItem("isLoggedIn", true);
       localStorage.setItem("userEmail", email);
+      localStorage.setItem("peran", peran);
       Swal.fire(
         {
           icon: "success",
@@ -59,7 +91,7 @@ class Auth extends React.Component {
   };
   render() {
     return (
-      <div className="flex font-DM flex-col pb-20 mx-auto  font-semibold text-blue-500 bg-white  leading-[140%] w-full rounded-[32px]">
+      <div className="auth-main flex font-DM flex-col pb-20 mx-auto  font-semibold text-blue-500 bg-white  leading-[140%] w-full rounded-[32px]">
         <div className="flex flex-col items-center p-10 w-full text-2xl bg-white rounded-b-[7rem] shadow-md h-[10rem">
           <img
             loading="lazy"

@@ -18,9 +18,45 @@ import {
 import Camera from "./components/camera";
 import DashboardAdmin from "./pages/dashboardAdmin";
 import Home from "./components/sidebar";
-
+import React, { useState, useEffect } from "react";
+import { db } from "../src/config/firebase";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 function App() {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const userEmail = localStorage.getItem("userEmail");
+    getUser(userEmail);
+    // you can use the userData here, or set it to state using setUser
+  }, []);
+  const getUser = async (email) => {
+    try {
+      const userRef = collection(db, "User");
+      const q = query(userRef, where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        return null;
+      }
+      const userData = querySnapshot.docs[0].data();
+
+      await new Promise((resolve) => {
+        setUser(userData.peran);
+      });
+
+      return userData;
+    } catch (error) {
+      console.error("Error:", error);
+      throw error;
+    }
+  };
 
   return (
     <div>
@@ -29,9 +65,11 @@ function App() {
           {isLoggedIn ? (
             <>
               <Route path="/" element={<Dashboard />} />
-              <Route path="/dashboard" element={<Home />} />
-
-              <Route path="/dashboard" element={<Dashboard />} />
+              {user == "Scrum Master" && (
+                <>
+                  <Route path="/dashboard" element={<Home />} />
+                </>
+              )}
               <Route path="/mytrip" element={<MyTrip />} />
               <Route path="/history" element={<History />} />
               <Route path="/input-trip/:id" element={<InputTrip />} />

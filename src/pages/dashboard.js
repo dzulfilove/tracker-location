@@ -276,26 +276,7 @@ class Dashboard extends React.Component {
 
     return hasil;
   };
-  formatBulan = (bulanInggris) => {
-    // Objek untuk memetakan nama bulan dalam bahasa Inggris ke bahasa Indonesia
-    const namaBulan = {
-      January: "Jan",
-      February: "Feb",
-      March: "Maret",
-      April: "April",
-      May: "Mei",
-      June: "Juni",
-      July: "Juli",
-      August: "Agust",
-      September: "Sept",
-      October: "Okt",
-      November: "Nov",
-      December: "Des",
-    };
 
-    // Mengembalikan nama bulan dalam bahasa Indonesia berdasarkan nama bulan dalam bahasa Inggris
-    return namaBulan[bulanInggris];
-  };
   render() {
     const {
       userName,
@@ -310,6 +291,7 @@ class Dashboard extends React.Component {
 
     return (
       <div
+        className="auth-main"
         style={{
           display: "flex",
           justifyContent: "flex-start",
@@ -544,7 +526,7 @@ class Dashboard extends React.Component {
               </>
             )}
           </div>
-          <div className="w-full px-3 flex justify-center mt-5">
+          <div className="w-full px-3 flex flex-col gap-10 justify-center mt-5">
             <button
               onClick={() => {
                 window.location.href = `/mytrip`;
@@ -565,6 +547,30 @@ class Dashboard extends React.Component {
                 />
               </svg>
             </button>
+            {this.state.user.peran == "Scrum Master" && (
+              <>
+                <button
+                  onClick={() => {
+                    window.location.href = `/dashboard`;
+                  }}
+                  className="self-start text-base font-medium tracking-wide leading-7 text-center text-white bg-blue-500 w-full p-2 rounded-xl shadow-xl flex justify-center gap-5 items-center"
+                >
+                  Dashboard Admin
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="white"
+                      fill-rule="evenodd"
+                      d="m9.005 4l8 8l-8 8L7 18l6.005-6L7 6z"
+                    />
+                  </svg>
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
