@@ -83,13 +83,37 @@ const DataTable = (props) => {
       },
     });
   };
+  const sortByDateAndTimeDescending = (arrayObjek) => {
+    return arrayObjek.sort((a, b) => {
+      const dateA = new Date(a.tanggal);
+      const dateB = new Date(b.tanggal);
+
+      if (dateB - dateA !== 0) {
+        return dateB - dateA;
+      }
+
+      // Menggunakan metode sortir jam keluar dari user
+      let [jamAInt, menitAInt] = a.lokasiAkhir[0].jamSampai
+        .split(":")
+        .map(Number);
+      let [jamBInt, menitBInt] = b.lokasiAkhir[0].jamSampai
+        .split(":")
+        .map(Number);
+
+      if (jamAInt !== jamBInt) {
+        return jamBInt - jamAInt;
+      } else {
+        return menitBInt - menitAInt;
+      }
+    });
+  };
   const handleDetailShow = (item) => {
     const filteredArray = props.dataTrips.filter(
       (data) => data.nama == item.nama
     );
     console.log(props.dataTrips, "itemmmmmm");
-    filteredArray.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
-    props.handleDetail(filteredArray, item);
+    const sortData = sortByDateAndTimeDescending(filteredArray);
+    props.handleDetail(sortData, item);
   };
   console.log(props.data, "itemmmmmm");
 
