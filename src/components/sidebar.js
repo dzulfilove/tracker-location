@@ -5,6 +5,7 @@ import { RiSettings4Line } from "react-icons/ri";
 import { TbReportAnalytics } from "react-icons/tb";
 import { AiOutlineUser, AiOutlineHeart } from "react-icons/ai";
 import { AiOutlineAreaChart } from "react-icons/ai";
+import { FaRegUser } from "react-icons/fa";
 import { FiMessageSquare, FiFolder, FiShoppingCart } from "react-icons/fi";
 import { Link, NavLink } from "react-router-dom";
 import DashboardAdmin from "../pages/dashboardAdmin";
@@ -63,6 +64,7 @@ const Home = () => {
   const [dataTrips, setDataTrips] = useState([]);
   const [dataFilter, setDataFilter] = useState([]);
   const [dataTripsBulan, setDataTripsBulan] = useState([]);
+  const [dataTripsBulanKategori, setDataTripsBulanKategori] = useState([]);
   const [dataTripsTahun, setDataTripsTahun] = useState([]);
   const [dataDetailTrips, setDataDetailTrips] = useState([]);
   const [userFilter, setUserFilter] = useState(null);
@@ -436,6 +438,7 @@ const Home = () => {
     const finalGroupedTripsBulan = Object.values(groupedTripsBulan);
 
     setDataTripsBulan(finalGroupedTripsBulan);
+    setDataTripsBulanKategori(dataBulan);
     setDataTripsTahun(dataTahun);
     console.log(`bulan ${bulan}`, finalGroupedTripsBulan);
   };
@@ -474,7 +477,7 @@ const Home = () => {
   return (
     <section className="flex gap-6 bg-[#F1F5F9]">
       <div
-        className={`bg-[#1C2434] min-h-screen pl-8 ${
+        className={`bg-blue-800 min-h-screen pl-8 ${
           open ? "w-72" : "w-[6rem]"
         } duration-500 text-gray-100 px-4 text-xl`}
       >
@@ -491,21 +494,22 @@ const Home = () => {
           }items-center justify-center gap-2 py-5.5 lg:py-6.5 mb-10 mt-3 `}
         >
           <NavLink
-            className="flex px-1 justify-start gap-5 w-full items-center"
+            className="flex px-1 justify-start gap-5 w-full items-center text-blue-100"
             to="/dashboard"
           >
-            <img
+            {/* <img
               loading="lazy"
               src={Logo}
               className="shrink-0  w-8  h-8 bg-slate-900 rounded-xl object-cover"
-            />
+            /> */}
+            <FaRegUser />
             {open && (
               <>
                 <h5
                   tyle={{
                     transitionDelay: `${4}00ms`,
                   }}
-                  className={`text-xl font-semibold text-white text-center whitespace-pre duration-500 ${
+                  className={`text-xl font-semibold text-blue-100 text-center whitespace-pre duration-500 ${
                     !open && "opacity-0 translate-x-28 overflow-hidden"
                   }`}
                 >
@@ -517,11 +521,11 @@ const Home = () => {
         </div>
 
         <div
-          className={`${open ? "p-2" : "p-0"} text-base w-full  text-gray-400 `}
+          className={`${open ? "p-2" : "p-0"} text-base w-full  text-blue-200 `}
         >
           Menu
         </div>
-        <div className="mt-4 flex flex-col gap-4 relative">
+        <div className="mt-4 flex flex-col gap-4 relative text-blue-100">
           {menus?.map((menu, i) => (
             <button
               onClick={() => {
@@ -875,20 +879,20 @@ const Home = () => {
                   className="bg-white rounded-xl shadow-md w-[35%] p-8 flex h-[25rem] flex-col justify-center items-start"
                 >
                   <h3 className="text-lg font-medium mb-6 ">
-                    Kategori Perjalanan
+                    Kategori Perjalanan Bulan {formatBulan(tanggalAkhirString)}
                   </h3>
-                  <PieChartComponent />
+                  <PieChartComponent data={dataTripsBulanKategori} />
                 </div>
               </div>
               <div
                 data-aos="fade-up"
-                className="flex justify-between items-center w-[90%] h-auto mt-5 mb-20"
+                className="flex justify-between items-center w-[90%] h-auto mt-5 "
               >
                 <div className="bg-white rounded-xl shadow-md w-[35%] p-8 flex h-[25rem] flex-col justify-center items-start">
                   <h3 className="text-lg font-medium mb-6 ">
-                    Kategori Perjalanan Tahun Ini
+                    Kategori Perjalanan Tahun {formatTahun(tanggalAkhirString)}
                   </h3>
-                  <PieChartComponent />
+                  <PieChartComponent data={dataTripsTahun} />
                 </div>
                 <div
                   data-aos="fade-up"
@@ -897,7 +901,31 @@ const Home = () => {
                   <h3 className="text-lg font-medium mb-6 ">
                     Pengajuan Tahun {formatTahun(tanggalAkhirString)}
                   </h3>
-                  <LineChartComponent data={dataTripsTahun} />
+                  <LineChartComponent data={dataTripsTahun} name={"nominal"} />
+                </div>
+              </div>
+
+              <div
+                data-aos="fade-up"
+                className="flex justify-between items-center w-[90%] h-auto mt-5 mb-20"
+              >
+                <div className="bg-white rounded-xl shadow-md w-[48.5%] p-8 flex h-[25rem] flex-col justify-center items-start">
+                  <h3 className="text-lg font-medium mb-6 ">
+                    Jumlah Perjalanan Tahun {formatTahun(tanggalAkhirString)}
+                  </h3>
+                  <LineChartComponent
+                    data={dataTripsTahun}
+                    name={"perjalanan"}
+                  />
+                </div>
+                <div
+                  data-aos="fade-up"
+                  className="bg-white rounded-xl shadow-md w-[48.5%] p-8 h-[25rem] flex flex-col justify-center items-start"
+                >
+                  <h3 className="text-lg font-medium mb-6 ">
+                    Jumlah Durasi Tahun {formatTahun(tanggalAkhirString)}
+                  </h3>
+                  <LineChartComponent data={dataTripsTahun} name={"durasi"} />
                 </div>
               </div>
             </>
