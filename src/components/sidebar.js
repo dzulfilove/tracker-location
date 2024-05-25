@@ -50,7 +50,7 @@ const Home = () => {
     // { name: "Setting", link: "/", icon: RiSettings4Line },
   ];
   const [open, setOpen] = useState(true);
-  const [menu, setMenu] = useState("statistik");
+  const [menu, setMenu] = useState("dashboard");
   const [tanggalAwal, setTanggalAwal] = useState(
     dayjs("2024-05-01").locale("id")
   );
@@ -78,7 +78,7 @@ const Home = () => {
   const [totalTrip, setTotalTrip] = useState(0);
   const [totalParkir, setTotalParkir] = useState(0);
   const [totalPengajuan, setTotalPengajuan] = useState(0);
-  const [title, setTitle] = useState("Statistik");
+  const [title, setTitle] = useState("Dashboard");
 
   useEffect(() => {
     // Efek samping yang ingin dijalankan
