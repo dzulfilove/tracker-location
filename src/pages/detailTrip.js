@@ -575,17 +575,34 @@ class DetailTrip extends React.Component {
                           </div>
                         </div>
                         <div className="flex p-2 gap-5 justify-between items-center text-base  text-center uppercase w-full border-t border-t-blue-500 ">
-                          <div className="text-sm font-semibold text-center w-full flex flex-col justify-center items-center">
+                          <div className="text-sm font-semibold text-center w-full flex flex-col justify-center items-start">
                             <div className="text-sm text-blue-500 font-semibold mb-1">
                               Biaya Parkir
                             </div>
-                            {this.formatRupiah(this.state.trip.biayaParkir)}
+                            {this.formatRupiah(
+                              this.state.trip.biayaParkir
+                                ? this.state.trip.biayaParkir
+                                : 0
+                            )}
                           </div>
-                          <div className="text-sm font-semibold text-center w-full flex flex-col justify-center items-center">
+                          <div className="text-sm font-semibold text-center w-full flex flex-col justify-center items-end">
                             <div className="text-sm text-blue-500 font-semibold mb-1">
-                              Pengajuan
+                              Nominal
                             </div>
                             {this.formatRupiah(this.state.nominal)}
+                          </div>
+                        </div>
+                        <div className="flex p-2 gap-5 justify-between items-center text-base  text-center uppercase w-full border-t border-t-blue-500 ">
+                          <div className="text-sm font-semibold text-center w-full flex flex-col justify-center items-center">
+                            <div className="text-sm text-blue-500 font-semibold mb-1">
+                              Total Pengajuan
+                            </div>
+                            {this.formatRupiah(
+                              this.state.trip.biayaParkir
+                                ? this.state.trip.biayaParkir +
+                                    this.state.nominal
+                                : 0 + this.state.nominal
+                            )}
                           </div>
                         </div>
                       </div>
@@ -751,7 +768,7 @@ class DetailTrip extends React.Component {
                               </div>
                             </div>
                             <div className="flex p-2 gap-5 justify-between items-center text-base  text-center uppercase w-full border-t border-t-blue-500 ">
-                              <div className="text-base font-semibold text-center w-full flex flex-col justify-center items-center">
+                              <div className="text-base font-semibold text-center w-full flex flex-col justify-center items-start">
                                 <div className="text-sm text-blue-500 font-semibold mb-1">
                                   Biaya Parkir
                                 </div>
@@ -759,7 +776,7 @@ class DetailTrip extends React.Component {
                                   item.biayaParkir ? item.biayaParkir : 0
                                 )}
                               </div>
-                              <div className="text-base font-semibold text-center w-full flex flex-col justify-center items-center">
+                              <div className="text-base font-semibold text-center w-full flex flex-col justify-center items-end">
                                 <div className="text-sm text-blue-500 font-semibold mb-1">
                                   Pengajuan
                                 </div>
@@ -768,6 +785,27 @@ class DetailTrip extends React.Component {
                                     item.jarakKompensasi,
                                     item.kategori
                                   )
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="flex p-2 gap-5 justify-between items-center text-base  text-center uppercase w-full border-t border-t-blue-500 ">
+                              <div className="text-base font-semibold text-center w-full flex flex-col justify-center items-center">
+                                <div className="text-sm text-blue-500 font-semibold mb-1">
+                                  Total Pengajuan
+                                </div>
+                                {this.formatRupiah(
+                                  item.biayaParkir
+                                    ? item.biayaParkir +
+                                        this.nominalTrip(
+                                          item.jarakKompensasi,
+                                          item.kategori
+                                        )
+                                    : 0 +
+                                        this.nominalTrip(
+                                          item.jarakKompensasi,
+                                          item.kategori
+                                        )
                                 )}
                               </div>
                             </div>

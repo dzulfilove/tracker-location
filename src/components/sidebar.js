@@ -873,7 +873,7 @@ const Home = () => {
                               <>
                                 <button
                                   onClick={handleKlaim}
-                                  className="text-base w-[40%] flex justify-center items-center font-normal bg-blue-500 text-blue-50 border border-blue-500 px-2 py-1 rounded-md "
+                                  className="text-base w-[40%] hover:bg-white hover:text-blue-500 hover:border transition-all border-blue-500 flex justify-center items-center font-normal bg-blue-500 text-blue-50 border border-blue-500 px-2 py-1 rounded-md "
                                 >
                                   Klaim Semua
                                 </button>
