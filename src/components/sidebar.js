@@ -185,7 +185,7 @@ const Home = () => {
         const filteredArray = filteredTrips.filter((data) => data.nama == nama);
         const sortData = sortByDateAndTimeDescending(filteredArray);
         handleDetailShow(sortData, dataTerpilih);
-
+        setLoading(false);
         // Tampilkan alert sukses
         console.log("Menampilkan Swal");
         Swal.fire({
