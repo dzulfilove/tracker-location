@@ -22,7 +22,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { dbImage } from "../config/firebase";
 import AOS from "aos";
-
+import { GrMoney } from "react-icons/gr";
 import "aos/dist/aos.css";
 import distance from "../assets/distance.png";
 import {
@@ -39,6 +39,7 @@ import Loading from "./loader";
 import BarChartComponent from "./barChart";
 import PieChartComponent from "./pieChart";
 import LineChartComponent from "./lineChart";
+import PieChartComponentKlaim from "./pieChartKlaim";
 const Home = () => {
   const menus = [
     { name: "Statistik", link: "statistik", icon: AiOutlineAreaChart },
@@ -149,7 +150,7 @@ const Home = () => {
       console.log(filteredArray, "Trip");
       const hasil = filteredArray.map((objek) => {
         // Menentukan faktor pengali berdasarkan kategori
-        const faktorPengali = objek.kategori === "Dalam Kota" ? 600 : 700;
+        const faktorPengali = objek.kategori === "Dalam Kota" ? 500 : 600;
 
         // Menghitung nilai nominal berdasarkan rumus yang diberikan
         const nominal = objek.jarakKompensasi * faktorPengali;
@@ -506,7 +507,7 @@ const Home = () => {
             {open && (
               <>
                 <h5
-                  tyle={{
+                  style={{
                     transitionDelay: `${4}00ms`,
                   }}
                   className={`text-xl font-semibold text-blue-100 text-center whitespace-pre duration-500 ${
@@ -598,7 +599,7 @@ const Home = () => {
               {showDetail == true ? (
                 <>
                   <div className="flex justify-between items-center w-[90%] h-auto">
-                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[17rem] h-[10rem] bg-white rounded-xl shadow-md  ">
+                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[17rem] h-[12rem] bg-white rounded-xl shadow-md  ">
                       <div className="flex justify-start items-center ">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -624,7 +625,7 @@ const Home = () => {
                       </h3>
                     </div>
 
-                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[17rem] h-[10rem] bg-white rounded-xl shadow-md ">
+                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[17rem] h-[12rem] bg-white rounded-xl shadow-md ">
                       <div className="flex justify-start items-center ">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -646,7 +647,7 @@ const Home = () => {
                       </h3>
                     </div>
 
-                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[17rem] h-[10rem] bg-white rounded-xl shadow-md ">
+                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[17rem] h-[12rem] bg-white rounded-xl shadow-md ">
                       <div className="flex justify-start items-center ">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -667,8 +668,9 @@ const Home = () => {
                         {formatDurasi(totalDurasi)}
                       </h3>
                     </div>
-                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[17rem] h-[10rem] bg-white rounded-xl shadow-md ">
-                      <div className="flex justify-start items-center ">
+
+                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[18rem] h-[12rem] bg-white rounded-xl shadow-md ">
+                      <div className="flex justify-between items-center w-full ">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="30"
@@ -684,13 +686,13 @@ const Home = () => {
                         </svg>
                       </div>
                       <h5 className="text-gray-700 text-base font-normal mt-4">
-                        Total Pengajuan
+                        Total Nominal
                       </h5>
                       <h3 className="text-gray-700 text-2xl font-semibold">
                         {formatRupiah(totalPengajuan)}
                       </h3>
                     </div>
-                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[17rem] h-[10rem] bg-white rounded-xl shadow-md ">
+                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[17rem] h-[12rem] bg-white rounded-xl shadow-md ">
                       <div className="flex justify-start items-center ">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -717,6 +719,48 @@ const Home = () => {
                       <h3 className="text-gray-700 text-2xl font-semibold">
                         {formatRupiah(totalParkir)}
                       </h3>
+                    </div>
+                  </div>
+                  <div className="flex justify-center items-center w-[90%] h-auto">
+                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[38rem] h-[13rem] bg-white rounded-xl shadow-md ">
+                      <div className="w-full flex justify-between items-center mt-1">
+                        <div className="w-[37%] flex justify-between items-center mt-1 ">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="38"
+                            height="38"
+                            viewBox="0 0 24 24"
+                          >
+                            <g
+                              fill="none"
+                              stroke="#3B82F6"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="1.5"
+                              color="#3B82F6"
+                            >
+                              <path d="m19.333 14l.824.758c.179.176.268.264.237.339s-.159.075-.412.075h-3.104C15.288 15.172 14 16.438 14 18c0 .352.066.69.185 1m2.482 3l-.824-.758c-.179-.176-.268-.264-.237-.339s.159-.075.412-.075h3.104C20.712 20.828 22 19.562 22 18c0-.352-.066-.69-.185-1" />
+                              <path d="M21.991 11.5C22 10.9 22 10.736 22 10c0-3.771 0-5.657-1.172-6.828S17.771 2 14 2h-4C6.229 2 4.343 2 3.172 3.172S2 6.229 2 10s0 5.657 1.172 6.828S6.229 18 10 18h1m7.5-8h-.009M5.5 10h-.009" />
+                              <path d="M14.5 10a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0" />
+                            </g>
+                          </svg>
+                          <h5 className="text-gray-700 text-xl font-semibold">
+                            Total Pengajuan
+                          </h5>
+                        </div>
+
+                        <h3 className="text-gray-700 text-2xl font-semibold">
+                          {formatRupiah(totalPengajuan)}
+                        </h3>
+                      </div>
+
+                      <div className="w-full flex justify-between items-center mt-1">
+                        <p className="text-base font-normal text-teal-500">
+                          {" "}
+                          Sudah Diklaim
+                        </p>
+                        <p className="text-base font-normal "> Rp. 1000000</p>
+                      </div>
                     </div>
                   </div>
                   {showLoader == false ? (

@@ -107,7 +107,6 @@ class MyTrip extends React.Component {
         where("tanggal", "==", hariIni)
       );
       const querySnapshot = await getDocs(userTripsQuery);
-
       const tripList = [];
       for (const doc of querySnapshot.docs) {
         const tripData = doc.data();

@@ -135,10 +135,10 @@ const DataTable = (props) => {
                 <th className="px-4 py-4 font-medium">Durasi</th>
                 <th className="px-4 py-4 font-medium">Nominal</th>
                 <th className="px-4 py-4 font-medium">Parkir</th>
+                <th className="px-4 py-4 font-medium">Total</th>
 
-                <th className="px-4 py-4 font-medium rounded-r-xl">
-                  Bukti Parkir
-                </th>
+                <th className="px-4 py-4 font-medium">Bukti Parkir</th>
+                <th className="px-4 py-4 font-medium rounded-r-xl">Status</th>
               </tr>
             </>
           ) : (
@@ -203,6 +203,13 @@ const DataTable = (props) => {
                       <>{formatRupiah(0)}</>
                     )}
                   </td>
+                  <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2">
+                    {formatRupiah(
+                      item.nominal + item.biayaParkir
+                        ? item.biayaParkir
+                        : item.nominal + 0
+                    )}
+                  </td>
                   {item.parkir == true && (
                     <>
                       <td
@@ -223,6 +230,11 @@ const DataTable = (props) => {
                         ) : (
                           <></>
                         )}
+                      </td>
+                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2">
+                        <div className="p-1 w-16 text-sm bg-emerald-100 text-emerald-600 flex justify-center items-center rounded-md border border-emerald-500">
+                          Di Klaim
+                        </div>
                       </td>
                     </>
                   )}

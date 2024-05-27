@@ -1,7 +1,7 @@
 import * as React from "react";
 import { PieChart } from "@mui/x-charts/PieChart";
 
-export default function PieChartComponent(props) {
+export default function PieChartComponentKlaim(props) {
   // Fungsi untuk menghitung total berdasarkan kategori
   function calculateTotalsByCategory(dataArray) {
     const totals = dataArray.reduce(
@@ -19,8 +19,8 @@ export default function PieChartComponent(props) {
     );
 
     return [
-      { id: 0, label: "Dalam Kota", value: totals.tripDalam },
-      { id: 1, label: "Luar Kota", value: totals.tripLuar },
+      { id: 0, value: totals.tripDalam },
+      { id: 1, value: totals.tripLuar },
     ];
   }
 
@@ -31,12 +31,10 @@ export default function PieChartComponent(props) {
     <PieChart
       series={[
         {
-          data,
-          highlightScope: { faded: "global", highlighted: "item" },
-          faded: { innerRadius: 30, additionalRadius: -30, color: "gray" },
+          data: data,
         },
       ]}
-      width={400}
+      width={200}
       height={200}
     />
   );

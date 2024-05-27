@@ -161,7 +161,7 @@ class Dashboard extends React.Component {
       console.log(filteredArray, "Trip");
       const hasil = filteredArray.map((objek) => {
         // Menentukan faktor pengali berdasarkan kategori
-        const faktorPengali = objek.kategori === "Dalam Kota" ? 600 : 700;
+        const faktorPengali = objek.kategori === "Dalam Kota" ? 500 : 600;
 
         // Menghitung nilai nominal berdasarkan rumus yang diberikan
         const nominal = objek.jarakKompensasi * faktorPengali;

@@ -165,9 +165,9 @@ class DetailTrip extends React.Component {
 
           let nominal = 0;
           if (tripData.kategori == "Dalam Kota") {
-            nominal = (tripData.jarak + tripData.jarak * 0.2) * 600;
+            nominal = (tripData.jarak + tripData.jarak * 0.2) * 500;
           } else {
-            nominal = (tripData.jarak + tripData.jarak * 0.2) * 700;
+            nominal = (tripData.jarak + tripData.jarak * 0.2) * 600;
           }
 
           // Mendapatkan data dari subkoleksi 'lokasiAwal'
@@ -317,9 +317,9 @@ class DetailTrip extends React.Component {
   nominalTrip = (jarak, kategori) => {
     let nominalTrip = 0;
     if (kategori == "Dalam Kota") {
-      nominalTrip = 600 * jarak;
+      nominalTrip = 500 * jarak;
     } else {
-      nominalTrip = 700 * jarak;
+      nominalTrip = 600 * jarak;
     }
 
     return nominalTrip;
