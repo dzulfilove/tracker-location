@@ -48,6 +48,7 @@ class Dashboard extends React.Component {
       user: {},
       totalParkir: 0,
       jumlahTrip: 0,
+      totalKlaim: 0,
       totalJarak: 0,
       totalDurasi: 0,
       totalPengajuan: 0,
@@ -179,6 +180,15 @@ class Dashboard extends React.Component {
 
         return tripDate >= startDate && tripDate <= endDate;
       });
+
+      const totalKlaim = filteredTrips.reduce((total, obj) => {
+        if (obj.klaim) {
+          return obj.biayaParkir
+            ? parseFloat(obj.biayaParkir) + total + parseFloat(obj.nominal)
+            : 0 + total + parseFloat(obj.nominal);
+        }
+        return total;
+      }, 0);
       const totalJarak = filteredTrips.reduce(
         (total, item) => total + parseFloat(item.jarakKompensasi),
         0
@@ -212,6 +222,7 @@ class Dashboard extends React.Component {
             totalDurasi: totalDurasi,
             jumlahTrip: jumlahTrip,
             totalPengajuan: totalNominal,
+            totalKlaim: totalKlaim,
           },
           resolve
         );
@@ -486,12 +497,14 @@ class Dashboard extends React.Component {
                         />
                       </svg>
                       <div className="text-sm leading-7 font-medium">
-                        Biaya Parkir
+                        Total Pengajuan
                       </div>
                     </div>
 
                     <div className="text-base leading-7 font-semibold">
-                      {this.formatRupiah(this.state.totalParkir)}
+                      {this.formatRupiah(
+                        this.state.totalPengajuan + this.state.totalParkir
+                      )}
                     </div>
                   </div>
                 </div>
@@ -514,19 +527,19 @@ class Dashboard extends React.Component {
                         />
                       </svg>
                       <div className="text-sm leading-7 font-medium">
-                        Pengajuan
+                        Sudah Diklaim
                       </div>
                     </div>
 
                     <div className="text-base leading-7 font-semibold">
-                      {this.formatRupiah(this.state.totalPengajuan)}
+                      {this.formatRupiah(this.state.totalKlaim)}
                     </div>
                   </div>
                 </div>
               </>
             )}
           </div>
-          <div className="w-full px-3 flex flex-col gap-10 justify-center mt-5">
+          <div className="w-full px-3 flex flex-col gap-6 justify-center mt-5">
             <button
               onClick={() => {
                 window.location.href = `/mytrip`;

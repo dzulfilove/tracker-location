@@ -151,7 +151,8 @@ const DataTable = (props) => {
                 <th className="px-4 py-4 w-36 font-medium">Jarak </th>
                 <th className="px-4 py-4 font-medium">Durasi</th>
                 <th className="px-4 py-4 font-medium">Nominal</th>
-                <th className="px-4 py-4 font-medium rounded-r-xl">Parkir</th>
+                <th className="px-4 py-4 font-medium ">Parkir</th>
+                <th className="px-4 py-4 font-medium rounded-r-xl">Total</th>
               </tr>
             </>
           )}
@@ -205,12 +206,13 @@ const DataTable = (props) => {
                   </td>
                   <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2">
                     {formatRupiah(
-                      item.nominal + item.biayaParkir
-                        ? item.biayaParkir
-                        : item.nominal + 0
+                      item.biayaParkir
+                        ? parseFloat(item.nominal) +
+                            parseFloat(item.biayaParkir)
+                        : parseFloat(item.nominal) + 0
                     )}
                   </td>
-                  {item.parkir == true && (
+                  {item.parkir == true ? (
                     <>
                       <td
                         className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 hover:cursor-pointer"
@@ -228,16 +230,38 @@ const DataTable = (props) => {
                             />
                           </>
                         ) : (
-                          <></>
+                          <>
+                            <div className="p-1 w-16 text-sm   flex justify-center items-center rounded-md">
+                              Tidak Ada
+                            </div>
+                          </>
                         )}
                       </td>
-                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2">
-                        <div className="p-1 w-16 text-sm bg-emerald-100 text-emerald-600 flex justify-center items-center rounded-md border border-emerald-500">
-                          Di Klaim
+                    </>
+                  ) : (
+                    <>
+                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 hover:cursor-pointer">
+                        <div className="p-1 w-16 text-sm   flex justify-center items-center rounded-md">
+                          Tidak Ada
                         </div>
                       </td>
                     </>
                   )}
+                  <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2">
+                    {item.klaim ? (
+                      <>
+                        <div className="p-1 w-16 text-sm bg-emerald-100 text-emerald-600 flex justify-center items-center rounded-md border border-emerald-500">
+                          Di Klaim
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="p-1 w-16 text-sm bg-blue-100 text-blue-600 flex justify-center items-center rounded-md border border-blue-500">
+                          Belum
+                        </div>
+                      </>
+                    )}
+                  </td>
                 </tr>
               ))}
             </>
@@ -273,6 +297,9 @@ const DataTable = (props) => {
                       </td>
                       <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2">
                         {formatRupiah(item.totalParkir)}
+                      </td>
+                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2">
+                        {formatRupiah(item.totalParkir + item.totalNominal)}
                       </td>
                     </tr>
                   ))}

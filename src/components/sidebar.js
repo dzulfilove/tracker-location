@@ -25,13 +25,17 @@ import AOS from "aos";
 import { GrMoney } from "react-icons/gr";
 import "aos/dist/aos.css";
 import distance from "../assets/distance.png";
+import Swal from "sweetalert2";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import {
-  addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   getDoc,
   query,
+  updateDoc,
+  addDoc,
   where,
 } from "firebase/firestore";
 import { db } from "../config/firebase";
@@ -62,6 +66,7 @@ const Home = () => {
   );
   const [tanggalAkhir, setTanggalAkhir] = useState(dayjs().locale("id"));
   const [userData, setUserData] = useState([]);
+  const [dataTerpilih, setDataTerpilh] = useState(null);
   const [dataTrips, setDataTrips] = useState([]);
   const [dataFilter, setDataFilter] = useState([]);
   const [dataTripsBulan, setDataTripsBulan] = useState([]);
@@ -74,10 +79,13 @@ const Home = () => {
   const [tripsLength, setTripsLength] = useState(0);
   const [showLoader, setShowLoader] = useState(true);
   const [showDetail, setShowDetail] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [totalJarak, setTotalJarak] = useState(0);
   const [totalDurasi, setTotalDurasi] = useState(0);
   const [totalTrip, setTotalTrip] = useState(0);
   const [totalParkir, setTotalParkir] = useState(0);
+  const [totalKlaim, setTotalKlaim] = useState(0);
+  const [nama, setNama] = useState("");
   const [totalPengajuan, setTotalPengajuan] = useState(0);
   const [title, setTitle] = useState("Dashboard");
 
@@ -105,6 +113,7 @@ const Home = () => {
   };
 
   const getAllTrips = async () => {
+    console.log(dataTerpilih, "terpilihdhdhdh");
     try {
       const tripsCollection = collection(db, "trips");
       const querySnapshot = await getDocs(tripsCollection);
@@ -171,6 +180,22 @@ const Home = () => {
         return tripDate >= startDate && tripDate <= endDate;
       });
 
+      if (showDetail == true) {
+        // // Filter dan sort data
+        const filteredArray = filteredTrips.filter((data) => data.nama == nama);
+        const sortData = sortByDateAndTimeDescending(filteredArray);
+        handleDetailShow(sortData, dataTerpilih);
+
+        // Tampilkan alert sukses
+        console.log("Menampilkan Swal");
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil",
+          text: "Pengajuan Berhasil Di Klaim",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
       const groupedTrips = filteredTrips.reduce((acc, trip) => {
         if (!acc[trip.nama]) {
           acc[trip.nama] = {
@@ -357,10 +382,22 @@ const Home = () => {
   }));
 
   const handleDetailShow = (array, data) => {
-    console.log(array, "ekaaa");
+    console.log("adadadad", array);
+
+    const totalKlaim = array.reduce((total, obj) => {
+      if (obj.klaim) {
+        return obj.biayaParkir
+          ? parseFloat(obj.biayaParkir) + total + parseFloat(obj.nominal)
+          : 0 + total + parseFloat(obj.nominal);
+      }
+      return total;
+    }, 0);
     setShowDetail(true);
     setTitle("Detail Perjalanan");
+    setNama(array[0].nama);
+    setDataTerpilh(data);
     setDataDetailTrips(array);
+    setTotalKlaim(totalKlaim);
     setTotalJarak(data.totalJarak);
     setTotalDurasi(data.totalDurasi);
     setTotalTrip(data.jumlahTrip);
@@ -467,12 +504,58 @@ const Home = () => {
 
     return bulan;
   };
+  const sortByDateAndTimeDescending = (arrayObjek) => {
+    return arrayObjek.sort((a, b) => {
+      const dateA = new Date(a.tanggal);
+      const dateB = new Date(b.tanggal);
+
+      if (dateB - dateA !== 0) {
+        return dateB - dateA;
+      }
+
+      // Menggunakan metode sortir jam keluar dari user
+      let [jamAInt, menitAInt] = a.lokasiAkhir[0].jamSampai
+        .split(":")
+        .map(Number);
+      let [jamBInt, menitBInt] = b.lokasiAkhir[0].jamSampai
+        .split(":")
+        .map(Number);
+
+      if (jamAInt !== jamBInt) {
+        return jamBInt - jamAInt;
+      } else {
+        return menitBInt - menitAInt;
+      }
+    });
+  };
 
   const formatTahun = (tanggal) => {
     const bulan = dayjs(tanggal).locale("id").format("YYYY");
 
     return bulan;
   };
+  async function handleKlaim() {
+    try {
+      setLoading(true);
+
+      // Buat array promise untuk setiap pembaruan dokumen
+      const updatePromises = dataDetailTrips.map(async (trip) => {
+        const docRef = doc(db, "trips", trip.id);
+        await updateDoc(docRef, {
+          klaim: true,
+        });
+        console.log(`Trip dengan ID ${trip.id} berhasil diperbarui.`);
+      });
+
+      // Tunggu semua promise selesai
+      await Promise.all(updatePromises);
+
+      // Ambil data trip terbaru
+      await getAllTrips();
+    } catch (error) {
+      console.error(`Gagal memperbarui trip:`, error);
+    }
+  }
 
   console.log(dataTrips, "data");
   return (
@@ -599,7 +682,7 @@ const Home = () => {
               {showDetail == true ? (
                 <>
                   <div className="flex justify-between items-center w-[90%] h-auto">
-                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[17rem] h-[12rem] bg-white rounded-xl shadow-md  ">
+                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[31.5rem] h-[12rem] bg-white rounded-xl shadow-md  ">
                       <div className="flex justify-start items-center ">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -621,11 +704,11 @@ const Home = () => {
                         Total Perjalanan
                       </h5>
                       <h3 className="text-gray-700 text-2xl font-semibold">
-                        {totalTrip}
+                        {totalTrip} Perjalanan
                       </h3>
                     </div>
 
-                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[17rem] h-[12rem] bg-white rounded-xl shadow-md ">
+                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[28rem] h-[12rem] bg-white rounded-xl shadow-md ">
                       <div className="flex justify-start items-center ">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -647,7 +730,7 @@ const Home = () => {
                       </h3>
                     </div>
 
-                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[17rem] h-[12rem] bg-white rounded-xl shadow-md ">
+                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[28rem] h-[12rem] bg-white rounded-xl shadow-md ">
                       <div className="flex justify-start items-center ">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -668,31 +751,9 @@ const Home = () => {
                         {formatDurasi(totalDurasi)}
                       </h3>
                     </div>
-
-                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[18rem] h-[12rem] bg-white rounded-xl shadow-md ">
-                      <div className="flex justify-between items-center w-full ">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="30"
-                          height="30"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            fill="#3B82F6"
-                            fill-rule="evenodd"
-                            d="M11.948 1.25h.104c.899 0 1.648 0 2.242.08c.628.084 1.195.27 1.65.725c.456.456.642 1.023.726 1.65c.06.44.075.964.079 1.57c.648.021 1.226.06 1.74.128c1.172.158 2.121.49 2.87 1.238c.748.749 1.08 1.698 1.238 2.87c.153 1.14.153 2.595.153 4.433v.112c0 1.838 0 3.294-.153 4.433c-.158 1.172-.49 2.121-1.238 2.87c-.749.748-1.698 1.08-2.87 1.238c-1.14.153-2.595.153-4.433.153H9.944c-1.838 0-3.294 0-4.433-.153c-1.172-.158-2.121-.49-2.87-1.238c-.748-.749-1.08-1.698-1.238-2.87c-.153-1.14-.153-2.595-.153-4.433v-.112c0-1.838 0-3.294.153-4.433c.158-1.172.49-2.121 1.238-2.87c.749-.748 1.698-1.08 2.87-1.238a17.54 17.54 0 0 1 1.74-.128c.004-.606.02-1.13.079-1.57c.084-.627.27-1.194.725-1.65c.456-.455 1.023-.64 1.65-.725c.595-.08 1.345-.08 2.243-.08M8.752 5.252c.378-.002.775-.002 1.192-.002h4.112c.417 0 .814 0 1.192.002c-.004-.57-.018-1-.064-1.347c-.063-.461-.17-.659-.3-.789c-.13-.13-.328-.237-.79-.3c-.482-.064-1.13-.066-2.094-.066s-1.612.002-2.095.067c-.461.062-.659.169-.789.3c-.13.13-.237.327-.3.788c-.046.346-.06.776-.064 1.347M5.71 6.89c-1.006.135-1.586.389-2.01.812c-.422.423-.676 1.003-.811 2.009c-.138 1.027-.14 2.382-.14 4.289c0 1.907.002 3.262.14 4.29c.135 1.005.389 1.585.812 2.008c.423.423 1.003.677 2.009.812c1.028.138 2.382.14 4.289.14h4c1.907 0 3.262-.002 4.29-.14c1.005-.135 1.585-.389 2.008-.812c.423-.423.677-1.003.812-2.009c.138-1.027.14-2.382.14-4.289c0-1.907-.002-3.261-.14-4.29c-.135-1.005-.389-1.585-.812-2.008c-.423-.423-1.003-.677-2.009-.812c-1.027-.138-2.382-.14-4.289-.14h-4c-1.907 0-3.261.002-4.29.14M12 9.25a.75.75 0 0 1 .75.75v.01c1.089.274 2 1.133 2 2.323a.75.75 0 0 1-1.5 0c0-.384-.426-.916-1.25-.916c-.824 0-1.25.532-1.25.916s.426.917 1.25.917c1.385 0 2.75.96 2.75 2.417c0 1.19-.911 2.048-2 2.323V18a.75.75 0 0 1-1.5 0v-.01c-1.089-.274-2-1.133-2-2.323a.75.75 0 0 1 1.5 0c0 .384.426.916 1.25.916c.824 0 1.25-.532 1.25-.916s-.426-.917-1.25-.917c-1.385 0-2.75-.96-2.75-2.417c0-1.19.911-2.049 2-2.323V10a.75.75 0 0 1 .75-.75"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                      <h5 className="text-gray-700 text-base font-normal mt-4">
-                        Total Nominal
-                      </h5>
-                      <h3 className="text-gray-700 text-2xl font-semibold">
-                        {formatRupiah(totalPengajuan)}
-                      </h3>
-                    </div>
-                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[17rem] h-[12rem] bg-white rounded-xl shadow-md ">
+                  </div>
+                  <div className="flex justify-between items-center w-[90%] h-auto">
+                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[22.5rem] h-[13rem] bg-white rounded-xl shadow-md ">
                       <div className="flex justify-start items-center ">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -720,9 +781,30 @@ const Home = () => {
                         {formatRupiah(totalParkir)}
                       </h3>
                     </div>
-                  </div>
-                  <div className="flex justify-center items-center w-[90%] h-auto">
-                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[38rem] h-[13rem] bg-white rounded-xl shadow-md ">
+                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[22.5rem] h-[13rem] bg-white rounded-xl shadow-md ">
+                      <div className="flex justify-between items-center w-full ">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="30"
+                          height="30"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="#3B82F6"
+                            fill-rule="evenodd"
+                            d="M11.948 1.25h.104c.899 0 1.648 0 2.242.08c.628.084 1.195.27 1.65.725c.456.456.642 1.023.726 1.65c.06.44.075.964.079 1.57c.648.021 1.226.06 1.74.128c1.172.158 2.121.49 2.87 1.238c.748.749 1.08 1.698 1.238 2.87c.153 1.14.153 2.595.153 4.433v.112c0 1.838 0 3.294-.153 4.433c-.158 1.172-.49 2.121-1.238 2.87c-.749.748-1.698 1.08-2.87 1.238c-1.14.153-2.595.153-4.433.153H9.944c-1.838 0-3.294 0-4.433-.153c-1.172-.158-2.121-.49-2.87-1.238c-.748-.749-1.08-1.698-1.238-2.87c-.153-1.14-.153-2.595-.153-4.433v-.112c0-1.838 0-3.294.153-4.433c.158-1.172.49-2.121 1.238-2.87c.749-.748 1.698-1.08 2.87-1.238a17.54 17.54 0 0 1 1.74-.128c.004-.606.02-1.13.079-1.57c.084-.627.27-1.194.725-1.65c.456-.455 1.023-.64 1.65-.725c.595-.08 1.345-.08 2.243-.08M8.752 5.252c.378-.002.775-.002 1.192-.002h4.112c.417 0 .814 0 1.192.002c-.004-.57-.018-1-.064-1.347c-.063-.461-.17-.659-.3-.789c-.13-.13-.328-.237-.79-.3c-.482-.064-1.13-.066-2.094-.066s-1.612.002-2.095.067c-.461.062-.659.169-.789.3c-.13.13-.237.327-.3.788c-.046.346-.06.776-.064 1.347M5.71 6.89c-1.006.135-1.586.389-2.01.812c-.422.423-.676 1.003-.811 2.009c-.138 1.027-.14 2.382-.14 4.289c0 1.907.002 3.262.14 4.29c.135 1.005.389 1.585.812 2.008c.423.423 1.003.677 2.009.812c1.028.138 2.382.14 4.289.14h4c1.907 0 3.262-.002 4.29-.14c1.005-.135 1.585-.389 2.008-.812c.423-.423.677-1.003.812-2.009c.138-1.027.14-2.382.14-4.289c0-1.907-.002-3.261-.14-4.29c-.135-1.005-.389-1.585-.812-2.008c-.423-.423-1.003-.677-2.009-.812c-1.027-.138-2.382-.14-4.289-.14h-4c-1.907 0-3.261.002-4.29.14M12 9.25a.75.75 0 0 1 .75.75v.01c1.089.274 2 1.133 2 2.323a.75.75 0 0 1-1.5 0c0-.384-.426-.916-1.25-.916c-.824 0-1.25.532-1.25.916s.426.917 1.25.917c1.385 0 2.75.96 2.75 2.417c0 1.19-.911 2.048-2 2.323V18a.75.75 0 0 1-1.5 0v-.01c-1.089-.274-2-1.133-2-2.323a.75.75 0 0 1 1.5 0c0 .384.426.916 1.25.916c.824 0 1.25-.532 1.25-.916s-.426-.917-1.25-.917c-1.385 0-2.75-.96-2.75-2.417c0-1.19.911-2.049 2-2.323V10a.75.75 0 0 1 .75-.75"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <h5 className="text-gray-700 text-base font-normal mt-4">
+                        Total Nominal
+                      </h5>
+                      <h3 className="text-gray-700 text-2xl font-semibold">
+                        {formatRupiah(totalPengajuan)}
+                      </h3>
+                    </div>
+                    <div className="flex p-8 flex-col justify-center items-start gap-1 w-[42rem] h-[13rem] bg-white rounded-xl shadow-md ">
                       <div className="w-full flex justify-between items-center mt-1">
                         <div className="w-[37%] flex justify-between items-center mt-1 ">
                           <svg
@@ -750,17 +832,56 @@ const Home = () => {
                         </div>
 
                         <h3 className="text-gray-700 text-2xl font-semibold">
-                          {formatRupiah(totalPengajuan)}
+                          {formatRupiah(totalPengajuan + totalParkir)}
                         </h3>
                       </div>
 
-                      <div className="w-full flex justify-between items-center mt-1">
-                        <p className="text-base font-normal text-teal-500">
+                      <div className="w-full flex justify-between items-center mt-3">
+                        <p className="text-base font-normal text-teal-500  bg-teal-50 border border-teal-500 px-2 py-1 rounded-md">
                           {" "}
                           Sudah Diklaim
                         </p>
-                        <p className="text-base font-normal "> Rp. 1000000</p>
+                        <p className="text-base font-normal ">
+                          {" "}
+                          {formatRupiah(totalKlaim)}
+                        </p>
                       </div>
+                      <div className="w-full flex justify-between items-center mt-1">
+                        <div className="text-base font-normal text-blue-500 bg-blue-50 border border-blue-500 px-2 py-1 rounded-md ">
+                          {" "}
+                          Belum Diklaim
+                        </div>
+                        <p className="text-base font-normal ">
+                          {" "}
+                          {formatRupiah(
+                            totalPengajuan + totalParkir - totalKlaim
+                          )}
+                        </p>
+                      </div>
+                      {totalPengajuan + totalParkir - totalKlaim > 0 && (
+                        <>
+                          <div className="w-full flex justify-end items-center mt-1">
+                            {loading == true ? (
+                              <>
+                                <div className="text-base w-[40%] flex justify-center gap-5 items-center font-normal bg-blue-500 text-blue-50 border border-blue-500 px-2 py-1 rounded-md ">
+                                  Loading{" "}
+                                  <AiOutlineLoading3Quarters className="w-7 h-7 animate-spin" />
+                                  {/* Klaim Semua */}
+                                </div>
+                              </>
+                            ) : (
+                              <>
+                                <button
+                                  onClick={handleKlaim}
+                                  className="text-base w-[40%] flex justify-center items-center font-normal bg-blue-500 text-blue-50 border border-blue-500 px-2 py-1 rounded-md "
+                                >
+                                  Klaim Semua
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                   {showLoader == false ? (
