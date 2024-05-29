@@ -48,7 +48,7 @@ function App() {
       const userData = querySnapshot.docs[0].data();
 
       await new Promise((resolve) => {
-        setUser(userData.peran);
+        setUser(userData);
       });
 
       return userData;
@@ -65,11 +65,12 @@ function App() {
           {isLoggedIn ? (
             <>
               <Route path="/" element={<Dashboard />} />
-              {user == "Scrum Master" && (
-                <>
-                  <Route path="/dashboard" element={<Home />} />
-                </>
-              )}
+              {user.email == "maisyarohsiti564@gmail.com" ||
+                (user.peran == "Scrum Master" && (
+                  <>
+                    <Route path="/dashboard" element={<Home />} />
+                  </>
+                ))}
               <Route path="/mytrip" element={<MyTrip />} />
               <Route path="/history" element={<History />} />
               <Route path="/input-trip/:id" element={<InputTrip />} />
