@@ -252,7 +252,7 @@ class Dashboard extends React.Component {
         return null;
       }
       const userData = querySnapshot.docs[0].data();
-
+      console.log(userData.peran, "hcdghashsdh");
       await new Promise((resolve) => {
         this.setState({ user: userData }, resolve);
       });
@@ -560,31 +560,54 @@ class Dashboard extends React.Component {
                 />
               </svg>
             </button>
-            {this.state.user.peran == "Scrum Master" ||
-              (this.state.user.email == "maisyarohsiti564@gmail.com" && (
-                <>
-                  <button
-                    onClick={() => {
-                      window.location.href = `/dashboard`;
-                    }}
-                    className="self-start text-base font-medium tracking-wide leading-7 text-center text-white bg-blue-500 w-full p-2 rounded-xl shadow-xl flex justify-center gap-5 items-center"
+            {this.state.user.email == "maisyarohsiti564@gmail.com" && (
+              <>
+                <button
+                  onClick={() => {
+                    window.location.href = `/dashboard`;
+                  }}
+                  className="self-start text-base font-medium tracking-wide leading-7 text-center text-white bg-blue-500 w-full p-2 rounded-xl shadow-xl flex justify-center gap-5 items-center"
+                >
+                  Dashboard Admin
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
                   >
-                    Dashboard Admin
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        fill="white"
-                        fill-rule="evenodd"
-                        d="m9.005 4l8 8l-8 8L7 18l6.005-6L7 6z"
-                      />
-                    </svg>
-                  </button>
-                </>
-              ))}
+                    <path
+                      fill="white"
+                      fill-rule="evenodd"
+                      d="m9.005 4l8 8l-8 8L7 18l6.005-6L7 6z"
+                    />
+                  </svg>
+                </button>
+              </>
+            )}
+            {this.state.user.peran == "Scrum Master" && (
+              <>
+                <button
+                  onClick={() => {
+                    window.location.href = `/dashboard`;
+                  }}
+                  className="self-start text-base font-medium tracking-wide leading-7 text-center text-white bg-blue-500 w-full p-2 rounded-xl shadow-xl flex justify-center gap-5 items-center"
+                >
+                  Dashboard Admin
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="white"
+                      fill-rule="evenodd"
+                      d="m9.005 4l8 8l-8 8L7 18l6.005-6L7 6z"
+                    />
+                  </svg>
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

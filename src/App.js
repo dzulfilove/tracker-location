@@ -47,7 +47,7 @@ function App() {
         return null;
       }
       const userData = querySnapshot.docs[0].data();
-      console.log(userData.email, "userrrrr");
+      console.log(userData.peran, "userrrrr");
 
       await new Promise((resolve) => {
         setUser(userData);
@@ -70,12 +70,16 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               {isUser == true && (
                 <>
-                  {user.peran == "Scrum Master" ||
-                    (user.email == "maisyarohsiti564@gmail.com" && (
-                      <>
-                        <Route path="/dashboard" element={<Home />} />
-                      </>
-                    ))}
+                  {user.peran == "Scrum Master" && (
+                    <>
+                      <Route path="/dashboard" element={<Home />} />
+                    </>
+                  )}
+                  {user.email == "maisyarohsiti564@gmail.com" && (
+                    <>
+                      <Route path="/dashboard" element={<Home />} />
+                    </>
+                  )}
                 </>
               )}
 
