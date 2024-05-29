@@ -31,6 +31,7 @@ import {
 function App() {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
   const [user, setUser] = useState(null);
+  const [isUser, setIsUser] = useState(false);
 
   useEffect(() => {
     const userEmail = localStorage.getItem("userEmail");
@@ -46,9 +47,11 @@ function App() {
         return null;
       }
       const userData = querySnapshot.docs[0].data();
+      console.log(userData.email, "userrrrr");
 
       await new Promise((resolve) => {
         setUser(userData);
+        setIsUser(true);
       });
 
       return userData;
@@ -65,12 +68,17 @@ function App() {
           {isLoggedIn ? (
             <>
               <Route path="/" element={<Dashboard />} />
-              {user.email == "maisyarohsiti564@gmail.com" ||
-                (user.peran == "Scrum Master" && (
-                  <>
-                    <Route path="/dashboard" element={<Home />} />
-                  </>
-                ))}
+              {isUser == true && (
+                <>
+                  {user.peran == "Scrum Master" ||
+                    (user.email == "maisyarohsiti564@gmail.com" && (
+                      <>
+                        <Route path="/dashboard" element={<Home />} />
+                      </>
+                    ))}
+                </>
+              )}
+
               <Route path="/mytrip" element={<MyTrip />} />
               <Route path="/history" element={<History />} />
               <Route path="/input-trip/:id" element={<InputTrip />} />

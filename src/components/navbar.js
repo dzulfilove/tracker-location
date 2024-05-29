@@ -16,6 +16,7 @@ function Navbar() {
   const navRef = useRef();
   const isLoggedIn = localStorage.getItem("isLoggedIn");
   const [user, setUser] = useState(null);
+  const [isUser, setIsUser] = useState(false);
 
   let login = false;
   if (isLoggedIn) {
@@ -39,9 +40,11 @@ function Navbar() {
         return null;
       }
       const userData = querySnapshot.docs[0].data();
+      console.log(userData.email, "userrrrr");
 
       await new Promise((resolve) => {
         setUser(userData);
+        setIsUser(true);
       });
 
       return userData;
@@ -91,7 +94,7 @@ function Navbar() {
             </Link>
           </>
         )}
-        {login == true && (
+        {login == true && isUser == true && (
           <>
             {user.peran == "Scrum Master" ||
               (user.email == "maisyarohsiti564@gmail.com" && (
