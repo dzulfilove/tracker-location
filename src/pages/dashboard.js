@@ -560,7 +560,7 @@ class Dashboard extends React.Component {
                 />
               </svg>
             </button>
-            {this.state.user.email == "maisyarohsiti564@gmail.com" && (
+            {this.state.user.email == "akuntingkosasih@gmail.com" && (
               <>
                 <button
                   onClick={() => {

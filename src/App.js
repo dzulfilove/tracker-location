@@ -75,7 +75,7 @@ function App() {
                       <Route path="/dashboard" element={<Home />} />
                     </>
                   )}
-                  {user.email == "maisyarohsiti564@gmail.com" && (
+                  {user.email == "akuntingkosasih@gmail.com" && (
                     <>
                       <Route path="/dashboard" element={<Home />} />
                     </>

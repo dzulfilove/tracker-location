@@ -120,7 +120,7 @@ function Navbar() {
               </>
             )}
 
-            {user.email == "maisyarohsiti564@gmail.com" && (
+            {user.email == "akuntingkosasih@gmail.com" && (
               <>
                 <Link
                   loading="lazy"
