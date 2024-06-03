@@ -315,16 +315,13 @@ class Dashboard extends React.Component {
         }}
       >
         <div className="font-DM flex flex-col px-4 pt-7 pb-11 mx-auto w-full font-bold bg-white  rounded-[32px]">
-          <div className="flex gap-5 text-xl tracking-wide leading-7 text-center whitespace-nowrap rounded-[32px] text-indigo-950">
+          <div className="flex gap-5 text-xl tracking-wide leading-7 text-center whitespace-nowrap rounded-[32px] text-blue-950">
             <Navbar />
             <div className="flex-auto my-auto text-xl font-semibold">
               Dashboard
             </div>
           </div>
-          <div
-            data-aos="slide-down"
-            className="w-full flex justify-between items-center mt-6"
-          >
+          <div className="w-full flex justify-between items-center mt-6">
             <div className="w-[10rem] flex justify-center items-center px-2 py-4 text-sm font-medium text-white">
               <LocalizationProvider
                 dateAdapter={AdapterDayjs}
@@ -367,11 +364,8 @@ class Dashboard extends React.Component {
               </LocalizationProvider>
             </div>
           </div>
-          <div
-            data-aos="slide-down"
-            className="flex gap-5 justify-between px-5 py-7 mt-1 w-full text-base leading-5 bg-white rounded-2xl border border-solid border-zinc-100 shadow-xl"
-          >
-            <div className="flex flex-col text-indigo-950 w-full">
+          <div className="flex gap-5 justify-between px-5 py-7 mt-1 w-full text-base leading-5 bg-white rounded-2xl border border-solid border-zinc-100 shadow-xl">
+            <div className="flex flex-col text-blue-950 w-full">
               <div className="text-base tracking-wide leading-7 text-start pb-3 border-b border-b-blue-500 mb-4 font-semibold">
                 {this.state.user.display_name}
               </div>
@@ -409,7 +403,7 @@ class Dashboard extends React.Component {
                 </svg>
                 <div className="flex flex-col capitalize">
                   <div className="text-blue-500">Sampai</div>
-                  <div className="mt-2.5 text-indigo-950 font-medium">
+                  <div className="mt-2.5 text-blue-950 font-medium">
                     {this.state.tanggalSelesaiTampil}
                   </div>
                 </div>

@@ -397,7 +397,7 @@ class DetailTrip extends React.Component {
 
             <div className="bg-gradient-to-b from-white/0 to-white/100 h-14"></div>
             <div className="absolute flex flex-col justify-start w-full z-[9999] mt-[18rem] pb-1 ">
-              <div className="flex flex-col px-4 w-full text-xl font-bold tracking-wide leading-7 text-center text-indigo-950"></div>
+              <div className="flex flex-col px-4 w-full text-xl font-bold tracking-wide leading-7 text-center text-blue-950"></div>
               {this.state.tripOdd.length > 1 && (
                 <>
                   <div
@@ -483,7 +483,7 @@ class DetailTrip extends React.Component {
                         />
                         <div className="flex flex-col ">
                           <div className="flex gap-4">
-                            <div className="my-auto font-medium  text-base  text-indigo-950">
+                            <div className="my-auto font-medium  text-base  text-blue-950">
                               Dari:
                             </div>
                             <div className="flex flex-wrap font-medium  p-1 text-sm  text-slate-500 justify-start  items-center h-auto overflow-hidden">
@@ -497,9 +497,7 @@ class DetailTrip extends React.Component {
                             </div>
                           </div>
                           <div className="flex gap-5 mt-4 ">
-                            <div className="font-medium text-indigo-950">
-                              Ke:
-                            </div>
+                            <div className="font-medium text-blue-950">Ke:</div>
                             <div className="pl-3 flex  font-medium  p-1 text-sm  text-slate-500 justify-start  items-centerh-auto overflow-hidden">
                               {this.state.lokasiSelesai}
                             </div>
@@ -513,7 +511,7 @@ class DetailTrip extends React.Component {
                       </div>
                     </div>
 
-                    <div className="flex flex-col px-7 mt-5 w-full font-bold text-indigo-950">
+                    <div className="flex flex-col px-7 mt-5 w-full font-bold text-blue-950">
                       <div className="flex flex-col gap-3 justify-between items-center p-2 text-base  text-center uppercase bg-white rounded-2xl shadow-[0px_4px_15px_rgba(0,0,0,0.15)]">
                         <div className="flex gap-5 justify-between items-center text-base  text-center uppercase w-full ">
                           <div className="w-[50%] flex justify-start gap-3 items-center p-2 ">
@@ -670,7 +668,7 @@ class DetailTrip extends React.Component {
                             />
                             <div className="flex flex-col ">
                               <div className="flex gap-4">
-                                <div className="my-auto font-medium  text-base  text-indigo-950">
+                                <div className="my-auto font-medium  text-base  text-blue-950">
                                   Dari:
                                 </div>
                                 <div className="flex flex-wrap font-medium  p-1 text-sm  text-slate-500 justify-start  items-center h-auto overflow-hidden">
@@ -684,7 +682,7 @@ class DetailTrip extends React.Component {
                                 </div>
                               </div>
                               <div className="flex gap-5 mt-4 ">
-                                <div className="font-medium text-indigo-950">
+                                <div className="font-medium text-blue-950">
                                   Ke:
                                 </div>
                                 <div className="pl-3 flex  font-medium  p-1 text-sm  text-slate-500 justify-start  items-centerh-auto overflow-hidden">
@@ -700,7 +698,7 @@ class DetailTrip extends React.Component {
                           </div>
                         </div>
 
-                        <div className="flex flex-col px-7 mt-5 w-full font-bold text-indigo-950">
+                        <div className="flex flex-col px-7 mt-5 w-full font-bold text-blue-950">
                           <div
                             style={{
                               border:
