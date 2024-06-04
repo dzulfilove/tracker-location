@@ -410,10 +410,7 @@ class Dashboard extends React.Component {
               </div>
             </div>
           </div>
-          <div
-            data-aos="fade-up"
-            className="flex flex-col items-center px-4 pt-5 pb-8 mt-6 w-full shadow-xl tracking-wide text-center text-white bg-gradient-to-r from-blue-500 to-blue-800 rounded-2xl border border-blue-500 border-solid "
-          >
+          <div className="flex flex-col items-center px-4 pt-5 pb-8 mt-6 w-full shadow-xl tracking-wide text-center text-white bg-gradient-to-r from-blue-500 to-blue-800 rounded-2xl border border-blue-500 border-solid ">
             {this.state.loader == true ? (
               <>
                 <LoadingComp />
