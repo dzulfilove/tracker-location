@@ -98,7 +98,24 @@ class History extends React.Component {
         tripList.push({ id: doc.id, ...tripData });
       }
 
-      const sortir = this.sortirBerdasarkanTanggalDanJamKeluarDesc(tripList);
+      const hasil = tripList.map((objek) => {
+        // Menentukan faktor pengali berdasarkan kategori
+        const faktorPengali = objek.kategori === "Dalam Kota" ? 500 : 600;
+
+        const jarak = objek.jarakKompensasi
+          ? objek.jarakKompensasi
+          : (parseFloat(objek.jarak) * 20) / 100;
+        // Menghitung nilai nominal berdasarkan rumus yang diberikan
+        const nominal = jarak * faktorPengali;
+
+        // Mengembalikan objek baru dengan properti nominal yang ditambahkan
+        return {
+          ...objek, // Menyalin properti objek yang ada
+          nominal: nominal,
+          jarak: jarak,
+        };
+      });
+      const sortir = this.sortirBerdasarkanTanggalDanJamKeluarDesc(hasil);
 
       await new Promise((resolve) => {
         this.setState({ trips: sortir, loader: false }, resolve);
@@ -313,8 +330,8 @@ class History extends React.Component {
                                 {trip.lokasiAkhir[0].lokasi}
                               </div>
                               <div className="flex text-sm font-medium justify-center items-start p-2 w-full mt-2.5 text-right text-white bg-blue-500 rounded-lg">
-                                {Math.round(trip.jarak)} KM ({trip.durasi}{" "}
-                                Menit)
+                                {parseFloat(trip.jarak.toFixed(2))} KM (
+                                {trip.durasi} Menit)
                               </div>
                             </div>
                           </div>
@@ -350,8 +367,8 @@ class History extends React.Component {
                                 {trip.lokasiAkhir[0].lokasi}
                               </div>
                               <div className="flex text-sm font-medium justify-center items-start p-2 w-full mt-2.5 text-right text-white bg-blue-500 rounded-lg">
-                                {Math.round(trip.jarak)} KM ({trip.durasi}{" "}
-                                Menit)
+                                {parseFloat(trip.jarak.toFixed(2))} KM (
+                                {trip.durasi} Menit)
                               </div>
                             </div>
                           </div>

@@ -104,13 +104,21 @@ class Dashboard extends React.Component {
       (total, item) => total + item.durasi,
       0
     );
+    const totalParkir = filteredTrips.reduce(
+      (total, item) =>
+        total + parseFloat(item.biayaParkir ? item.biayaParkir : 0), // Jika biaya parkir tidak ada, maka biaya parkir dianggap 0
+
+      0
+    );
     const jumlahTrip = filteredTrips.length;
     const mulaiTgl = this.formatTanggal(tanggalMulai);
     const selesaiTgl = this.formatTanggal(tanggalSelesai);
+    console.log(this.sortByDateAndTimeDescending(filteredTrips), "data Filter");
     this.setState({
       totalJarak: totalJarak.toFixed(2),
       jumlahTrip: jumlahTrip,
       totalDurasi: totalDurasi,
+      totalParkir: totalParkir,
       totalPengajuan: totalNominal,
       tanggalMulaiTampil: mulaiTgl,
       tanggalSelesaiTampil: selesaiTgl,
@@ -118,7 +126,30 @@ class Dashboard extends React.Component {
 
     this.setState({ filteredTrips, isFilter: true });
   };
+  sortByDateAndTimeDescending = (arrayObjek) => {
+    return arrayObjek.sort((a, b) => {
+      const dateA = new Date(a.tanggal);
+      const dateB = new Date(b.tanggal);
 
+      if (dateB - dateA !== 0) {
+        return dateB - dateA;
+      }
+
+      // Menggunakan metode sortir jam keluar dari user
+      let [jamAInt, menitAInt] = a.lokasiAkhir[0].jamSampai
+        .split(":")
+        .map(Number);
+      let [jamBInt, menitBInt] = b.lokasiAkhir[0].jamSampai
+        .split(":")
+        .map(Number);
+
+      if (jamAInt !== jamBInt) {
+        return jamBInt - jamAInt;
+      } else {
+        return menitBInt - menitAInt;
+      }
+    });
+  };
   getAllTripsByUid = async (email) => {
     await this.getUserLogin(email);
     const { user } = this.state;
