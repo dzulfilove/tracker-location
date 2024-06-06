@@ -249,13 +249,6 @@ class InputTrip extends React.Component {
         }
 
         if (kosong == false) {
-          if (lokasi.value == "Lainnya") {
-            const lokasiRef = collection(db, "lokasi");
-            await addDoc(lokasiRef, {
-              label: addLokasi,
-              value: addLokasi,
-            });
-          }
           const tripRef = collection(db, "trips");
           const userRef = doc(db, "User", user);
           const newTrip = await addDoc(tripRef, {
