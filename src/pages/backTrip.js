@@ -146,22 +146,58 @@ class BackTrip extends React.Component {
 
   handleFoto = async (file) => {
     try {
-      // Konfigurasi opsi kompresi
-      const options = {
-        maxSizeMB: 0.5,
-        maxWidthOrHeight: 1920,
-        useWebWorker: true,
+      // Fungsi untuk mengompres gambar menggunakan canvas
+      const compressImage = (file, maxWidth, maxHeight, quality) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.src = URL.createObjectURL(file);
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > maxWidth) {
+                height = Math.round((height *= maxWidth / width));
+                width = maxWidth;
+              }
+            } else {
+              if (height > maxHeight) {
+                width = Math.round((width *= maxHeight / height));
+                height = maxHeight;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob(
+              (blob) => {
+                resolve(blob);
+              },
+              "image/jpeg",
+              quality
+            );
+          };
+          img.onerror = (err) => {
+            reject(err);
+          };
+        });
       };
 
-      // Kompresi gambar
-      const compressedFile = await imageCompression(file, options);
+      // Kompresi gambar dengan resolusi maksimal 1920x1920 dan kualitas 0.7
+      const compressedFile = await compressImage(file, 1920, 1920, 0.7);
 
+      // Unggah gambar yang telah dikompres ke Firebase
       const storageRef = ref(dbImage, `trip/${Date.now()}.jpg`);
       const snapshot = await uploadBytes(storageRef, compressedFile);
       const downloadURL = await getDownloadURL(
         ref(dbImage, snapshot.ref.fullPath)
       );
 
+      // Setel state dengan URL gambar yang diunggah
       this.setState({ fotoBukti: downloadURL, isOpenCamera: false }, () => {
         console.log("Foto berhasil diunggah:", this.state.fotoBukti);
       });
