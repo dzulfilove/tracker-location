@@ -29,12 +29,12 @@ import {
   where,
 } from "firebase/firestore";
 function App() {
-  const isLoggedIn = localStorage.getItem("isLoggedIn");
+  const isLoggedIn = sessionStorage.getItem("isLoggedIn");
   const [user, setUser] = useState(null);
   const [isUser, setIsUser] = useState(false);
 
   useEffect(() => {
-    const userEmail = localStorage.getItem("userEmail");
+    const userEmail = sessionStorage.getItem("userEmail");
     getUser(userEmail);
     // you can use the userData here, or set it to state using setUser
   }, []);

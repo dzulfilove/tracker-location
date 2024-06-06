@@ -67,7 +67,7 @@ class MyTrip extends React.Component {
 
   componentDidMount = () => {
     const { id } = this.state;
-    const userEmail = localStorage.getItem("userEmail");
+    const userEmail = sessionStorage.getItem("userEmail");
 
     console.log(id, "srerr");
 

@@ -14,7 +14,7 @@ import {
 } from "firebase/firestore";
 function Navbar() {
   const navRef = useRef();
-  const isLoggedIn = localStorage.getItem("isLoggedIn");
+  const isLoggedIn = sessionStorage.getItem("isLoggedIn");
   const [user, setUser] = useState(null);
   const [isUser, setIsUser] = useState(false);
 
@@ -27,7 +27,7 @@ function Navbar() {
   };
 
   useEffect(() => {
-    const userEmail = localStorage.getItem("userEmail");
+    const userEmail = sessionStorage.getItem("userEmail");
     getUser(userEmail);
     // you can use the userData here, or set it to state using setUser
   }, []);
@@ -55,7 +55,7 @@ function Navbar() {
   };
 
   const logout = () => {
-    localStorage.removeItem("isLoggedIn");
+    sessionStorage.removeItem("isLoggedIn");
     Swal.fire(
       {
         icon: "success",

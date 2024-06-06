@@ -63,7 +63,7 @@ class BackTrip extends React.Component {
   }
 
   componentDidMount = async () => {
-    const userEmail = localStorage.getItem("userEmail");
+    const userEmail = sessionStorage.getItem("userEmail");
     await this.getUserLogin(userEmail);
     await this.getDataPerjalanan();
     await this.getAllLokasi();

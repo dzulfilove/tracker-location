@@ -50,11 +50,11 @@ class Auth extends React.Component {
       throw error;
     }
   };
-  isLocalStorageAvailable = () => {
+  issessionStorageAvailable = () => {
     try {
       const testKey = "__test__";
-      localStorage.setItem(testKey, testKey);
-      localStorage.removeItem(testKey);
+      sessionStorage.setItem(testKey, testKey);
+      sessionStorage.removeItem(testKey);
       return true;
     } catch (e) {
       return false;
@@ -70,20 +70,20 @@ class Auth extends React.Component {
     const peran = this.state.userData.peran;
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      const cekStorage = this.isLocalStorageAvailable();
+      const cekStorage = this.issessionStorageAvailable();
       if (!cekStorage) {
         Swal.fire({
           icon: "warning",
-          title: "LocalStorage is not available",
+          title: "sessionStorage is not available",
           text: "Please disable private browsing or use another browser. ",
           showConfirmButton: false,
           timer: 1500,
         });
       }
 
-      localStorage.setItem("isLoggedIn", true);
-      localStorage.setItem("userEmail", email);
-      localStorage.setItem("peran", peran);
+      sessionStorage.setItem("isLoggedIn", true);
+      sessionStorage.setItem("userEmail", email);
+      sessionStorage.setItem("peran", peran);
       Swal.fire(
         {
           icon: "success",

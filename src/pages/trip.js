@@ -25,7 +25,7 @@ class MyTrip extends React.Component {
 
   componentDidMount = async () => {
     this.getHariIni();
-    const userEmail = localStorage.getItem("userEmail");
+    const userEmail = sessionStorage.getItem("userEmail");
     await this.setState({ displayName: userEmail });
     AOS.init({ duration: 700 });
     await this.getAllTripsByUid();
