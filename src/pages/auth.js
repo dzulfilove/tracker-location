@@ -24,7 +24,7 @@ class Auth extends React.Component {
   }
 
   handleEmailChange = (event) => {
-    this.setState({ email: event.target.value });
+    this.setState({ email: event.target.value.toLowerCase() });
   };
 
   handlePasswordChange = (event) => {
