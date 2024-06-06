@@ -59,7 +59,6 @@ class BackTrip extends React.Component {
       user: {},
       lokasiAwal: {},
       isSubmit: false,
-      eror: null,
     };
   }
 
@@ -346,7 +345,7 @@ class BackTrip extends React.Component {
   sendMessage = async (text, foto) => {
     try {
       const response = await fetch(
-        "https://api.telegram.org/bot6918610122:AAGtiKCw9ro4HkeGIgcJLOwbcO4Hisq2YRA/sendPhoto",
+        "https://api.telegram.org/bot6823587684:AAE4Ya6Lpwbfw8QxFYec6xAqWkBYeP53MLQ/sendPhoto",
 
         {
           method: "POST",
@@ -354,7 +353,8 @@ class BackTrip extends React.Component {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            chat_id: "6546310886",
+            chat_id: "-1001812360373",
+            message_thread_id: "4294967304",
             photo: foto,
             caption: text,
             parse_mode: "html",
@@ -370,8 +370,6 @@ class BackTrip extends React.Component {
       }
     } catch (error) {
       // Tangani kesalahan yang terjadi selama fetch
-      this.setState({ eror: error });
-
       console.error("Error:", error);
       // alert("Terjadi kesalahan. Silakan coba lagi.");
     }
@@ -489,8 +487,15 @@ class BackTrip extends React.Component {
             jarak,
             jarakKompensasi,
             status,
-            error: this.state.eror,
           });
+
+          if (lokasi.value == "Lainnya") {
+            const lokasiRef = collection(db, "lokasi");
+            await addDoc(lokasiRef, {
+              label: addLokasi,
+              value: addLokasi,
+            });
+          }
 
           // Add a new document to the lokasiAkhir subcollection
           const lokasiAkhirRef = collection(db, "trips", idTrip, "lokasiAkhir");
