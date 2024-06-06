@@ -148,7 +148,7 @@ class BackTrip extends React.Component {
     try {
       // Konfigurasi opsi kompresi
       const options = {
-        maxSizeMB: 1,
+        maxSizeMB: 0.5,
         maxWidthOrHeight: 1920,
         useWebWorker: true,
       };
