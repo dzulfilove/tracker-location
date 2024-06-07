@@ -18,7 +18,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import TextField from "@mui/material/TextField";
 import { DatePicker } from "@mui/x-date-pickers";
 import AOS from "aos";
-
+import { saveAs } from "file-saver";
+import { CSVLink, CSVDownload } from "react-csv";
+import Papa from "papaparse";
 import "aos/dist/aos.css";
 import LoadingComp from "../components/loader2";
 class Dashboard extends React.Component {
@@ -32,6 +34,7 @@ class Dashboard extends React.Component {
       tanggalMulaiTampil: "",
       tanggalSelesaiTampil: "",
       totalDistance: "200 KM",
+      tripsFilter: [],
       tanggalAwal: dayjs("2024-05-01").locale("id"),
       tanggalAkhir: dayjs().locale("id"),
       tanggalAwalString: "2024-05-01",
@@ -54,6 +57,9 @@ class Dashboard extends React.Component {
       totalPengajuan: 0,
       loader: true,
       trip: [],
+      dataExport: [],
+      judul: [],
+      footer: [],
     };
   }
 
@@ -114,10 +120,160 @@ class Dashboard extends React.Component {
     const mulaiTgl = this.formatTanggal(tanggalMulai);
     const selesaiTgl = this.formatTanggal(tanggalSelesai);
     console.log(this.sortByDateAndTimeDescending(filteredTrips), "data Filter");
+
+    const dataSort = this.sortByDateAndTimeDescending(filteredTrips);
+    // Step 1: Restructure the data
+    const restructuredData = dataSort.map((obj, index) => {
+      return {
+        index: index + 1,
+        tanggal: this.formatTanggal(obj.tanggal),
+        lokasiAwal: obj.lokasiAwal,
+        lokasiAkhir: obj.lokasiAkhir,
+        empty: "",
+        jarak: obj.jarakKompensasi,
+        fotoBukti: obj.fotoBukti,
+        nominal: `Rp. ${this.formatNumber(obj.nominal)}`,
+        biayaParkir: `Rp. ${
+          obj.parkir ? this.formatNumber(obj.biayaParkir) : this.formatNumber(0)
+        }`,
+      };
+    });
+
+    // Step 2: Transform restructured data into array string format
+    const dataArrayString = restructuredData.map((obj) => {
+      return [
+        obj.index,
+        obj.tanggal,
+        obj.lokasiAwal[0].lokasi,
+        obj.lokasiAkhir[0].lokasi,
+        obj.empty,
+        obj.jarak,
+        obj.fotoBukti,
+        obj.nominal,
+        obj.biayaParkir,
+      ];
+    });
+
+    // Step 3: Transform the array by replacing repeated dates with an empty string
+    const transformedArray = dataArrayString.map((item, idx) => {
+      const [
+        index,
+        tanggal,
+        lokasiAwal,
+        lokasiAkhir,
+        empty,
+        jarak,
+        fotoBukti,
+        nominal,
+        biayaParkir,
+      ] = item;
+
+      // If the current date is the same as the previous one, set it to an empty string
+      return [
+        index,
+        idx > 0 && tanggal === dataArrayString[idx - 1][1] ? "" : tanggal,
+        lokasiAwal,
+        lokasiAkhir,
+        empty,
+        jarak,
+        fotoBukti,
+        nominal,
+        biayaParkir,
+      ];
+    });
+
+    const propertyNames = [
+      [
+        "DAFTAR AJUAN UANG TRANSPORT PENGGANTI BENSIN DAN PARKIR PEKANAN TIM KOMERSIL",
+      ],
+      [""],
+      [`NAMA : ${this.state.user.display_name}`],
+      [
+        `PERIODE AJUAN : ${this.formatTanggal(
+          tanggalMulai
+        )} - ${this.formatTanggal(tanggalSelesai)}`,
+      ],
+      [""],
+      [
+        "No",
+        "Tanggal",
+        "Lokasi Keberangkatan",
+        "Lokasi Tujuan",
+        "Jenis Bahan bakar",
+        "Jarak Tempuh",
+        "Lampiran",
+        "Total Biaya Bensin",
+        "Total Biaya Parkir",
+      ],
+    ];
+
+    const footer = [
+      [
+        "Sub Total",
+        "",
+        "",
+        "",
+        "",
+        "",
+        `Rp. ${this.formatNumber(totalNominal)}`,
+        `Rp. ${this.formatNumber(totalParkir)}`,
+      ],
+      [
+        "Total",
+        "",
+        "",
+        "",
+        "",
+        "",
+        `Rp. ${this.formatNumber(totalNominal + totalParkir)}`,
+      ],
+      [""],
+      [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        `Bandar lampung, ${this.formatTanggal(tanggalSelesai)}`,
+      ],
+      [
+        "",
+        "",
+        "Direktur Keuangan",
+        "",
+        "General Manager",
+        "",
+        "",
+        "Product Owner Tim Komersil",
+        "",
+        "Pemohon",
+      ],
+      [""],
+      [""],
+      [
+        "",
+        "",
+        "Hj. Antika Damayanti",
+        "",
+        "Haidar Afif Maulana",
+        "",
+        "",
+        "Nurdermawan, S.E.",
+        "",
+        `${this.state.user.display_name}`,
+      ],
+    ];
+
     this.setState({
       totalJarak: totalJarak.toFixed(2),
       jumlahTrip: jumlahTrip,
+      dataExport: transformedArray,
+      judul: propertyNames,
+      footer: footer,
       totalDurasi: totalDurasi,
+      tripsFilter: filteredTrips,
       totalParkir: totalParkir,
       totalPengajuan: totalNominal,
       tanggalMulaiTampil: mulaiTgl,
@@ -186,9 +342,9 @@ class Dashboard extends React.Component {
 
         tripList.push({ id: doc.id, ...tripData });
       }
-      const jumlahTrip = tripList.length;
 
       const filteredArray = tripList.filter((item) => item.status == "Selesai");
+      const jumlahTrip = filteredArray.length;
 
       console.log(filteredArray, "Trip");
       const hasil = filteredArray.map((objek) => {
@@ -241,12 +397,80 @@ class Dashboard extends React.Component {
       const mulaiTgl = this.formatTanggal(this.state.tanggalAwalString);
       const selesaiTgl = this.formatTanggal(this.state.tanggalAkhirString);
       console.log(mulaiTgl, "tagajkafkj");
+
+      const dataSort = this.sortByDateAndTimeDescending(filteredTrips);
+      // Step 1: Restructure the data
+      const restructuredData = dataSort.map((obj, index) => {
+        return {
+          index: index + 1,
+          tanggal: this.formatTanggal(obj.tanggal),
+          lokasiAwal: obj.lokasiAwal,
+          lokasiAkhir: obj.lokasiAkhir,
+          empty: "",
+          jarak: obj.jarakKompensasi,
+          fotoBukti: obj.fotoBukti,
+          nominal: `Rp. ${this.formatNumber(obj.nominal)}`,
+          biayaParkir: `Rp. ${
+            obj.parkir
+              ? this.formatNumber(obj.biayaParkir)
+              : this.formatNumber(0)
+          }`,
+        };
+      });
+
+      // Step 2: Transform restructured data into array string format
+      const dataArrayString = restructuredData.map((obj) => {
+        return [
+          obj.index,
+          obj.tanggal,
+          obj.lokasiAwal[0].lokasi,
+          obj.lokasiAkhir[0].lokasi,
+          obj.empty,
+          obj.jarak,
+          obj.fotoBukti,
+          obj.nominal,
+          obj.biayaParkir,
+        ];
+      });
+
+      // Step 3: Transform the array by replacing repeated dates with an empty string
+      const transformedArray = dataArrayString.map((item, idx) => {
+        const [
+          index,
+          tanggal,
+          lokasiAwal,
+          lokasiAkhir,
+          empty,
+          jarak,
+          fotoBukti,
+          nominal,
+          biayaParkir,
+        ] = item;
+
+        // If the current date is the same as the previous one, set it to an empty string
+        return [
+          index,
+          idx > 0 && tanggal === dataArrayString[idx - 1][1] ? "" : tanggal,
+          lokasiAwal,
+          lokasiAkhir,
+          empty,
+          jarak,
+          fotoBukti,
+          nominal,
+          biayaParkir,
+        ];
+      });
+
+      console.log(transformedArray, "export");
       await new Promise((resolve) => {
         this.setState(
           {
             tanggalMulaiTampil: mulaiTgl,
+            dataExport: transformedArray,
+
             tanggalSelesaiTampil: selesaiTgl,
             trips: hasil,
+            tripsFilter: filteredTrips,
             loader: false,
             totalParkir: totalParkir,
             totalJarak: totalJarak.toFixed(2),
@@ -258,7 +482,104 @@ class Dashboard extends React.Component {
           resolve
         );
       });
+      const propertyNames = [
+        [
+          "DAFTAR AJUAN UANG TRANSPORT PENGGANTI BENSIN DAN PARKIR PEKANAN TIM KOMERSIL",
+        ],
+        [""],
+        [`NAMA : ${this.state.user.display_name}`],
+        [
+          `PERIODE AJUAN : ${this.formatTanggal(
+            this.state.tanggalAwalString
+          )} - ${this.formatTanggal(this.state.tanggalAkhirString)}`,
+        ],
+        [""],
+        [
+          "No",
+          "Tanggal",
+          "Lokasi Keberangkatan",
+          "Lokasi Tujuan",
+          "Jenis Bahan bakar",
+          "Jarak Tempuh",
+          "Lampiran",
+          "Total Biaya Bensin",
+          "Total Biaya Parkir",
+        ],
+      ];
 
+      const footer = [
+        [
+          "Sub Total",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          `Rp. ${this.formatNumber(totalNominal)}`,
+          `Rp. ${this.formatNumber(totalParkir)}`,
+        ],
+        [
+          "Total",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          `Rp. ${this.formatNumber(totalNominal + totalParkir)}`,
+        ],
+        [""],
+        [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          `Bandar lampung, ${this.formatTanggal(
+            this.state.tanggalAkhirString
+          )}`,
+        ],
+        [
+          "",
+          "",
+          "Direktur Keuangan",
+          "",
+          "General Manager",
+          "",
+          "",
+          "Product Owner Tim Komersil",
+          "",
+          "Pemohon",
+        ],
+        [""],
+        [""],
+        [""],
+        [
+          "",
+          "",
+          "Hj. Antika Damayanti",
+          "",
+          "Haidar Afif Maulana",
+          "",
+          "",
+          "Nurdermawan, S.E.",
+          "",
+          `${this.state.user.display_name}`,
+        ],
+      ];
+
+      await new Promise((resolve) => {
+        this.setState(
+          {
+            judul: propertyNames,
+            footer: footer,
+          },
+          resolve
+        );
+      });
       // console.log(this.state.trips);
     } catch (error) {
       console.error("Error fetching data: ", error);
@@ -273,7 +594,9 @@ class Dashboard extends React.Component {
       maximumFractionDigits: 0,
     });
   }
-
+  formatNumber(num) {
+    return new Intl.NumberFormat("id-ID").format(num);
+  }
   getUserLogin = async (email) => {
     try {
       const userRef = collection(db, "User");
@@ -319,6 +642,30 @@ class Dashboard extends React.Component {
     return hasil;
   };
 
+  convertToCSV = (array) => {
+    return array.map((row) => row.join(";")).join("\r\n");
+  };
+
+  downloadCSV = (data, fileName) => {
+    const csvData = new Blob([data], { type: "text/csv;charset=utf-8;" });
+    const csvURL = URL.createObjectURL(csvData);
+    const link = document.createElement("a");
+    link.href = csvURL;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  handleExport = () => {
+    const { dataExport, judul, footer } = this.state;
+    // Flatten the array for csv
+    const csvContent = this.convertToCSV([...judul, ...dataExport, ...footer]);
+    this.downloadCSV(
+      csvContent,
+      `Data Perjalanan ${this.state.user.display_name}.csv`
+    );
+  };
   render() {
     const {
       userName,
@@ -330,6 +677,8 @@ class Dashboard extends React.Component {
       submittedAmount,
       currentTrip,
     } = this.state;
+
+    console.log("data tripsjsjsjsihadfcjns", this.state.tripsFilter);
 
     return (
       <div
@@ -349,7 +698,7 @@ class Dashboard extends React.Component {
           <div className="flex gap-5 text-xl tracking-wide leading-7 text-center whitespace-nowrap rounded-[32px] text-blue-950">
             <Navbar />
             <div className="flex-auto my-auto text-xl font-semibold">
-              Dashboard
+              Dashboard {this.state.tripsFilter.length}
             </div>
           </div>
           <div className="w-full flex justify-between items-center mt-6">
@@ -557,6 +906,41 @@ class Dashboard extends React.Component {
                       {this.formatRupiah(this.state.totalKlaim)}
                     </div>
                   </div>
+                </div>
+                <div className="flex  flex-col flex-start items-center gap-2 mt-6 w-full  ">
+                  <button
+                    onClick={this.handleExport}
+                    className="self-start text-base font-medium tracking-wide leading-7 text-center border border-white text-white bg-blue-500 w-full p-2 rounded-xl shadow-xl flex justify-center gap-5 items-center"
+                  >
+                    Export data
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                    >
+                      <g
+                        fill="none"
+                        stroke="white"
+                        stroke-linecap="round"
+                        stroke-width="1.5"
+                      >
+                        <path
+                          stroke-linejoin="round"
+                          d="M14.186 2.753v3.596c0 .487.194.955.54 1.3a1.85 1.85 0 0 0 1.306.539h4.125"
+                        />
+                        <path
+                          stroke-linejoin="round"
+                          d="M20.25 8.568v8.568a4.251 4.251 0 0 1-1.362 2.97a4.283 4.283 0 0 1-3.072 1.14h-7.59a4.294 4.294 0 0 1-3.1-1.124a4.265 4.265 0 0 1-1.376-2.986V6.862a4.25 4.25 0 0 1 1.362-2.97a4.283 4.283 0 0 1 3.072-1.14h5.714a3.503 3.503 0 0 1 2.361.905l2.96 2.722a2.971 2.971 0 0 1 1.031 2.189"
+                        />
+                        <path stroke-miterlimit="10" d="M12 17.273v-6.774" />
+                        <path
+                          stroke-linejoin="round"
+                          d="m8.894 14.42l2.665 2.666a.622.622 0 0 0 .882 0l2.665-2.665"
+                        />
+                      </g>
+                    </svg>
+                  </button>
                 </div>
               </>
             )}
