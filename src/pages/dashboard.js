@@ -68,6 +68,12 @@ class Dashboard extends React.Component {
     await this.getAllTripsByUid(userEmail);
     AOS.init({ duration: 700 });
   };
+  formatKapital = (string) => {
+    return string
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
   handleFilter = (name, value) => {
     const dayjsDate = dayjs(value);
 
@@ -227,6 +233,14 @@ class Dashboard extends React.Component {
         "",
         `Rp. ${this.formatNumber(totalNominal + totalParkir)}`,
       ],
+      [
+        "",
+        "",
+        "",
+        `Terbilang : ${this.formatKapital(
+          this.convertToWords(totalNominal + totalParkir)
+        )}`,
+      ],
       [""],
       [
         "",
@@ -305,6 +319,83 @@ class Dashboard extends React.Component {
         return menitBInt - menitAInt;
       }
     });
+  };
+
+  convertToWords = (num) => {
+    const units = [
+      "",
+      "satu",
+      "dua",
+      "tiga",
+      "empat",
+      "lima",
+      "enam",
+      "tujuh",
+      "delapan",
+      "sembilan",
+    ];
+    const teens = [
+      "sepuluh",
+      "sebelas",
+      "dua belas",
+      "tiga belas",
+      "empat belas",
+      "lima belas",
+      "enam belas",
+      "tujuh belas",
+      "delapan belas",
+      "sembilan belas",
+    ];
+    const tens = [
+      "",
+      "",
+      "dua puluh",
+      "tiga puluh",
+      "empat puluh",
+      "lima puluh",
+      "enam puluh",
+      "tujuh puluh",
+      "delapan puluh",
+      "sembilan puluh",
+    ];
+    const thousands = ["", "ribu", "juta", "miliar", "triliun"];
+
+    if (num === 0) return "nol";
+
+    let words = "";
+    let numberString = num.toString();
+    let groups = Math.ceil(numberString.length / 3);
+
+    for (let i = 0; i < groups; i++) {
+      let groupValue = parseInt(
+        numberString.slice(-3 * (i + 1), -3 * i || undefined),
+        10
+      );
+      if (groupValue === 0) continue;
+
+      let groupWords = "";
+
+      if (groupValue >= 100) {
+        groupWords += units[Math.floor(groupValue / 100)] + " ratus ";
+        groupValue %= 100;
+      }
+
+      if (groupValue >= 20) {
+        groupWords += tens[Math.floor(groupValue / 10)] + " ";
+        groupValue %= 10;
+      } else if (groupValue >= 10) {
+        groupWords += teens[groupValue - 10] + " ";
+        groupValue = 0;
+      }
+
+      if (groupValue > 0) {
+        groupWords += units[groupValue] + " ";
+      }
+
+      words = groupWords + thousands[i] + " " + words;
+    }
+
+    return words.trim();
   };
   getAllTripsByUid = async (email) => {
     await this.getUserLogin(email);
@@ -434,6 +525,8 @@ class Dashboard extends React.Component {
       });
 
       // Step 3: Transform the array by replacing repeated dates with an empty string
+      let ind = 0; // Pindahkan inisialisasi variabel `ind` ke luar fungsi `map`
+
       const transformedArray = dataArrayString.map((item, idx) => {
         const [
           index,
@@ -447,9 +540,14 @@ class Dashboard extends React.Component {
           biayaParkir,
         ] = item;
 
-        // If the current date is the same as the previous one, set it to an empty string
+        // Jika tanggal saat ini berbeda dengan tanggal sebelumnya, tambahkan `ind`
+        if (idx === 0 || tanggal !== dataArrayString[idx - 1][1]) {
+          ind += 1;
+        }
+
+        // Jika tanggal saat ini sama dengan tanggal sebelumnya, set tanggal menjadi string kosong
         return [
-          index,
+          idx > 0 && tanggal === dataArrayString[idx - 1][1] ? "" : ind,
           idx > 0 && tanggal === dataArrayString[idx - 1][1] ? "" : tanggal,
           lokasiAwal,
           lokasiAkhir,
@@ -460,6 +558,8 @@ class Dashboard extends React.Component {
           biayaParkir,
         ];
       });
+
+      console.log(transformedArray);
 
       console.log(transformedArray, "export");
       await new Promise((resolve) => {
@@ -529,7 +629,17 @@ class Dashboard extends React.Component {
           "",
           `Rp. ${this.formatNumber(totalNominal + totalParkir)}`,
         ],
+        [
+          "",
+          "",
+          "",
+          "",
+          `Terbilang : ${this.formatKapital(
+            this.convertToWords(totalNominal + totalParkir)
+          )}`,
+        ],
         [""],
+
         [
           "",
           "",
@@ -698,7 +808,7 @@ class Dashboard extends React.Component {
           <div className="flex gap-5 text-xl tracking-wide leading-7 text-center whitespace-nowrap rounded-[32px] text-blue-950">
             <Navbar />
             <div className="flex-auto my-auto text-xl font-semibold">
-              Dashboard {this.state.tripsFilter.length}
+              Dashboard
             </div>
           </div>
           <div className="w-full flex justify-between items-center mt-6">
@@ -910,7 +1020,7 @@ class Dashboard extends React.Component {
                 <div className="flex  flex-col flex-start items-center gap-2 mt-6 w-full  ">
                   <button
                     onClick={this.handleExport}
-                    className="self-start text-base font-medium tracking-wide leading-7 text-center border border-white text-white bg-blue-500 w-full p-2 rounded-xl shadow-xl flex justify-center gap-5 items-center"
+                    className="self-start text-sm font-medium tracking-wide leading-7 text-center border border-white text-white bg-blue-500 w-full p-1 rounded-xl shadow-xl flex justify-center gap-5 items-center"
                   >
                     Export data
                     <svg
