@@ -18,10 +18,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import TextField from "@mui/material/TextField";
 import { DatePicker } from "@mui/x-date-pickers";
 import AOS from "aos";
+import "aos/dist/aos.css";
+
 import { saveAs } from "file-saver";
 import { CSVLink, CSVDownload } from "react-csv";
 import Papa from "papaparse";
-import "aos/dist/aos.css";
 import LoadingComp from "../components/loader2";
 class Dashboard extends React.Component {
   constructor(props) {

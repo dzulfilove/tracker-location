@@ -162,15 +162,15 @@ class InputTrip extends React.Component {
         navigator.geolocation.getCurrentPosition(resolve, reject);
       });
       const { latitude, longitude } = position.coords;
-      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
-      const response = await fetch(url);
-      const data = await response.json();
+      // const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
+      // const response = await fetch(url);
+      // const data = await response.json();
 
       await new Promise((resolve) => {
         this.setState(
           {
             lokasiAwal: { latitude, longitude },
-            namaLokasi: `${data.address.village}, ${data.address.city}, ${data.address.state}, ${data.address.country}`,
+            namaLokasi: `Berhasil Dapat Lokasi`,
           },
           resolve
         );
@@ -270,7 +270,6 @@ class InputTrip extends React.Component {
             jamMulai: jamBerangkat,
             latitude: lokasiAwal.latitude,
             longitude: lokasiAwal.longitude,
-            alamat: namaLokasi,
             lokasi: lokasiMulai,
           });
           Swal.fire({

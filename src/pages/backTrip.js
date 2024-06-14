@@ -224,16 +224,15 @@ class BackTrip extends React.Component {
         navigator.geolocation.getCurrentPosition(resolve, reject);
       });
       const { latitude, longitude } = position.coords;
-      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
-      const response = await fetch(url);
-      const data = await response.json();
+      // const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
+      // const response = await fetch(url);
+      // const data = await response.json();
 
       await new Promise((resolve) => {
         this.setState(
           {
             lokasiAkhir: { latitude, longitude },
-            namaLokasi: data.address,
-            add: `${data.address.village}, ${data.address.city},${data.address.state}, ${data.address.country}`,
+            add: `Berhasil Dapat Lokasi`,
           },
           resolve
         );
@@ -503,7 +502,6 @@ class BackTrip extends React.Component {
             jamSampai: jamSampai,
             latitude: lokasiAkhir.latitude,
             longitude: lokasiAkhir.longitude,
-            alamat: add,
             lokasi: lokasiSelesai,
           });
 
