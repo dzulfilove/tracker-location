@@ -585,7 +585,7 @@ class Dashboard extends React.Component {
       });
       const propertyNames = [
         [
-          "DAFTAR AJUAN UANG TRANSPORT PENGGANTI BENSIN DAN PARKIR PEKANAN TIM KOMERSIL",
+          "DAFTAR AJUAN UANG TRANSPORT PENGGANTI BENSIN DAN PARKIR PEKANAN TIM .....",
         ],
         [""],
         [`NAMA : ${this.state.user.display_name}`],
