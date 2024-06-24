@@ -461,15 +461,7 @@ class BackTrip extends React.Component {
       let jarakReal = jarak + (jarak * 20) / 100;
       const jarakKompensasi = parseFloat(jarakReal.toFixed(2));
       const tanggalPulang = this.formatTanggal(trip.tanggal);
-      const text = `\n<b>Nama :  </b>${
-        user.display_name
-      }\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamMulai} - ${jamSampai} \n<b>Keperluan : </b>${
-        trip.alasan
-      }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${lokasiSelesai} \n<b>Jarak : </b> ${jarakKompensasi} KM \n<b>Durasi : </b> ${this.formatDurasi(
-        durasi
-      )}  \n`;
-      const textGambar = `${fotoBukti}`;
-      await this.sendMessage(text, textGambar);
+
       if (cekKosong == true) {
         Swal.fire({
           icon: "error",
@@ -504,7 +496,15 @@ class BackTrip extends React.Component {
             longitude: lokasiAkhir.longitude,
             lokasi: lokasiSelesai,
           });
-
+          const text = `\n<b>Nama :  </b>${
+            user.display_name
+          }\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamMulai} - ${jamSampai} \n<b>Keperluan : </b>${
+            trip.alasan
+          }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${lokasiSelesai} \n<b>Jarak : </b> ${jarakKompensasi} KM \n<b>Durasi : </b> ${this.formatDurasi(
+            durasi
+          )}  \n`;
+          const textGambar = `${fotoBukti}`;
+          await this.sendMessage(text, textGambar);
           await new Promise((resolve) => {
             this.setState(
               {

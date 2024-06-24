@@ -115,7 +115,7 @@ const DataTable = (props) => {
     const sortData = sortByDateAndTimeDescending(filteredArray);
     props.handleDetail(sortData, item);
   };
-  console.log(props.data, "itemmmmmm");
+  console.log(props.detailData, "itemmmmmm");
 
   return (
     <div className="p-4 bg-white w-[90%] rounded-xl shadow-lg mb-[4rem]">
