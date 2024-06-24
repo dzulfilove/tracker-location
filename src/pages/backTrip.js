@@ -34,9 +34,12 @@ class BackTrip extends React.Component {
     super(props);
     const idTrip = this.props.params;
     this.webcamRef = React.createRef();
+    const userEmail = sessionStorage.getItem("userEmail");
+
     this.state = {
       idTrip: idTrip.idTrip,
       trips: {},
+      userEmail,
       optionsLokasi: [],
       jamSampai: dayjs().locale("id").format("HH:mm"),
       jamMulai: "",
@@ -497,7 +500,7 @@ class BackTrip extends React.Component {
             lokasi: lokasiSelesai,
           });
           const text = `\n<b>Nama :  </b>${
-            user.display_name
+            user.display_name ? user.display_name : this.state.userEmail
           }\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamMulai} - ${jamSampai} \n<b>Keperluan : </b>${
             trip.alasan
           }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${lokasiSelesai} \n<b>Jarak : </b> ${jarakKompensasi} KM \n<b>Durasi : </b> ${this.formatDurasi(
