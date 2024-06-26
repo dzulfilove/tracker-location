@@ -329,7 +329,7 @@ class BackTrip extends React.Component {
     let emptyStates = [];
 
     if (!lokasiAkhir) emptyStates.push("lokasiAkhir");
-    if (!fotoBukti) emptyStates.push("fotoBukti");
+    if (fotoBukti == Person) emptyStates.push("fotoBukti");
     if (!durasi) emptyStates.push("durasi");
     // if (!jarak) emptyStates.push("jarak");
     if (!lokasi) emptyStates.push("lokasi");
@@ -371,7 +371,7 @@ class BackTrip extends React.Component {
         console.log("gagalllllll");
       }
     } catch (error) {
-      // Tangani kesalahan yang terjadi selama fetch
+      // Tangani kesalahan yang terjadi selama fetchz
       console.error("Error:", error);
       // alert("Terjadi kesalahan. Silakan coba lagi.");
     }
@@ -446,13 +446,21 @@ class BackTrip extends React.Component {
     if (lokasi.value == "Lainnya") {
       lokasiSelesai = addLokasi;
       if (addLokasi == "") {
+        await new Promise((resolve) => {
+          this.setState(
+            {
+              isSubmit: false,
+              loader: false,
+            },
+            resolve
+          );
+        });
         Swal.fire({
           title: "Gagal",
-          text: "Tambahkan Lokasi Terlebuh Dahulu",
+          text: "Tambahkan Lokasi Terlebih Dahulu",
           icon: "error",
         });
         kosong = true;
-        this.setState({ loader: false });
       }
     } else {
       lokasiSelesai = lokasi.value;
@@ -466,6 +474,15 @@ class BackTrip extends React.Component {
       const tanggalPulang = this.formatTanggal(trip.tanggal);
 
       if (cekKosong == true) {
+        await new Promise((resolve) => {
+          this.setState(
+            {
+              isSubmit: false,
+              loader: false,
+            },
+            resolve
+          );
+        });
         Swal.fire({
           icon: "error",
           title: "Gagal",
@@ -474,6 +491,15 @@ class BackTrip extends React.Component {
           timer: 1500,
         });
       } else {
+        const text = `\n<b>Nama :  </b>${
+          user.display_name ? user.display_name : this.state.userEmail
+        }\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamMulai} - ${jamSampai} \n<b>Keperluan : </b>${
+          trip.alasan
+        }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${lokasiSelesai} \n<b>Jarak : </b> ${jarakKompensasi} KM \n<b>Durasi : </b> ${this.formatDurasi(
+          durasi
+        )}  \n`;
+        const textGambar = `${fotoBukti}`;
+        await this.sendMessage(text, textGambar);
         try {
           await updateDoc(doc(db, "trips", idTrip), {
             fotoBukti,
@@ -483,14 +509,6 @@ class BackTrip extends React.Component {
             status,
           });
 
-          if (lokasi.value == "Lainnya") {
-            const lokasiRef = collection(db, "lokasi");
-            await addDoc(lokasiRef, {
-              label: addLokasi,
-              value: addLokasi,
-            });
-          }
-
           // Add a new document to the lokasiAkhir subcollection
           const lokasiAkhirRef = collection(db, "trips", idTrip, "lokasiAkhir");
           await addDoc(lokasiAkhirRef, {
@@ -499,15 +517,7 @@ class BackTrip extends React.Component {
             longitude: lokasiAkhir.longitude,
             lokasi: lokasiSelesai,
           });
-          const text = `\n<b>Nama :  </b>${
-            user.display_name ? user.display_name : this.state.userEmail
-          }\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamMulai} - ${jamSampai} \n<b>Keperluan : </b>${
-            trip.alasan
-          }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${lokasiSelesai} \n<b>Jarak : </b> ${jarakKompensasi} KM \n<b>Durasi : </b> ${this.formatDurasi(
-            durasi
-          )}  \n`;
-          const textGambar = `${fotoBukti}`;
-          await this.sendMessage(text, textGambar);
+
           await new Promise((resolve) => {
             this.setState(
               {
