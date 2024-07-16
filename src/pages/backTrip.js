@@ -34,7 +34,7 @@ class BackTrip extends React.Component {
     super(props);
     const idTrip = this.props.params;
     this.webcamRef = React.createRef();
-    const userEmail = sessionStorage.getItem("userEmail");
+    const userEmail = localStorage.getItem("userEmail");
 
     this.state = {
       idTrip: idTrip.idTrip,
@@ -66,7 +66,7 @@ class BackTrip extends React.Component {
   }
 
   componentDidMount = async () => {
-    const userEmail = sessionStorage.getItem("userEmail");
+    const userEmail = localStorage.getItem("userEmail");
     await this.getUserLogin(userEmail);
     await this.getDataPerjalanan();
     await this.getAllLokasi();
