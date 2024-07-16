@@ -65,7 +65,7 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount = async () => {
-    const userEmail = sessionStorage.getItem("userEmail");
+    const userEmail = localStorage.getItem("userEmail");
     await this.getAllTripsByUid(userEmail);
     AOS.init({ duration: 700 });
   };
