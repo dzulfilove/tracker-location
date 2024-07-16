@@ -61,7 +61,7 @@ class DetailTrip extends React.Component {
     };
   }
   componentDidMount = async () => {
-    const userEmail = sessionStorage.getItem("userEmail");
+    const userEmail = localStorage.getItem("userEmail");
     AOS.init({ duration: 700 });
     await this.getUserLogin(userEmail);
     await this.getDataPerjalanan();
