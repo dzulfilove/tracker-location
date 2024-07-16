@@ -81,9 +81,9 @@ class Auth extends React.Component {
         });
       }
 
-      sessionStorage.setItem("isLoggedIn", true);
-      sessionStorage.setItem("userEmail", email);
-      sessionStorage.setItem("peran", peran);
+      localStorage.setItem("isLoggedIn", true);
+      localStorage.setItem("userEmail", email);
+      localStorage.setItem("peran", peran);
       Swal.fire(
         {
           icon: "success",
