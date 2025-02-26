@@ -155,8 +155,8 @@ class Dashboard extends React.Component {
       
         obj.tanggal,
           obj.id,
-        obj.lokasiAwal[0].lokasi,
-        obj.lokasiAkhir[0].lokasi? obj.lokasiAkhir[0].lokasi:"Unknown",
+        obj.lokasiAwal?.[0]?.lokasi || "Unknown", // Cek jika lokasiAwal ada
+    obj.lokasiAkhir?.[0]?.lokasi || "Unknown", // Cek jika lokasiAkhir ada
         obj.empty,
         obj.jarak,
         obj.fotoBukti,
@@ -536,8 +536,8 @@ class Dashboard extends React.Component {
          
           obj.tanggal,
            obj.id,
-          obj.lokasiAwal[0].lokasi,
-           obj.lokasiAkhir[0].lokasi? obj.lokasiAkhir[0].lokasi:"Unknown",
+           obj.lokasiAwal?.[0]?.lokasi || "Unknown", // Cek jika lokasiAwal ada
+    obj.lokasiAkhir?.[0]?.lokasi || "Unknown", // Cek jika lokasiAkhir ada
           obj.empty,
           obj.jarak,
           obj.fotoBukti,
