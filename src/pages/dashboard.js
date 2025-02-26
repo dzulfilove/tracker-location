@@ -169,8 +169,8 @@ class Dashboard extends React.Component {
     const transformedArray = dataArrayString.map((item, idx) => {
       const [
         index,
+              tanggal,
         id,
-        tanggal,
         lokasiAwal,
         lokasiAkhir,
         empty,
