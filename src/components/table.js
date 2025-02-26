@@ -83,30 +83,36 @@ const DataTable = (props) => {
       },
     });
   };
+
   const sortByDateAndTimeDescending = (arrayObjek) => {
-    return arrayObjek.sort((a, b) => {
-      const dateA = new Date(a.tanggal);
-      const dateB = new Date(b.tanggal);
+  return arrayObjek.sort((a, b) => {
+    const dateA = new Date(a.tanggal);
+    const dateB = new Date(b.tanggal);
 
-      if (dateB - dateA !== 0) {
-        return dateB - dateA;
-      }
+    if (dateB - dateA !== 0) {
+      return dateB - dateA;
+    }
 
-      // Menggunakan metode sortir jam keluar dari user
-      let [jamAInt, menitAInt] = a.lokasiAkhir[0].jamSampai
-        .split(":")
-        .map(Number);
-      let [jamBInt, menitBInt] = b.lokasiAkhir[0].jamSampai
-        .split(":")
-        .map(Number);
+    // Default jam jika tidak ditemukan
+    const defaultJam = "00:00";
 
-      if (jamAInt !== jamBInt) {
-        return jamBInt - jamAInt;
-      } else {
-        return menitBInt - menitAInt;
-      }
-    });
-  };
+    // Ambil jamSampai, jika tidak ada gunakan default
+    let jamA = a.lokasiAkhir[0]?.jamSampai || defaultJam;
+    let jamB = b.lokasiAkhir[0]?.jamSampai || defaultJam;
+
+    // Konversi ke angka
+    let [jamAInt, menitAInt] = jamA.split(":").map(Number);
+    let [jamBInt, menitBInt] = jamB.split(":").map(Number);
+
+    if (jamAInt !== jamBInt) {
+      return jamBInt - jamAInt;
+    } else {
+      return menitBInt - menitAInt;
+    }
+  });
+};
+
+  
   const handleDetailShow = (item) => {
     const filteredArray = props.dataTrips.filter(
       (data) => data.nama == item.nama
@@ -183,8 +189,8 @@ const DataTable = (props) => {
                   </td>
 
                   <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2">
-                    Dari {item.lokasiAwal[0].lokasi} , Ke{" "}
-                    {item.lokasiAkhir[0].lokasi}
+                    Dari {item.lokasiAwal?.[0]?.lokasi || "Unknown"} , Ke{" "}
+                    {item.lokasiAkhir?.[0]?.lokasi || "Unknown"}
                   </td>
 
                   <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2">
