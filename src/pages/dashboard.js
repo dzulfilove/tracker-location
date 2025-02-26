@@ -309,30 +309,35 @@ class Dashboard extends React.Component {
 
     this.setState({ filteredTrips, isFilter: true });
   };
-  sortByDateAndTimeDescending = (arrayObjek) => {
-    return arrayObjek.sort((a, b) => {
-      const dateA = new Date(a.tanggal);
-      const dateB = new Date(b.tanggal);
 
-      if (dateB - dateA !== 0) {
-        return dateB - dateA;
-      }
+   sortByDateAndTimeDescending = (arrayObjek) => {
+  return arrayObjek.sort((a, b) => {
+    const dateA = new Date(a.tanggal);
+    const dateB = new Date(b.tanggal);
 
-      // Menggunakan metode sortir jam keluar dari user
-      let [jamAInt, menitAInt] = a.lokasiAkhir[0].jamSampai
-        .split(":")
-        .map(Number);
-      let [jamBInt, menitBInt] = b.lokasiAkhir[0].jamSampai
-        .split(":")
-        .map(Number);
+    if (dateB - dateA !== 0) {
+      return dateB - dateA;
+    }
 
-      if (jamAInt !== jamBInt) {
-        return jamBInt - jamAInt;
-      } else {
-        return menitBInt - menitAInt;
-      }
-    });
-  };
+    // Default jam jika tidak ditemukan
+    const defaultJam = "00:00";
+
+    // Ambil jamSampai, jika tidak ada gunakan default
+    let jamA = a.lokasiAkhir[0]?.jamSampai || defaultJam;
+    let jamB = b.lokasiAkhir[0]?.jamSampai || defaultJam;
+
+    // Konversi ke angka
+    let [jamAInt, menitAInt] = jamA.split(":").map(Number);
+    let [jamBInt, menitBInt] = jamB.split(":").map(Number);
+
+    if (jamAInt !== jamBInt) {
+      return jamBInt - jamAInt;
+    } else {
+      return menitBInt - menitAInt;
+    }
+  });
+};
+
 
   convertToWords = (num) => {
     const units = [
