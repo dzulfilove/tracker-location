@@ -138,6 +138,7 @@ class Dashboard extends React.Component {
          id:obj.id,
         lokasiAwal: obj.lokasiAwal,
         lokasiAkhir: obj.lokasiAkhir,
+        alasan:obj.alasan,
         empty: "",
         jarak: obj.jarakKompensasi,
         fotoBukti: obj.fotoBukti,
@@ -157,6 +158,7 @@ class Dashboard extends React.Component {
           obj.id,
         obj.lokasiAwal?.[0]?.lokasi || "Unknown", // Cek jika lokasiAwal ada
     obj.lokasiAkhir?.[0]?.lokasi || "Unknown", // Cek jika lokasiAkhir ada
+        obj.alasan,
         obj.empty,
         obj.jarak,
         obj.fotoBukti,
@@ -173,6 +175,7 @@ class Dashboard extends React.Component {
         id,
         lokasiAwal,
         lokasiAkhir,
+        alasan,
         empty,
         jarak,
         fotoBukti,
@@ -187,6 +190,7 @@ class Dashboard extends React.Component {
         id,
         lokasiAwal,
         lokasiAkhir,
+        alasan,
         empty,
         jarak,
         fotoBukti,
@@ -213,6 +217,7 @@ class Dashboard extends React.Component {
          "ID",
         "Lokasi Keberangkatan",
         "Lokasi Tujuan",
+        "Alasan",
         "Jenis Bahan bakar",
         "Jarak Tempuh",
         "Lampiran",
@@ -229,6 +234,7 @@ class Dashboard extends React.Component {
         "",
         "",
         "",
+        "",
         `Rp. ${this.formatNumber(totalNominal)}`,
         `Rp. ${this.formatNumber(totalParkir)}`,
       ],
@@ -240,12 +246,13 @@ class Dashboard extends React.Component {
         "",
         "",
         "",
+        "",
         `Rp. ${this.formatNumber(totalNominal + totalParkir)}`,
       ],
       [
         "",
         "",
-        "",
+        "","",
         "",
         `Terbilang : ${this.formatKapital(
           this.convertToWords(totalNominal + totalParkir)
@@ -254,7 +261,7 @@ class Dashboard extends React.Component {
       [""],
       [
         "",
-        "",
+        "","",
         "",
         "",
         "",
@@ -264,7 +271,7 @@ class Dashboard extends React.Component {
         `Bandar lampung, ${this.formatTanggal(tanggalSelesai)}`,
       ],
       [
-        "",
+        "","",
         "",
         "",
         "Direktur Keuangan",
@@ -280,7 +287,7 @@ class Dashboard extends React.Component {
       [""],
       [
         "",
-        "",
+        "","",
         "",
         "Hj. Antika Damayanti",
         "",
@@ -517,6 +524,7 @@ class Dashboard extends React.Component {
             id:obj.id,
           lokasiAwal: obj.lokasiAwal,
           lokasiAkhir: obj.lokasiAkhir,
+          alasan:obj.alasan,
           empty: "",
           jarak: obj.jarakKompensasi,
           fotoBukti: obj.fotoBukti,
@@ -538,6 +546,7 @@ class Dashboard extends React.Component {
            obj.id,
            obj.lokasiAwal?.[0]?.lokasi || "Unknown", // Cek jika lokasiAwal ada
     obj.lokasiAkhir?.[0]?.lokasi || "Unknown", // Cek jika lokasiAkhir ada
+          obj.alasan,
           obj.empty,
           obj.jarak,
           obj.fotoBukti,
@@ -557,6 +566,7 @@ class Dashboard extends React.Component {
             id,
           lokasiAwal,
           lokasiAkhir,
+          alasan,
           empty,
           jarak,
           fotoBukti,
@@ -577,6 +587,7 @@ class Dashboard extends React.Component {
                id,
           lokasiAwal,
           lokasiAkhir,
+          alasan,
           empty,
           jarak,
           fotoBukti,
@@ -627,6 +638,7 @@ class Dashboard extends React.Component {
             "ID",
           "Lokasi Keberangkatan",
           "Lokasi Tujuan",
+          "Alasan",
           "Jenis Bahan bakar",
           "Jarak Tempuh",
           "Lampiran",
@@ -644,14 +656,14 @@ class Dashboard extends React.Component {
           "",
           "",
           "",
-          "",
+          "","",
           `Rp. ${this.formatNumber(totalNominal)}`,
           `Rp. ${this.formatNumber(totalParkir)}`,
         ],
         [
           "Total",
           "",
-          "",
+          "","",
           "",
           "",
            "",
@@ -662,7 +674,7 @@ class Dashboard extends React.Component {
         [
           "",
           "",
-          "",
+          "","",
            "",
           "",
           `Terbilang : ${this.formatKapital(
@@ -674,7 +686,7 @@ class Dashboard extends React.Component {
         [
           "",
           "",
-          "",
+          "","",
           "",
            "",
           "",
@@ -687,7 +699,7 @@ class Dashboard extends React.Component {
         [
           "",
            "",
-          "",
+          "","",
           "Direktur Keuangan",
           "",
           "General Manager",
@@ -702,7 +714,7 @@ class Dashboard extends React.Component {
         [""],
         [
           "",
-          "",
+          "","",
            "",
           "Hj. Antika Damayanti",
           "",
