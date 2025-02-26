@@ -133,7 +133,9 @@ class Dashboard extends React.Component {
     const restructuredData = dataSort.map((obj, index) => {
       return {
         index: index + 1,
+       
         tanggal: this.formatTanggal(obj.tanggal),
+         id:obj.id,
         lokasiAwal: obj.lokasiAwal,
         lokasiAkhir: obj.lokasiAkhir,
         empty: "",
@@ -150,7 +152,9 @@ class Dashboard extends React.Component {
     const dataArrayString = restructuredData.map((obj) => {
       return [
         obj.index,
+      
         obj.tanggal,
+          obj.id,
         obj.lokasiAwal[0].lokasi,
         obj.lokasiAkhir[0].lokasi,
         obj.empty,
@@ -165,6 +169,7 @@ class Dashboard extends React.Component {
     const transformedArray = dataArrayString.map((item, idx) => {
       const [
         index,
+        id,
         tanggal,
         lokasiAwal,
         lokasiAkhir,
@@ -179,6 +184,7 @@ class Dashboard extends React.Component {
       return [
         index,
         idx > 0 && tanggal === dataArrayString[idx - 1][1] ? "" : tanggal,
+        id,
         lokasiAwal,
         lokasiAkhir,
         empty,
@@ -204,6 +210,7 @@ class Dashboard extends React.Component {
       [
         "No",
         "Tanggal",
+         "ID",
         "Lokasi Keberangkatan",
         "Lokasi Tujuan",
         "Jenis Bahan bakar",
@@ -232,9 +239,11 @@ class Dashboard extends React.Component {
         "",
         "",
         "",
+        "",
         `Rp. ${this.formatNumber(totalNominal + totalParkir)}`,
       ],
       [
+        "",
         "",
         "",
         "",
@@ -251,9 +260,11 @@ class Dashboard extends React.Component {
         "",
         "",
         "",
+        "",
         `Bandar lampung, ${this.formatTanggal(tanggalSelesai)}`,
       ],
       [
+        "",
         "",
         "",
         "Direktur Keuangan",
@@ -268,6 +279,7 @@ class Dashboard extends React.Component {
       [""],
       [""],
       [
+        "",
         "",
         "",
         "Hj. Antika Damayanti",
@@ -495,7 +507,9 @@ class Dashboard extends React.Component {
       const restructuredData = dataSort.map((obj, index) => {
         return {
           index: index + 1,
+        
           tanggal: this.formatTanggal(obj.tanggal),
+            id:obj.id,
           lokasiAwal: obj.lokasiAwal,
           lokasiAkhir: obj.lokasiAkhir,
           empty: "",
@@ -514,7 +528,9 @@ class Dashboard extends React.Component {
       const dataArrayString = restructuredData.map((obj) => {
         return [
           obj.index,
+         
           obj.tanggal,
+           obj.id,
           obj.lokasiAwal[0].lokasi,
           obj.lokasiAkhir[0].lokasi,
           obj.empty,
@@ -531,7 +547,9 @@ class Dashboard extends React.Component {
       const transformedArray = dataArrayString.map((item, idx) => {
         const [
           index,
+        
           tanggal,
+            id,
           lokasiAwal,
           lokasiAkhir,
           empty,
@@ -549,7 +567,9 @@ class Dashboard extends React.Component {
         // Jika tanggal saat ini sama dengan tanggal sebelumnya, set tanggal menjadi string kosong
         return [
           idx > 0 && tanggal === dataArrayString[idx - 1][1] ? "" : ind,
+     
           idx > 0 && tanggal === dataArrayString[idx - 1][1] ? "" : tanggal,
+               id,
           lokasiAwal,
           lokasiAkhir,
           empty,
@@ -597,7 +617,9 @@ class Dashboard extends React.Component {
         [""],
         [
           "No",
+        
           "Tanggal",
+            "ID",
           "Lokasi Keberangkatan",
           "Lokasi Tujuan",
           "Jenis Bahan bakar",
@@ -613,6 +635,7 @@ class Dashboard extends React.Component {
           "Sub Total",
           "",
           "",
+           "",
           "",
           "",
           "",
@@ -626,6 +649,7 @@ class Dashboard extends React.Component {
           "",
           "",
           "",
+           "",
           "",
           "",
           `Rp. ${this.formatNumber(totalNominal + totalParkir)}`,
@@ -634,6 +658,7 @@ class Dashboard extends React.Component {
           "",
           "",
           "",
+           "",
           "",
           `Terbilang : ${this.formatKapital(
             this.convertToWords(totalNominal + totalParkir)
@@ -646,6 +671,7 @@ class Dashboard extends React.Component {
           "",
           "",
           "",
+           "",
           "",
           "",
           "",
@@ -655,6 +681,7 @@ class Dashboard extends React.Component {
         ],
         [
           "",
+           "",
           "",
           "Direktur Keuangan",
           "",
@@ -671,6 +698,7 @@ class Dashboard extends React.Component {
         [
           "",
           "",
+           "",
           "Hj. Antika Damayanti",
           "",
           "Haidar Afif Maulana",
