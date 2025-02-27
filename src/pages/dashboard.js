@@ -141,7 +141,7 @@ class Dashboard extends React.Component {
         alasan:obj.alasan,
         empty: "",
         jarak: obj.jarakKompensasi,
-        fotoBukti: obj.fotoBukti,
+       fotoBukti: `=IMAGE(${obj.fotoBukti};4;50;50)`,
         nominal: `Rp. ${this.formatNumber(obj.nominal)}`,
         biayaParkir: `Rp. ${
           obj.parkir ? this.formatNumber(obj.biayaParkir) : this.formatNumber(0)
@@ -261,8 +261,8 @@ class Dashboard extends React.Component {
       [""],
       [
         "",
-        "","",
-        "",
+      
+
         "",
         "",
         "",
@@ -271,9 +271,8 @@ class Dashboard extends React.Component {
         `Bandar lampung, ${this.formatTanggal(tanggalSelesai)}`,
       ],
       [
-        "","",
         "",
-        "",
+     
         "Direktur Keuangan",
         "",
         "General Manager",
@@ -285,10 +284,12 @@ class Dashboard extends React.Component {
       ],
       [""],
       [""],
+            [""],
+            [""],
+            [""],
       [
         "",
-        "","",
-        "",
+     
         "Hj. Antika Damayanti",
         "",
         "Haidar Afif Maulana",
@@ -527,7 +528,7 @@ class Dashboard extends React.Component {
           alasan:obj.alasan,
           empty: "",
           jarak: obj.jarakKompensasi,
-          fotoBukti: obj.fotoBukti,
+          fotoBukti: `=IMAGE(${obj.fotoBukti};4;50;50)`,
           nominal: `Rp. ${this.formatNumber(obj.nominal)}`,
           biayaParkir: `Rp. ${
             obj.parkir
@@ -684,10 +685,9 @@ class Dashboard extends React.Component {
         [""],
 
         [
+        
           "",
-          "",
-          "","",
-          "",
+           "",
            "",
           "",
           "",
@@ -698,8 +698,7 @@ class Dashboard extends React.Component {
         ],
         [
           "",
-           "",
-          "","",
+        
           "Direktur Keuangan",
           "",
           "General Manager",
@@ -712,10 +711,12 @@ class Dashboard extends React.Component {
         [""],
         [""],
         [""],
+                [""],
+        [""],
+        [""],
         [
           "",
-          "","",
-           "",
+
           "Hj. Antika Damayanti",
           "",
           "Haidar Afif Maulana",
