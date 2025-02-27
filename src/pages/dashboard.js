@@ -142,7 +142,7 @@ class Dashboard extends React.Component {
         empty: "",
         jarak: obj.jarakKompensasi,
         url :obj.fotoBukti,
-     fotoBukti: `=IMAGE(I${7+index};4;50;50)`,
+     fotoBukti: `=IMAGE(I${7+index},4,50,50)`,
         nominal: `Rp. ${this.formatNumber(obj.nominal)}`,
         biayaParkir: `Rp. ${
           obj.parkir ? this.formatNumber(obj.biayaParkir) : this.formatNumber(0)
@@ -535,7 +535,7 @@ class Dashboard extends React.Component {
           empty: "",
           jarak: obj.jarakKompensasi,
   url :obj.fotoBukti,
-     fotoBukti: `=IMAGE(I${7+index};4;50;50)`,
+     fotoBukti: `=IMAGE(I${7+index},4,50,50)`,
           nominal: `Rp. ${this.formatNumber(obj.nominal)}`,
           biayaParkir: `Rp. ${
             obj.parkir
