@@ -344,38 +344,44 @@ class BackTrip extends React.Component {
 
     return false;
   }
-  sendMessage = async (text, foto) => {
+ sendMessage = async (text, foto) => {
     try {
       const response = await fetch(
-        "https://api.telegram.org/bot6823587684:AAE4Ya6Lpwbfw8QxFYec6xAqWkBYeP53MLQ/sendPhoto",
-
+        "https://discord.com/api/webhooks/1466337795189768317/3C7U4wdcc84L9PUmuBAcQHjL92PGuyMID48gPAENToFAXcbCB7SV5peScAJeNV7LlKZR",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            chat_id: "-1001812360373",
-            message_thread_id: "4294967304",
-            photo: foto,
-            caption: text,
-            parse_mode: "html",
+            embeds: [
+              {
+                description: text, // isi pesan
+                color: 0x00bfff, // warna embed (hex → decimal / 0x)
+                image: {
+                  url: foto, // URL gambar
+                },
+                footer: {
+                  text: "Automation System • Backup Service",
+                  icon_url:
+                    "https://cdn-icons-png.flaticon.com/512/5968/5968841.png",
+                },
+                timestamp: new Date().toISOString(),
+              },
+            ],
           }),
-        }
+        },
       );
 
-      // Cek apakah respons dari fetch adalah OK (status code 200)
       if (response.ok) {
-        console.log("berhasilllllll");
+        console.log("✅ Discord message sent");
       } else {
-        console.log("gagalllllll");
+        console.log("❌ Discord failed", await response.text());
       }
     } catch (error) {
-      // Tangani kesalahan yang terjadi selama fetchz
-      console.error("Error:", error);
-      // alert("Terjadi kesalahan. Silakan coba lagi.");
+      console.error("❌ Error Discord:", error);
     }
-  };
+  }
   handleTele = (jarakKompensasi) => {
     console.log("Berjalan");
 
