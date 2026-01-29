@@ -400,13 +400,13 @@ class BackTrip extends React.Component {
       trip,
     } = this.state;
     const tanggalPulang = this.formatTanggal(trip.tanggal);
-    const text = `\n<b>Nama :  </b>${
+    const text = `\n**Nama :  **${
       user.display_name
-    }\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamMulai} - ${jamSampai} \n<b>Keperluan : </b>${
+    }\n**Hari, Tanggal : ** ${tanggalPulang}\n**Pukul : ** ${jamMulai} - ${jamSampai} \n**Keperluan : **${
       trip.alasan
-    }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${
+    }\n**Lokasi : ** Dari ${lokasiMulai} , Ke ${
       lokasi.value
-    } \n<b>Jarak : </b> ${jarakKompensasi} KM \n<b>Durasi : </b> ${this.formatDurasi(
+    } \n**Jarak : ** ${jarakKompensasi} KM \n**Durasi : ** ${this.formatDurasi(
       durasi
     )}  \n`;
     const textGambar = `${fotoBukti}`;
@@ -497,11 +497,11 @@ class BackTrip extends React.Component {
           timer: 1500,
         });
       } else {
-        const text = `\n<b>Nama :  </b>${
+        const text = `\n**Nama :  **${
           user.display_name ? user.display_name : this.state.userEmail
-        }\n<b>Hari, Tanggal : </b> ${tanggalPulang}\n<b>Pukul : </b> ${jamMulai} - ${jamSampai} \n<b>Keperluan : </b>${
+        }\n**Hari, Tanggal : ** ${tanggalPulang}\n**Pukul : ** ${jamMulai} - ${jamSampai} \n**Keperluan : **${
           trip.alasan
-        }\n<b>Lokasi : </b> Dari ${lokasiMulai} , Ke ${lokasiSelesai} \n<b>Jarak : </b> ${jarakKompensasi} KM \n<b>Durasi : </b> ${this.formatDurasi(
+        }\n**Lokasi : ** Dari ${lokasiMulai} , Ke ${lokasiSelesai} \n**Jarak : ** ${jarakKompensasi} KM \n**Durasi : ** ${this.formatDurasi(
           durasi
         )}  \n`;
         const textGambar = `${fotoBukti}`;
